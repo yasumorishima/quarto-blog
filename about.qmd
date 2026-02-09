@@ -1,0 +1,24 @@
+---
+title: "About"
+about:
+  template: jolla
+  links:
+    - icon: github
+      text: GitHub
+      href: https://github.com/yasumorishima
+    - text: Kaggle
+      href: https://www.kaggle.com/yasunorim
+    - text: Zenn
+      href: https://zenn.dev/yasumorishima
+
+---
+
+## About Me
+
+Baseball data analyst and Kaggle contributor. I create high-quality MLB datasets and write analysis articles using Python and Statcast data.
+
+## Projects
+
+- **Kaggle Datasets**: 3 datasets with 10.0/10 quality score
+- **Open Source Contributions**: Active contributor to pybaseball and other projects
+- **Data Visualization**: MLB player performance analysis using Jupyter notebooks

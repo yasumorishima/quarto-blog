@@ -1,0 +1,21 @@
+---
+title: "MLB Data Analysis Blog"
+listing:
+  contents: posts
+  feed: true
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
+---
+
+Welcome to my baseball analytics blog! Here you'll find in-depth analysis of MLB data using Python and Statcast metrics.
+
+## Featured Datasets
+
+All datasets are available on [Kaggle](https://www.kaggle.com/yasunorim/datasets) with quality score 10.0/10.
+
+
