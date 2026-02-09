@@ -44,4 +44,7 @@ jobs:
               -d "$json_payload")
 
             echo "Response: $response"
+
+            # Wait 10 seconds between posts to avoid rate limit
+            sleep 10
           done
