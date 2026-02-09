@@ -2,9 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/dataset4-mlb-statcast-bat-tracking/index.html",
       "/posts/dataset3-pitcher-arsenal/index.html",
-      "/posts/dataset2-bat-tracking/index.html",
-      "/posts/dataset1-japanese-mlb/index.html"
+      "/posts/dataset1-japanese-mlb/index.html",
+      "/posts/dataset2-bat-tracking/index.html"
     ]
   }
 ]

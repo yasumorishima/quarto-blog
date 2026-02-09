@@ -1,5 +1,159 @@
 [
   {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "",
+    "text": "I’ve published a comprehensive MLB Statcast dataset with Bat Tracking metrics for the 2024-2025 seasons on Kaggle.\nDataset: MLB Statcast + Bat Tracking (2024-2025)"
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#what-is-bat-tracking",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#what-is-bat-tracking",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "What is Bat Tracking?",
+    "text": "What is Bat Tracking?\nBat Tracking is a revolutionary measurement technology introduced by MLB in 2024 that quantifies batting mechanics using high-speed cameras. It captures:\n\nbat_speed: Bat velocity at contact (mph)\nswing_length: Path length of the bat to contact (feet) - shorter indicates more efficient mechanics\nswing_path_tilt: Angle of swing plane (degrees) - positive = uppercut, negative = downward\nattack_angle: Bat angle relative to pitch trajectory (degrees)\nattack_direction: Horizontal bat angle (degrees) - indicates pull vs opposite field tendency\n\nWhile traditional Statcast focused on batted ball outcomes (exit velocity, launch angle), Bat Tracking quantifies the swing itself - opening new dimensions for analysis."
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#dataset-overview",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#dataset-overview",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\n\nBasic Information\n\nPeriod: 2024-2025 Regular Seasons\nRows: 1,443,802 pitches (~1.4M)\nColumns: 118 metrics\nSize: 808MB\nBat Tracking Coverage: ~46.6% of pitches (~672,000 swings)\n\n\n\nKey Metrics\nBat Tracking Metrics - bat_speed, swing_length, swing_path_tilt - attack_angle, attack_direction - intercept_ball_minus_batter_pos_x/y_inches\nStatcast Metrics (Traditional) - release_speed, spin_rate, movement (pfx_x, pfx_z) - launch_speed, launch_angle, hit_distance_sc - estimated_woba, estimated_ba_using_speedangle - pitch_type, zone, description, events\nGame Context - game_date, game_type, inning, count (balls/strikes) - player_name, batter, pitcher, stand, p_throws - home/away score, win expectancy\nAll 118 columns have detailed descriptions on Kaggle."
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#how-to-access",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#how-to-access",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "How to Access",
+    "text": "How to Access\nThe dataset is easily accessible via pybaseball’s statcast() function. Bat Tracking metrics are automatically included.\nfrom pybaseball import statcast\nimport pandas as pd\n\n# 2024 season\ndf_2024 = statcast(start_dt='2024-03-20', end_dt='2024-09-29')\n\n# 2025 season\ndf_2025 = statcast(start_dt='2025-03-27', end_dt='2025-09-28')\n\n# Combine\ndf = pd.concat([df_2024, df_2025], ignore_index=True)\n\n# Check bat tracking coverage\nprint(f\"Bat tracking coverage: {df['bat_speed'].notna().sum() / len(df) * 100:.1f}%\")\nData generation notebook is available on Google Colab: Generate Dataset"
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#analysis-notebook",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#analysis-notebook",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "Analysis Notebook",
+    "text": "Analysis Notebook\nI’ve created a comprehensive analysis notebook demonstrating the dataset’s potential:\nMLB Bat Tracking Analysis 2024-2025\nAnalysis Includes: 1. Bat Tracking coverage analysis 2. Distribution of bat_speed, swing_length, swing_path_tilt 3. Correlation: bat_speed vs launch_speed 4. Top 10 bat speed leaders by player 5. Average bat speed by pitch type 6. Heatmap: attack_angle vs attack_direction"
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#use-cases",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#use-cases",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "Use Cases",
+    "text": "Use Cases\nThis dataset enables various types of analysis:\n\n1. Swing Mechanics Analysis\n\nEfficient swing path (swing_length vs bat_speed)\nUppercut effectiveness (swing_path_tilt vs launch_angle)\nFastest bat speed rankings\n\n\n\n2. Pitch-Swing Relationships\n\nWhich pitch types generate higher bat_speed?\nSwing tendencies by count\nRelationship between pitch location and attack_direction\n\n\n\n3. Batted Ball Outcomes\n\nbat_speed → launch_speed conversion efficiency\nswing_length impact on batting average\nattack_angle correlation with barrel rate\n\n\n\n4. Player Development & Scouting\n\nEvaluating draft prospects’ swing efficiency\nTracking player swing improvements\nOpponent tendency analysis"
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#comparison-with-other-datasets",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#comparison-with-other-datasets",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "Comparison with Other Datasets",
+    "text": "Comparison with Other Datasets\nMy previous baseball datasets:\n\nJapanese MLB Players Statcast (2015-2025)\n\n25 pitchers + 10 batters detailed data\n\nMLB Bat Tracking Leaderboard (2024-2025)\n\nSeason-aggregated data for 452 players\n\nMLB Pitcher Arsenal Evolution (2020-2025)\n\nPitch mix changes over time\n\n\nThis Dataset’s Unique Features: - Pitch-by-pitch granularity - Most comprehensive dataset including Bat Tracking metrics - Two full seasons of data"
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#conclusion",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#conclusion",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "Conclusion",
+    "text": "Conclusion\nBat Tracking adds a new dimension to baseball analysis. Instead of seeing only results, we can now quantify the process of hitting.\nI hope this dataset contributes to baseball analytics, machine learning research, and sports science."
+  },
+  {
+    "objectID": "posts/dataset4-mlb-statcast-bat-tracking/index.html#links",
+    "href": "posts/dataset4-mlb-statcast-bat-tracking/index.html#links",
+    "title": "MLB Statcast + Bat Tracking Dataset (2024-2025)",
+    "section": "Links",
+    "text": "Links\n\nDataset: https://www.kaggle.com/datasets/yasunorim/mlb-statcast-bat-tracking-2024-2025\nAnalysis Notebook: https://www.kaggle.com/code/yasunorim/mlb-bat-tracking-analysis-2024-2025\nGitHub Repository: https://github.com/yasumorishima/kaggle-datasets\nData Generation: Google Colab"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html",
+    "href": "posts/dataset2-bat-tracking/index.html",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "",
+    "text": "I’ve published a Kaggle dataset containing MLB Bat Tracking metrics for the 2024 and 2025 seasons. This dataset provides swing speed, attack angle, and other bat tracking statistics that were introduced by MLB in 2024.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#introduction",
+    "href": "posts/dataset2-bat-tracking/index.html#introduction",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "",
+    "text": "I’ve published a Kaggle dataset containing MLB Bat Tracking metrics for the 2024 and 2025 seasons. This dataset provides swing speed, attack angle, and other bat tracking statistics that were introduced by MLB in 2024.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#dataset-overview",
+    "href": "posts/dataset2-bat-tracking/index.html#dataset-overview",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\nMLB Bat Tracking (2024-2025)\n\nBatters: 452 batters (226 per season)\nColumns: 19 columns\nSeasons: 2024, 2025\nSource: Baseball Savant (directly accessed, not via pybaseball)\nQuality Score: 10.0/10 on Kaggle"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#what-is-bat-tracking",
+    "href": "posts/dataset2-bat-tracking/index.html#what-is-bat-tracking",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "What is Bat Tracking?",
+    "text": "What is Bat Tracking?\nBat Tracking is a new technology introduced by MLB in 2024 that measures swing metrics using high-speed cameras. It provides insights into swing mechanics that were previously unavailable.\n\nKey Metrics\n\n\n\n\n\n\n\nMetric\nDescription\n\n\n\n\nbat_speed\nSwing speed at contact (mph)\n\n\nswing_length\nLength of swing path (feet)\n\n\nsquared_up_rate\nRate of optimal bat-ball contact (0-1)\n\n\nattack_angle\nSwing plane angle (degrees)\n\n\nblast_avg\nPercentage of swings with both high speed and optimal contact"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#data-collection",
+    "href": "posts/dataset2-bat-tracking/index.html#data-collection",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Data Collection",
+    "text": "Data Collection\nThis dataset was collected directly from Baseball Savant using custom scraping, as pybaseball does not yet support bat tracking data.\n\nData Source\nBaseball Savant Leaderboard: Bat Tracking Stats\nimport pandas as pd\nimport requests\nfrom bs4 import BeautifulSoup\n\n# Example: Fetching 2024 bat tracking data\nurl = \"https://baseballsavant.mlb.com/leaderboard/bat-tracking?year=2024\"\nresponse = requests.get(url)\n# Parse HTML and extract table data\n# (Full implementation available in the dataset repository)"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#dataset-schema",
+    "href": "posts/dataset2-bat-tracking/index.html#dataset-schema",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Dataset Schema",
+    "text": "Dataset Schema\n\nMain Columns\n\n\n\n\n\n\n\n\nColumn\nType\nDescription\n\n\n\n\nyear\nint\nSeason year (2024 or 2025)\n\n\nplayer_name\nstr\nPlayer name\n\n\nplayer_id\nint\nMLBAM player ID\n\n\nbat_speed\nfloat\nAverage bat speed (mph)\n\n\nswing_length\nfloat\nAverage swing length (feet)\n\n\nsquared_up_rate\nfloat\nRate of squared-up contact (0-100%)\n\n\nattack_angle\nfloat\nAverage attack angle (degrees)\n\n\nblast_avg\nfloat\nBLAST score (0-100)\n\n\nfast_swing_rate\nfloat\nPercentage of fast swings (0-100%)\n\n\nswords_rate\nfloat\nPercentage of swings-and-misses on pitches in zone (0-100%)"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#usage-in-kaggle-notebooks",
+    "href": "posts/dataset2-bat-tracking/index.html#usage-in-kaggle-notebooks",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Usage in Kaggle Notebooks",
+    "text": "Usage in Kaggle Notebooks\n\nLoading the Dataset\nimport pandas as pd\n\n# Load bat tracking data\ndf = pd.read_csv('/kaggle/input/mlb-bat-tracking-2024-2025/bat_tracking_2024_2025.csv')\n\nprint(f\"Total records: {len(df)}\")\nprint(f\"Seasons: {df['year'].unique()}\")\nprint(f\"Average bat speed: {df['bat_speed'].mean():.2f} mph\")\n\n\nYear-over-Year Comparison\nimport matplotlib.pyplot as plt\n\n# Compare bat speed distribution between seasons\ndf_2024 = df[df['year'] == 2024]\ndf_2025 = df[df['year'] == 2025]\n\nplt.hist(df_2024['bat_speed'], alpha=0.5, label='2024', bins=20)\nplt.hist(df_2025['bat_speed'], alpha=0.5, label='2025', bins=20)\nplt.xlabel('Bat Speed (mph)')\nplt.ylabel('Frequency')\nplt.legend()\nplt.title('Bat Speed Distribution: 2024 vs 2025')\nplt.show()"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#analysis-examples",
+    "href": "posts/dataset2-bat-tracking/index.html#analysis-examples",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Analysis Examples",
+    "text": "Analysis Examples\n\nTop Performers by Bat Speed\n# Top 10 fastest bat speeds in 2025\ntop_bat_speed = df[df['year'] == 2025].nlargest(10, 'bat_speed')[\n    ['player_name', 'bat_speed', 'squared_up_rate', 'attack_angle']\n]\nprint(top_bat_speed)\n\n\nSquared-Up Rate Analysis\nimport seaborn as sns\n\n# Relationship between bat speed and squared-up rate\nsns.scatterplot(data=df, x='bat_speed', y='squared_up_rate', hue='year', alpha=0.6)\nplt.xlabel('Bat Speed (mph)')\nplt.ylabel('Squared-Up Rate (%)')\nplt.title('Bat Speed vs Squared-Up Rate')\nplt.show()\n\n\nAttack Angle Distribution\n# Distribution of attack angles\nplt.hist(df['attack_angle'], bins=30, edgecolor='black')\nplt.xlabel('Attack Angle (degrees)')\nplt.ylabel('Count')\nplt.title('Attack Angle Distribution (2024-2025)')\nplt.axvline(df['attack_angle'].mean(), color='red', linestyle='--', label='Mean')\nplt.legend()\nplt.show()"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#analysis-notebook",
+    "href": "posts/dataset2-bat-tracking/index.html#analysis-notebook",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Analysis Notebook",
+    "text": "Analysis Notebook\nA full analysis notebook demonstrating the use of this dataset:\nMLB Bat Tracking Analysis (2024-2025)"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#insights-from-bat-tracking-data",
+    "href": "posts/dataset2-bat-tracking/index.html#insights-from-bat-tracking-data",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Insights from Bat Tracking Data",
+    "text": "Insights from Bat Tracking Data\n\nWhat Makes a Good Hitter?\nBat tracking data reveals that elite hitters typically have:\n\nHigh bat speed (75+ mph)\nHigh squared-up rate (30%+)\nOptimal attack angle (10-20 degrees for most hitters)\nShort swing length (Efficient swing mechanics)\n\n\n\nComparing Swing Profiles\nDifferent player types show distinct swing profiles:\n\nPower hitters: High bat speed, steep attack angle\nContact hitters: Lower swing length, high squared-up rate\nSpeed-focused players: Fast swing rate, shallow attack angle"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#links",
+    "href": "posts/dataset2-bat-tracking/index.html#links",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Links",
+    "text": "Links\n\nDataset: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025\nGitHub Repository: https://github.com/yasumorishima/kaggle-datasets\nBaseball Savant: https://baseballsavant.mlb.com/leaderboard/bat-tracking"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "MLB Data Analysis Blog",
+    "section": "",
+    "text": "Welcome to my baseball analytics blog! Here you’ll find in-depth analysis of MLB data using Python and Statcast metrics."
+  },
+  {
+    "objectID": "index.html#featured-datasets",
+    "href": "index.html#featured-datasets",
+    "title": "MLB Data Analysis Blog",
+    "section": "Featured Datasets",
+    "text": "Featured Datasets\nAll datasets are available on Kaggle with quality score 10.0/10."
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
@@ -82,97 +236,6 @@
     "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
     "section": "Links",
     "text": "Links\n\nDataset: https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast\nGitHub Repository: https://github.com/yasumorishima/kaggle-datasets\nAnalysis Notebooks (GitHub): https://github.com/yasumorishima/mlb-statcast-visualization"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "MLB Data Analysis Blog",
-    "section": "",
-    "text": "Welcome to my baseball analytics blog! Here you’ll find in-depth analysis of MLB data using Python and Statcast metrics."
-  },
-  {
-    "objectID": "index.html#featured-datasets",
-    "href": "index.html#featured-datasets",
-    "title": "MLB Data Analysis Blog",
-    "section": "Featured Datasets",
-    "text": "Featured Datasets\nAll datasets are available on Kaggle with quality score 10.0/10."
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html",
-    "href": "posts/dataset2-bat-tracking/index.html",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "",
-    "text": "I’ve published a Kaggle dataset containing MLB Bat Tracking metrics for the 2024 and 2025 seasons. This dataset provides swing speed, attack angle, and other bat tracking statistics that were introduced by MLB in 2024.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#introduction",
-    "href": "posts/dataset2-bat-tracking/index.html#introduction",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "",
-    "text": "I’ve published a Kaggle dataset containing MLB Bat Tracking metrics for the 2024 and 2025 seasons. This dataset provides swing speed, attack angle, and other bat tracking statistics that were introduced by MLB in 2024.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#dataset-overview",
-    "href": "posts/dataset2-bat-tracking/index.html#dataset-overview",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Dataset Overview",
-    "text": "Dataset Overview\nMLB Bat Tracking (2024-2025)\n\nBatters: 452 batters (226 per season)\nColumns: 19 columns\nSeasons: 2024, 2025\nSource: Baseball Savant (directly accessed, not via pybaseball)\nQuality Score: 10.0/10 on Kaggle"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#what-is-bat-tracking",
-    "href": "posts/dataset2-bat-tracking/index.html#what-is-bat-tracking",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "What is Bat Tracking?",
-    "text": "What is Bat Tracking?\nBat Tracking is a new technology introduced by MLB in 2024 that measures swing metrics using high-speed cameras. It provides insights into swing mechanics that were previously unavailable.\n\nKey Metrics\n\n\n\n\n\n\n\nMetric\nDescription\n\n\n\n\nbat_speed\nSwing speed at contact (mph)\n\n\nswing_length\nLength of swing path (feet)\n\n\nsquared_up_rate\nRate of optimal bat-ball contact (0-1)\n\n\nattack_angle\nSwing plane angle (degrees)\n\n\nblast_avg\nPercentage of swings with both high speed and optimal contact"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#data-collection",
-    "href": "posts/dataset2-bat-tracking/index.html#data-collection",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Data Collection",
-    "text": "Data Collection\nThis dataset was collected directly from Baseball Savant using custom scraping, as pybaseball does not yet support bat tracking data.\n\nData Source\nBaseball Savant Leaderboard: Bat Tracking Stats\nimport pandas as pd\nimport requests\nfrom bs4 import BeautifulSoup\n\n# Example: Fetching 2024 bat tracking data\nurl = \"https://baseballsavant.mlb.com/leaderboard/bat-tracking?year=2024\"\nresponse = requests.get(url)\n# Parse HTML and extract table data\n# (Full implementation available in the dataset repository)"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#dataset-schema",
-    "href": "posts/dataset2-bat-tracking/index.html#dataset-schema",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Dataset Schema",
-    "text": "Dataset Schema\n\nMain Columns\n\n\n\n\n\n\n\n\nColumn\nType\nDescription\n\n\n\n\nyear\nint\nSeason year (2024 or 2025)\n\n\nplayer_name\nstr\nPlayer name\n\n\nplayer_id\nint\nMLBAM player ID\n\n\nbat_speed\nfloat\nAverage bat speed (mph)\n\n\nswing_length\nfloat\nAverage swing length (feet)\n\n\nsquared_up_rate\nfloat\nRate of squared-up contact (0-100%)\n\n\nattack_angle\nfloat\nAverage attack angle (degrees)\n\n\nblast_avg\nfloat\nBLAST score (0-100)\n\n\nfast_swing_rate\nfloat\nPercentage of fast swings (0-100%)\n\n\nswords_rate\nfloat\nPercentage of swings-and-misses on pitches in zone (0-100%)"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#usage-in-kaggle-notebooks",
-    "href": "posts/dataset2-bat-tracking/index.html#usage-in-kaggle-notebooks",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Usage in Kaggle Notebooks",
-    "text": "Usage in Kaggle Notebooks\n\nLoading the Dataset\nimport pandas as pd\n\n# Load bat tracking data\ndf = pd.read_csv('/kaggle/input/mlb-bat-tracking-2024-2025/bat_tracking_2024_2025.csv')\n\nprint(f\"Total records: {len(df)}\")\nprint(f\"Seasons: {df['year'].unique()}\")\nprint(f\"Average bat speed: {df['bat_speed'].mean():.2f} mph\")\n\n\nYear-over-Year Comparison\nimport matplotlib.pyplot as plt\n\n# Compare bat speed distribution between seasons\ndf_2024 = df[df['year'] == 2024]\ndf_2025 = df[df['year'] == 2025]\n\nplt.hist(df_2024['bat_speed'], alpha=0.5, label='2024', bins=20)\nplt.hist(df_2025['bat_speed'], alpha=0.5, label='2025', bins=20)\nplt.xlabel('Bat Speed (mph)')\nplt.ylabel('Frequency')\nplt.legend()\nplt.title('Bat Speed Distribution: 2024 vs 2025')\nplt.show()"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#analysis-examples",
-    "href": "posts/dataset2-bat-tracking/index.html#analysis-examples",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Analysis Examples",
-    "text": "Analysis Examples\n\nTop Performers by Bat Speed\n# Top 10 fastest bat speeds in 2025\ntop_bat_speed = df[df['year'] == 2025].nlargest(10, 'bat_speed')[\n    ['player_name', 'bat_speed', 'squared_up_rate', 'attack_angle']\n]\nprint(top_bat_speed)\n\n\nSquared-Up Rate Analysis\nimport seaborn as sns\n\n# Relationship between bat speed and squared-up rate\nsns.scatterplot(data=df, x='bat_speed', y='squared_up_rate', hue='year', alpha=0.6)\nplt.xlabel('Bat Speed (mph)')\nplt.ylabel('Squared-Up Rate (%)')\nplt.title('Bat Speed vs Squared-Up Rate')\nplt.show()\n\n\nAttack Angle Distribution\n# Distribution of attack angles\nplt.hist(df['attack_angle'], bins=30, edgecolor='black')\nplt.xlabel('Attack Angle (degrees)')\nplt.ylabel('Count')\nplt.title('Attack Angle Distribution (2024-2025)')\nplt.axvline(df['attack_angle'].mean(), color='red', linestyle='--', label='Mean')\nplt.legend()\nplt.show()"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#analysis-notebook",
-    "href": "posts/dataset2-bat-tracking/index.html#analysis-notebook",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Analysis Notebook",
-    "text": "Analysis Notebook\nA full analysis notebook demonstrating the use of this dataset:\nMLB Bat Tracking Analysis (2024-2025)"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#insights-from-bat-tracking-data",
-    "href": "posts/dataset2-bat-tracking/index.html#insights-from-bat-tracking-data",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Insights from Bat Tracking Data",
-    "text": "Insights from Bat Tracking Data\n\nWhat Makes a Good Hitter?\nBat tracking data reveals that elite hitters typically have:\n\nHigh bat speed (75+ mph)\nHigh squared-up rate (30%+)\nOptimal attack angle (10-20 degrees for most hitters)\nShort swing length (Efficient swing mechanics)\n\n\n\nComparing Swing Profiles\nDifferent player types show distinct swing profiles:\n\nPower hitters: High bat speed, steep attack angle\nContact hitters: Lower swing length, high squared-up rate\nSpeed-focused players: Fast swing rate, shallow attack angle"
-  },
-  {
-    "objectID": "posts/dataset2-bat-tracking/index.html#links",
-    "href": "posts/dataset2-bat-tracking/index.html#links",
-    "title": "MLB Bat Tracking Dataset (2024-2025)",
-    "section": "Links",
-    "text": "Links\n\nDataset: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025\nGitHub Repository: https://github.com/yasumorishima/kaggle-datasets\nBaseball Savant: https://baseballsavant.mlb.com/leaderboard/bat-tracking"
   },
   {
     "objectID": "posts/dataset3-pitcher-arsenal/index.html",

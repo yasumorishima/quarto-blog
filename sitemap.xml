@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/about.html</loc>
-    <lastmod>2026-02-09T09:07:25.487Z</lastmod>
-  </url>
-  <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset1-japanese-mlb/index.html</loc>
-    <lastmod>2026-02-09T09:07:25.487Z</lastmod>
-  </url>
-  <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/index.html</loc>
-    <lastmod>2026-02-09T09:07:25.487Z</lastmod>
+    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset4-mlb-statcast-bat-tracking/index.html</loc>
+    <lastmod>2026-02-09T20:37:00.716Z</lastmod>
   </url>
   <url>
     <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset2-bat-tracking/index.html</loc>
-    <lastmod>2026-02-09T09:07:25.487Z</lastmod>
+    <lastmod>2026-02-09T20:37:00.716Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/index.html</loc>
+    <lastmod>2026-02-09T20:37:00.716Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/about.html</loc>
+    <lastmod>2026-02-09T20:37:00.715Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset1-japanese-mlb/index.html</loc>
+    <lastmod>2026-02-09T20:37:00.716Z</lastmod>
   </url>
   <url>
     <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset3-pitcher-arsenal/index.html</loc>
-    <lastmod>2026-02-09T09:07:25.487Z</lastmod>
+    <lastmod>2026-02-09T20:37:00.716Z</lastmod>
   </url>
 </urlset>

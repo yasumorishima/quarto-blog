@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Yasunori Morishima">
+<meta name="dcterms.date" content="2026-02-10">
 
-<title>MLB Data Analysis Blog</title>
+<title>MLB Statcast + Bat Tracking Dataset (2024-2025) – MLB Data Analysis Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +22,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-0b37c64f34216b628666a8dac638b53b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,68 +105,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="MLB Data Analysis Blog" href="index.xml" data-external="1"></head>
+<link rel="stylesheet" href="../../styles.css">
+</head>
 
 <body class="nav-fixed quarto-light">
 
@@ -140,7 +117,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">MLB Data Analysis Blog</span>
     </a>
   </div>
@@ -151,11 +128,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -179,21 +156,40 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">MLB Data Analysis Blog</h1>
-                      </div>
+    <div class="quarto-title column-body">
+      <h1 class="title">MLB Statcast + Bat Tracking Dataset (2024-2025)</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">kaggle</div>
+                <div class="quarto-category">baseball</div>
+                <div class="quarto-category">mlb</div>
+                <div class="quarto-category">data-analysis</div>
+                <div class="quarto-category">statcast</div>
+              </div>
+                  </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Yasunori Morishima </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 10, 2026</p>
+      </div>
+    </div>
     
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -201,187 +197,166 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#featured-datasets" id="toc-featured-datasets" class="nav-link active" data-scroll-target="#featured-datasets">Featured Datasets</a></li>
+  <li><a href="#what-is-bat-tracking" id="toc-what-is-bat-tracking" class="nav-link active" data-scroll-target="#what-is-bat-tracking">What is Bat Tracking?</a></li>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link" data-scroll-target="#dataset-overview">Dataset Overview</a>
+  <ul class="collapse">
+  <li><a href="#basic-information" id="toc-basic-information" class="nav-link" data-scroll-target="#basic-information">Basic Information</a></li>
+  <li><a href="#key-metrics" id="toc-key-metrics" class="nav-link" data-scroll-target="#key-metrics">Key Metrics</a></li>
+  </ul></li>
+  <li><a href="#how-to-access" id="toc-how-to-access" class="nav-link" data-scroll-target="#how-to-access">How to Access</a></li>
+  <li><a href="#analysis-notebook" id="toc-analysis-notebook" class="nav-link" data-scroll-target="#analysis-notebook">Analysis Notebook</a></li>
+  <li><a href="#use-cases" id="toc-use-cases" class="nav-link" data-scroll-target="#use-cases">Use Cases</a>
+  <ul class="collapse">
+  <li><a href="#swing-mechanics-analysis" id="toc-swing-mechanics-analysis" class="nav-link" data-scroll-target="#swing-mechanics-analysis">1. Swing Mechanics Analysis</a></li>
+  <li><a href="#pitch-swing-relationships" id="toc-pitch-swing-relationships" class="nav-link" data-scroll-target="#pitch-swing-relationships">2. Pitch-Swing Relationships</a></li>
+  <li><a href="#batted-ball-outcomes" id="toc-batted-ball-outcomes" class="nav-link" data-scroll-target="#batted-ball-outcomes">3. Batted Ball Outcomes</a></li>
+  <li><a href="#player-development-scouting" id="toc-player-development-scouting" class="nav-link" data-scroll-target="#player-development-scouting">4. Player Development &amp; Scouting</a></li>
+  </ul></li>
+  <li><a href="#comparison-with-other-datasets" id="toc-comparison-with-other-datasets" class="nav-link" data-scroll-target="#comparison-with-other-datasets">Comparison with Other Datasets</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links">Links</a></li>
   </ul>
 </nav>
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="YXJzZW5hbA==">arsenal <span class="quarto-category-count">(1)</span></div><div class="category" data-category="YmFzZWJhbGw=">baseball <span class="quarto-category-count">(4)</span></div><div class="category" data-category="YmF0LXRyYWNraW5n">bat-tracking <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ZGF0YS1hbmFseXNpcw==">data-analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="ZGF0YXNldA==">dataset <span class="quarto-category-count">(3)</span></div><div class="category" data-category="amFwYW4=">japan <span class="quarto-category-count">(1)</span></div><div class="category" data-category="a2FnZ2xl">kaggle <span class="quarto-category-count">(4)</span></div><div class="category" data-category="bWxi">mlb <span class="quarto-category-count">(4)</span></div><div class="category" data-category="cGl0Y2hpbmc=">pitching <span class="quarto-category-count">(1)</span></div><div class="category" data-category="c3RhdGNhc3Q=">statcast <span class="quarto-category-count">(2)</span></div></div></div>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-<p>Welcome to my baseball analytics blog! Here you’ll find in-depth analysis of MLB data using Python and Statcast metrics.</p>
-<section id="featured-datasets" class="level2">
-<h2 class="anchored" data-anchor-id="featured-datasets">Featured Datasets</h2>
-<p>All datasets are available on <a href="https://www.kaggle.com/yasunorim/datasets">Kaggle</a> with quality score 10.0/10.</p>
-
+<p>I’ve published a comprehensive MLB Statcast dataset with Bat Tracking metrics for the 2024-2025 seasons on Kaggle.</p>
+<p><strong>Dataset:</strong> <a href="https://www.kaggle.com/datasets/yasunorim/mlb-statcast-bat-tracking-2024-2025">MLB Statcast + Bat Tracking (2024-2025)</a></p>
+<section id="what-is-bat-tracking" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-bat-tracking">What is Bat Tracking?</h2>
+<p>Bat Tracking is a revolutionary measurement technology introduced by MLB in 2024 that quantifies batting mechanics using high-speed cameras. It captures:</p>
+<ul>
+<li><strong>bat_speed</strong>: Bat velocity at contact (mph)</li>
+<li><strong>swing_length</strong>: Path length of the bat to contact (feet) - shorter indicates more efficient mechanics</li>
+<li><strong>swing_path_tilt</strong>: Angle of swing plane (degrees) - positive = uppercut, negative = downward</li>
+<li><strong>attack_angle</strong>: Bat angle relative to pitch trajectory (degrees)</li>
+<li><strong>attack_direction</strong>: Horizontal bat angle (degrees) - indicates pull vs opposite field tendency</li>
+</ul>
+<p>While traditional Statcast focused on <strong>batted ball outcomes</strong> (exit velocity, launch angle), Bat Tracking quantifies <strong>the swing itself</strong> - opening new dimensions for analysis.</p>
+</section>
+<section id="dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h2>
+<section id="basic-information" class="level3">
+<h3 class="anchored" data-anchor-id="basic-information">Basic Information</h3>
+<ul>
+<li><strong>Period</strong>: 2024-2025 Regular Seasons</li>
+<li><strong>Rows</strong>: 1,443,802 pitches (~1.4M)</li>
+<li><strong>Columns</strong>: 118 metrics</li>
+<li><strong>Size</strong>: 808MB</li>
+<li><strong>Bat Tracking Coverage</strong>: ~46.6% of pitches (~672,000 swings)</li>
+</ul>
+</section>
+<section id="key-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="key-metrics">Key Metrics</h3>
+<p><strong>Bat Tracking Metrics</strong> - bat_speed, swing_length, swing_path_tilt - attack_angle, attack_direction - intercept_ball_minus_batter_pos_x/y_inches</p>
+<p><strong>Statcast Metrics (Traditional)</strong> - release_speed, spin_rate, movement (pfx_x, pfx_z) - launch_speed, launch_angle, hit_distance_sc - estimated_woba, estimated_ba_using_speedangle - pitch_type, zone, description, events</p>
+<p><strong>Game Context</strong> - game_date, game_type, inning, count (balls/strikes) - player_name, batter, pitcher, stand, p_throws - home/away score, win expectancy</p>
+<p>All 118 columns have detailed descriptions on Kaggle.</p>
+</section>
+</section>
+<section id="how-to-access" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-access">How to Access</h2>
+<p>The dataset is easily accessible via pybaseball’s <code>statcast()</code> function. Bat Tracking metrics are automatically included.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pybaseball <span class="im">import</span> statcast</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2024 season</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df_2024 <span class="op">=</span> statcast(start_dt<span class="op">=</span><span class="st">'2024-03-20'</span>, end_dt<span class="op">=</span><span class="st">'2024-09-29'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2025 season</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df_2025 <span class="op">=</span> statcast(start_dt<span class="op">=</span><span class="st">'2025-03-27'</span>, end_dt<span class="op">=</span><span class="st">'2025-09-28'</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([df_2024, df_2025], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Check bat tracking coverage</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Bat tracking coverage: </span><span class="sc">{</span>df[<span class="st">'bat_speed'</span>]<span class="sc">.</span>notna()<span class="sc">.</span><span class="bu">sum</span>() <span class="op">/</span> <span class="bu">len</span>(df) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.1f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Data generation notebook is available on Google Colab: <a href="https://colab.research.google.com/github/yasumorishima/kaggle-datasets/blob/main/dataset4_statcast_bat_tracking/generate.ipynb">Generate Dataset</a></p>
+</section>
+<section id="analysis-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-notebook">Analysis Notebook</h2>
+<p>I’ve created a comprehensive analysis notebook demonstrating the dataset’s potential:</p>
+<p><a href="https://www.kaggle.com/code/yasunorim/mlb-bat-tracking-analysis-2024-2025">MLB Bat Tracking Analysis 2024-2025</a></p>
+<p><strong>Analysis Includes:</strong> 1. Bat Tracking coverage analysis 2. Distribution of bat_speed, swing_length, swing_path_tilt 3. Correlation: bat_speed vs launch_speed 4. Top 10 bat speed leaders by player 5. Average bat speed by pitch type 6. Heatmap: attack_angle vs attack_direction</p>
+</section>
+<section id="use-cases" class="level2">
+<h2 class="anchored" data-anchor-id="use-cases">Use Cases</h2>
+<p>This dataset enables various types of analysis:</p>
+<section id="swing-mechanics-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="swing-mechanics-analysis">1. Swing Mechanics Analysis</h3>
+<ul>
+<li>Efficient swing path (swing_length vs bat_speed)</li>
+<li>Uppercut effectiveness (swing_path_tilt vs launch_angle)</li>
+<li>Fastest bat speed rankings</li>
+</ul>
+</section>
+<section id="pitch-swing-relationships" class="level3">
+<h3 class="anchored" data-anchor-id="pitch-swing-relationships">2. Pitch-Swing Relationships</h3>
+<ul>
+<li>Which pitch types generate higher bat_speed?</li>
+<li>Swing tendencies by count</li>
+<li>Relationship between pitch location and attack_direction</li>
+</ul>
+</section>
+<section id="batted-ball-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="batted-ball-outcomes">3. Batted Ball Outcomes</h3>
+<ul>
+<li>bat_speed → launch_speed conversion efficiency</li>
+<li>swing_length impact on batting average</li>
+<li>attack_angle correlation with barrel rate</li>
+</ul>
+</section>
+<section id="player-development-scouting" class="level3">
+<h3 class="anchored" data-anchor-id="player-development-scouting">4. Player Development &amp; Scouting</h3>
+<ul>
+<li>Evaluating draft prospects’ swing efficiency</li>
+<li>Tracking player swing improvements</li>
+<li>Opponent tendency analysis</li>
+</ul>
+</section>
+</section>
+<section id="comparison-with-other-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-with-other-datasets">Comparison with Other Datasets</h2>
+<p>My previous baseball datasets:</p>
+<ol type="1">
+<li><a href="https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast">Japanese MLB Players Statcast (2015-2025)</a>
+<ul>
+<li>25 pitchers + 10 batters detailed data</li>
+</ul></li>
+<li><a href="https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025">MLB Bat Tracking Leaderboard (2024-2025)</a>
+<ul>
+<li>Season-aggregated data for 452 players</li>
+</ul></li>
+<li><a href="https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025">MLB Pitcher Arsenal Evolution (2020-2025)</a>
+<ul>
+<li>Pitch mix changes over time</li>
+</ul></li>
+</ol>
+<p><strong>This Dataset’s Unique Features:</strong> - <strong>Pitch-by-pitch granularity</strong> - Most comprehensive dataset including Bat Tracking metrics - Two full seasons of data</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Bat Tracking adds a new dimension to baseball analysis. Instead of seeing only <strong>results</strong>, we can now quantify the <strong>process</strong> of hitting.</p>
+<p>I hope this dataset contributes to baseball analytics, machine learning research, and sports science.</p>
+</section>
+<section id="links" class="level2">
+<h2 class="anchored" data-anchor-id="links">Links</h2>
+<ul>
+<li><strong>Dataset</strong>: https://www.kaggle.com/datasets/yasunorim/mlb-statcast-bat-tracking-2024-2025</li>
+<li><strong>Analysis Notebook</strong>: https://www.kaggle.com/code/yasunorim/mlb-bat-tracking-analysis-2024-2025</li>
+<li><strong>GitHub Repository</strong>: https://github.com/yasumorishima/kaggle-datasets</li>
+<li><strong>Data Generation</strong>: <a href="https://colab.research.google.com/github/yasumorishima/kaggle-datasets/blob/main/dataset4_statcast_bat_tracking/generate.ipynb">Google Colab</a></li>
+</ul>
 
 
 </section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="a2FnZ2xlJTJDYmFzZWJhbGwlMkNtbGIlMkNkYXRhLWFuYWx5c2lzJTJDc3RhdGNhc3Q=" data-listing-date-sort="1770681600000" data-listing-file-modified-sort="1770669420716" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="491">
-<div class="thumbnail"><a href="./posts/dataset4-mlb-statcast-bat-tracking/index.html" class="no-external">
-
-<img loading="lazy" src="./posts/dataset4-mlb-statcast-bat-tracking/thumbnail.png" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/dataset4-mlb-statcast-bat-tracking/index.html" class="no-external">MLB Statcast + Bat Tracking Dataset (2024-2025)</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('a2FnZ2xl'); return false;">kaggle</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('YmFzZWJhbGw='); return false;">baseball</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bWxi'); return false;">mlb</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZGF0YS1hbmFseXNpcw=='); return false;">data-analysis</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c3RhdGNhc3Q='); return false;">statcast</div>
-
-</div>
-<div class="delink listing-description"><a href="./posts/dataset4-mlb-statcast-bat-tracking/index.html" class="no-external">
-I’ve published a comprehensive MLB Statcast dataset with Bat Tracking metrics for the 2024-2025 seasons on Kaggle.
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/dataset4-mlb-statcast-bat-tracking/index.html" class="no-external">
-<div class="listing-date">
-Feb 10, 2026
-</div>
-<div class="listing-author">
-Yasunori Morishima
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="YmFzZWJhbGwlMkNtbGIlMkNrYWdnbGUlMkNkYXRhc2V0JTJDcGl0Y2hpbmclMkNhcnNlbmFs" data-listing-date-sort="1770595200000" data-listing-file-modified-sort="1770669420716" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="542">
-<div class="thumbnail"><a href="./posts/dataset3-pitcher-arsenal/index.html" class="no-external">
-
-<img loading="lazy" src="https://storage.googleapis.com/kaggle-datasets-images/6275933/10286009/d8dcdcfac01e8b7bfc39869e79eb2f48/dataset-cover.png?t=2026-02-09-11-56-20" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/dataset3-pitcher-arsenal/index.html" class="no-external">MLB Pitcher Arsenal Evolution Dataset (2020-2025)</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('YmFzZWJhbGw='); return false;">baseball</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bWxi'); return false;">mlb</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('a2FnZ2xl'); return false;">kaggle</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZGF0YXNldA=='); return false;">dataset</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('cGl0Y2hpbmc='); return false;">pitching</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('YXJzZW5hbA=='); return false;">arsenal</div>
-
-</div>
-<div class="delink listing-description"><a href="./posts/dataset3-pitcher-arsenal/index.html" class="no-external">
-<p>Comprehensive pitch arsenal metrics tracking the evolution of MLB pitchers’ repertoires from 2020 to 2025</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/dataset3-pitcher-arsenal/index.html" class="no-external">
-<div class="listing-date">
-Feb 9, 2026
-</div>
-<div class="listing-author">
-Yasunori Morishima
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="YmFzZWJhbGwlMkNtbGIlMkNrYWdnbGUlMkNkYXRhc2V0JTJDc3RhdGNhc3QlMkNqYXBhbg==" data-listing-date-sort="1770508800000" data-listing-file-modified-sort="1770669420716" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="625">
-<div class="thumbnail"><a href="./posts/dataset1-japanese-mlb/index.html" class="no-external">
-
-<img loading="lazy" src="https://storage.googleapis.com/kaggle-datasets-images/6250855/10255828/d60e0bb8c2d60d4f93ca35c27f8d2e0f/dataset-cover.png?t=2026-02-08-14-06-46" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/dataset1-japanese-mlb/index.html" class="no-external">Japanese MLB Players Statcast Dataset (2015-2025)</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('YmFzZWJhbGw='); return false;">baseball</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bWxi'); return false;">mlb</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('a2FnZ2xl'); return false;">kaggle</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZGF0YXNldA=='); return false;">dataset</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('c3RhdGNhc3Q='); return false;">statcast</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('amFwYW4='); return false;">japan</div>
-
-</div>
-<div class="delink listing-description"><a href="./posts/dataset1-japanese-mlb/index.html" class="no-external">
-<p>Comprehensive pitch-by-pitch and batted ball data for 34 Japanese MLB players from 2015 to 2025</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/dataset1-japanese-mlb/index.html" class="no-external">
-<div class="listing-date">
-Feb 8, 2026
-</div>
-<div class="listing-author">
-Yasunori Morishima
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="YmFzZWJhbGwlMkNtbGIlMkNrYWdnbGUlMkNkYXRhc2V0JTJDYmF0LXRyYWNraW5n" data-listing-date-sort="1770508800000" data-listing-file-modified-sort="1770669420716" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="3" data-listing-word-count-sort="531">
-<div class="thumbnail"><a href="./posts/dataset2-bat-tracking/index.html" class="no-external">
-
-<img loading="lazy" src="https://storage.googleapis.com/kaggle-datasets-images/6262899/10269697/c7b52e8cd9eff3b2d8cb9c6ea01bde29/dataset-cover.png?t=2026-02-08-23-37-16" class="thumbnail-image">
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/dataset2-bat-tracking/index.html" class="no-external">MLB Bat Tracking Dataset (2024-2025)</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('YmFzZWJhbGw='); return false;">baseball</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('bWxi'); return false;">mlb</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('a2FnZ2xl'); return false;">kaggle</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('ZGF0YXNldA=='); return false;">dataset</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('YmF0LXRyYWNraW5n'); return false;">bat-tracking</div>
-
-</div>
-<div class="delink listing-description"><a href="./posts/dataset2-bat-tracking/index.html" class="no-external">
-<p>Comprehensive bat tracking metrics for MLB batters across 2024 and 2025 seasons</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="./posts/dataset2-bat-tracking/index.html" class="no-external">
-<div class="listing-date">
-Feb 8, 2026
-</div>
-<div class="listing-author">
-Yasunori Morishima
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
