@@ -1,0 +1,23 @@
+name: Publish to DEV.to
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'posts/**/*.qmd'
+      - '.github/workflows/publish-to-devto.yml'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish to DEV.to
+        uses: maxime1992/publish-to-dev.to@v2
+        with:
+          devto_key: ${{ secrets.DEV_TO_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: 'devto/*.md'
+          branch: main
+          conventional_commits: false
