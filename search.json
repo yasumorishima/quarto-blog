@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Baseball data analyst and Kaggle contributor. I create high-quality MLB datasets and write analysis articles using Python and Statcast data."
+  },
+  {
+    "objectID": "about.html#about-me",
+    "href": "about.html#about-me",
+    "title": "About",
+    "section": "",
+    "text": "Baseball data analyst and Kaggle contributor. I create high-quality MLB datasets and write analysis articles using Python and Statcast data."
+  },
+  {
+    "objectID": "about.html#projects",
+    "href": "about.html#projects",
+    "title": "About",
+    "section": "Projects",
+    "text": "Projects\n\nKaggle Datasets: 3 datasets with 10.0/10 quality score\nOpen Source Contributions: Active contributor to pybaseball and other projects\nData Visualization: MLB player performance analysis using Jupyter notebooks"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "MLB Data Analysis Blog",
+    "section": "",
+    "text": "Welcome to my baseball analytics blog! Here you’ll find in-depth analysis of MLB data using Python and Statcast metrics."
+  },
+  {
+    "objectID": "index.html#featured-datasets",
+    "href": "index.html#featured-datasets",
+    "title": "MLB Data Analysis Blog",
+    "section": "Featured Datasets",
+    "text": "Featured Datasets\nAll datasets are available on Kaggle with quality score 10.0/10."
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  }
+]
