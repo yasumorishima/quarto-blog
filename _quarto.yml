@@ -16,9 +16,6 @@ website:
       - text: Kaggle
         href: https://www.kaggle.com/yasunorim
 
-  # RSS有効化（重要！）
-  rss: true
-
 format:
   html:
     theme: cosmo
