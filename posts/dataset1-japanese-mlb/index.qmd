@@ -1,0 +1,230 @@
+---
+title: "Japanese MLB Players Statcast Dataset (2015-2025)"
+description: "Comprehensive pitch-by-pitch and batted ball data for 34 Japanese MLB players from 2015 to 2025"
+author: "Yasunori Morishima"
+date: "2026-02-08"
+categories: [baseball, mlb, kaggle, dataset, statcast, japan]
+image: "https://storage.googleapis.com/kaggle-datasets-images/6250855/10255828/d60e0bb8c2d60d4f93ca35c27f8d2e0f/dataset-cover.png?t=2026-02-08-14-06-46"
+---
+
+## Introduction
+
+I've published a Kaggle dataset containing Statcast data for Japanese MLB players from 2015 to 2025. This dataset provides pitch-by-pitch and batted ball data for analyzing performance trends of Japanese players in Major League Baseball.
+
+**Dataset Link:** https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast
+
+## Dataset Overview
+
+**Japan MLB Pitchers Batters Statcast (2015-2025)**
+
+- **Pitching Data**: 25 pitchers, 118,226 pitches (65MB)
+- **Batting Data**: 10 batters, 56,362 batted balls (31MB)
+- **Player Metadata**: 34 players
+- **Period**: 2015-2025 (since Statcast introduction)
+- **Quality Score**: 10.0/10 on Kaggle
+
+---
+
+## Data Collection Process
+
+### 1. Getting Player IDs with pybaseball
+
+First, retrieve the MLBAM ID for each player:
+
+```python
+from pybaseball import playerid_lookup
+
+# Search by player name
+player = playerid_lookup("ohtani", "shohei")
+print(player)
+# key_mlbam column contains MLBAM ID (660271)
+```
+
+### 2. Fetching Statcast Data
+
+Use the MLBAM ID to retrieve pitch-by-pitch data:
+
+```python
+from pybaseball import statcast_pitcher, statcast_batter
+
+# Pitcher data
+df_pitching = statcast_pitcher(
+    start_dt="2015-03-01",
+    end_dt="2025-02-08",
+    player_id=660271  # Shohei Ohtani
+)
+
+# Batter data
+df_batting = statcast_batter(
+    start_dt="2015-03-01",
+    end_dt="2025-02-08",
+    player_id=660271  # Shohei Ohtani
+)
+```
+
+### 3. Combining Multiple Players
+
+Concatenate data from all players:
+
+```python
+import pandas as pd
+
+pitcher_ids = [660271, 506433, 808967, ...]  # All pitcher IDs
+batting_ids = [660271, 673548, 807799, ...]  # All batter IDs
+
+# Pitching data
+pitching_dfs = []
+for pid in pitcher_ids:
+    df = statcast_pitcher("2015-03-01", "2025-02-08", pid)
+    pitching_dfs.append(df)
+df_all_pitching = pd.concat(pitching_dfs, ignore_index=True)
+
+# Batting data
+batting_dfs = []
+for bid in batting_ids:
+    df = statcast_batter("2015-03-01", "2025-02-08", bid)
+    batting_dfs.append(df)
+df_all_batting = pd.concat(batting_dfs, ignore_index=True)
+```
+
+---
+
+## Dataset Contents
+
+### `japanese_mlb_pitching.csv` (Pitching Data)
+
+Pitch-by-pitch data with key columns:
+
+| Column | Description |
+|---|---|
+| `pitcher` | Pitcher's MLBAM ID |
+| `game_date` | Game date |
+| `pitch_type` | Pitch type (FF, SL, CU, CH, SI, etc.) |
+| `release_speed` | Release velocity (mph) |
+| `release_pos_x`, `release_pos_y`, `release_pos_z` | Release point coordinates |
+| `pfx_x`, `pfx_z` | Movement (feet, gravity-adjusted) |
+| `release_spin_rate` | Spin rate (rpm) |
+| `events` | Batted ball outcome (single, strikeout, etc.) |
+| `game_type` | R=Regular season, S=Spring, F/D/L/W=Postseason |
+
+### `japanese_mlb_batting.csv` (Batting Data)
+
+Batted ball data with key columns:
+
+| Column | Description |
+|---|---|
+| `batter` | Batter's MLBAM ID |
+| `launch_speed` | Exit velocity (mph) |
+| `launch_angle` | Launch angle (degrees) |
+| `hit_distance_sc` | Hit distance (feet) |
+| `estimated_ba_using_speedangle` | Expected batting average (xBA) |
+| `estimated_woba_using_speedangle` | Expected weighted on-base average (xwOBA) |
+| `events` | Batted ball outcome |
+| `game_type` | Game type |
+
+### `players.csv` (Player Metadata)
+
+| Column | Description |
+|---|---|
+| `mlbam_id` | MLBAM ID |
+| `player_name` | Player name |
+| `position` | pitcher / batter |
+
+---
+
+## Usage in Kaggle Notebooks
+
+### 1. Add Dataset to kernel-metadata.json
+
+```json
+{
+  "id": "your-username/your-notebook-slug",
+  "title": "Your Notebook Title",
+  "code_file": "your-notebook.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "false",
+  "enable_gpu": "false",
+  "enable_tpu": "false",
+  "enable_internet": "false",
+  "dataset_sources": ["yasunorim/japan-mlb-pitchers-batters-statcast"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
+```
+
+### 2. Load Data in Notebook
+
+```python
+import pandas as pd
+
+# Pitching data
+df_pitching = pd.read_csv('/kaggle/input/japan-mlb-pitchers-batters-statcast/japanese_mlb_pitching.csv')
+
+# Batting data
+df_batting = pd.read_csv('/kaggle/input/japan-mlb-pitchers-batters-statcast/japanese_mlb_batting.csv')
+
+# Player metadata
+df_players = pd.read_csv('/kaggle/input/japan-mlb-pitchers-batters-statcast/players.csv')
+
+print(f'Pitching data: {len(df_pitching)} records')
+print(f'Batting data: {len(df_batting)} records')
+```
+
+---
+
+## Analysis Examples
+
+### SQL Queries with DuckDB
+
+```python
+import pandas as pd
+import duckdb
+
+df = pd.read_csv("japanese_mlb_pitching.csv")
+con = duckdb.connect()
+
+# Yu Darvish (MLBAM ID: 506433) regular season data
+df_darvish = con.execute("""
+    SELECT game_year, pitch_type, COUNT(*) as count,
+           AVG(release_speed) as avg_speed,
+           AVG(release_spin_rate) as avg_spin
+    FROM df
+    WHERE pitcher = 506433 AND game_type = 'R'
+    GROUP BY game_year, pitch_type
+    ORDER BY game_year, count DESC
+""").df()
+```
+
+### Batted Ball Visualization
+
+```python
+import matplotlib.pyplot as plt
+
+df_batting = pd.read_csv("japanese_mlb_batting.csv")
+df_ohtani = df_batting[df_batting["batter"] == 660271]
+
+plt.scatter(df_ohtani["launch_angle"], df_ohtani["launch_speed"], alpha=0.5)
+plt.xlabel("Launch Angle (degrees)")
+plt.ylabel("Launch Speed (mph)")
+plt.title("Batted Ball Profile - Shohei Ohtani")
+plt.show()
+```
+
+---
+
+## Analysis Notebooks Using This Dataset
+
+1. [Yu Darvish Pitching Evolution (2021-2025)](https://www.kaggle.com/code/yasunorim/darvish-pitching-evolution)
+2. [Shota Imanaga: Rookie to Sophomore Changes (2024-2025)](https://www.kaggle.com/code/yasunorim/imanaga-rookie-to-sophomore-pitching)
+3. [Kodai Senga's "Ghost Fork" Analysis (2023-2025)](https://www.kaggle.com/code/yasunorim/senga-ghost-fork-analysis-2023-2025)
+4. [Yusei Kikuchi's Slider Evolution (2019-2025)](https://www.kaggle.com/code/yasunorim/kikuchi-slider-revolution-2019-2025)
+
+---
+
+## Links
+
+- **Dataset**: https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast
+- **GitHub Repository**: https://github.com/yasumorishima/kaggle-datasets
+- **Analysis Notebooks (GitHub)**: https://github.com/yasumorishima/mlb-statcast-visualization
