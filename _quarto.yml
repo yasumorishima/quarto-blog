@@ -1,5 +1,9 @@
 project:
   type: website
+  render:
+    - "*.qmd"
+    - "posts/**/*.qmd"
+    - "!devto/"
 
 website:
   title: "MLB Data Analysis Blog"
