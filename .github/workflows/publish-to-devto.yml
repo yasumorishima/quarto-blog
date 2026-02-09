@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'posts/**/*.qmd'
+      - 'devto/**/*.md'
       - '.github/workflows/publish-to-devto.yml'
 
 jobs:
@@ -13,12 +13,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Publish to DEV.to
-        uses: sinedied/publish-devto@v2
-        with:
-          devto_key: ${{ secrets.DEV_TO_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: 'devto/**/*.md'
-          branch: main
-          conventional_commits: false
-          dry_run: false
+      - name: Publish articles to DEV.to
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
+        run: |
+          for file in devto/*.md; do
+            echo "Processing $file"
+
+            # Extract frontmatter and content
+            title=$(sed -n 's/^title: //p' "$file")
+            description=$(sed -n 's/^description: //p' "$file")
+            tags=$(sed -n 's/^tags: //p' "$file")
+            canonical_url=$(sed -n 's/^canonical_url: //p' "$file")
+
+            # Remove frontmatter to get body
+            body=$(sed '1,/^---$/d; /^---$/,$d' "$file")
+
+            # Create JSON payload
+            json_payload=$(jq -n \
+              --arg title "$title" \
+              --arg body "$body" \
+              --arg tags "$tags" \
+              --arg canonical "$canonical_url" \
+              '{article: {title: $title, body_markdown: $body, tags: ($tags | split(", ")), canonical_url: $canonical, published: true}}')
+
+            # Post to DEV.to API
+            response=$(curl -X POST https://dev.to/api/articles \
+              -H "Content-Type: application/json" \
+              -H "api-key: $DEVTO_API_KEY" \
+              -d "$json_payload")
+
+            echo "Response: $response"
+          done
