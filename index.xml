@@ -12,47 +12,1545 @@
 <generator>quarto-1.8.27</generator>
 <lastBuildDate>Mon, 09 Feb 2026 00:00:00 GMT</lastBuildDate>
 <item>
-  <title>Post With Code</title>
-  <dc:creator>Harlow Malloc</dc:creator>
-  <link>https://yasumorishima.github.io/quarto-blog/posts/post-with-code/</link>
+  <title>MLB Pitcher Arsenal Evolution Dataset (2020-2025)</title>
+  <dc:creator>Yasunori Morishima</dc:creator>
+  <link>https://yasumorishima.github.io/quarto-blog/posts/dataset3-pitcher-arsenal/</link>
   <description><![CDATA[ 
 
 
 
 
 
-<p>This is a post with executable code.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>I’ve published a Kaggle dataset that tracks the year-over-year evolution of MLB pitchers’ arsenals from 2020 to 2025. This dataset enables analysis of how pitchers adjust their pitch mix, velocity, and spin rates over time.</p>
+<p><strong>Dataset Link:</strong> https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025</p>
+</section>
+<section id="dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h2>
+<p>This dataset provides pitch-by-pitch aggregated metrics for MLB pitchers across six seasons (2020-2025).</p>
+<section id="basic-information" class="level3">
+<h3 class="anchored" data-anchor-id="basic-information">Basic Information</h3>
+<ul>
+<li><strong>Period</strong>: 2020-2025 seasons (6 seasons)</li>
+<li><strong>Rows</strong>: 4,253 rows (pitcher × season combinations)</li>
+<li><strong>Columns</strong>: 111 columns</li>
+<li><strong>Format</strong>: Wide format (1 row = 1 pitcher × 1 season)</li>
+<li><strong>Filter</strong>: Only pitchers with 100+ pitches in a season</li>
+<li><strong>Quality Score</strong>: 10.0/10 on Kaggle</li>
+</ul>
+</section>
+<section id="data-source" class="level3">
+<h3 class="anchored" data-anchor-id="data-source">Data Source</h3>
+<p>Data is sourced from MLB Advanced Media (Statcast) via the <a href="https://github.com/jldbc/pybaseball">pybaseball</a> library and aggregated by pitcher × season × pitch type.</p>
+<hr>
+</section>
+</section>
+<section id="data-structure" class="level2">
+<h2 class="anchored" data-anchor-id="data-structure">Data Structure</h2>
+<section id="identifier-columns-3-columns" class="level3">
+<h3 class="anchored" data-anchor-id="identifier-columns-3-columns">Identifier Columns (3 columns)</h3>
+<ul>
+<li><code>player_id</code>: MLB player ID</li>
+<li><code>player_name</code>: Player name</li>
+<li><code>season</code>: Season year (2020-2025)</li>
+</ul>
+</section>
+<section id="pitch-metrics-18-pitch-types-6-metrics-108-columns" class="level3">
+<h3 class="anchored" data-anchor-id="pitch-metrics-18-pitch-types-6-metrics-108-columns">Pitch Metrics (18 pitch types × 6 metrics = 108 columns)</h3>
+<p>For each pitch type, the dataset includes 6 metrics:</p>
+<ol type="1">
+<li><strong>usage_pct</strong>: Usage rate (0-100%)</li>
+<li><strong>avg_speed</strong>: Average velocity (mph)</li>
+<li><strong>avg_spin</strong>: Average spin rate (rpm)</li>
+<li><strong>whiff_rate</strong>: Whiff rate (0-1)</li>
+<li><strong>avg_pfx_x</strong>: Average horizontal movement (inches, gravity-adjusted)</li>
+<li><strong>avg_pfx_z</strong>: Average vertical movement (inches, gravity-adjusted)</li>
+</ol>
+</section>
+<section id="pitch-types-18-types" class="level3">
+<h3 class="anchored" data-anchor-id="pitch-types-18-types">Pitch Types (18 types)</h3>
+<p>FF (Four-seam), SI (Sinker), FC (Cutter), SL (Slider), CU (Curve), CH (Changeup), FS (Splitter), KC (Knuckle Curve), FO (Forkball), EP (Eephus), KN (Knuckleball), ST (Sweeper), SV (Slurve), and more.</p>
+<hr>
+</section>
+</section>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<section id="downloading-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="downloading-the-data">Downloading the Data</h3>
+<p>Download the CSV directly from Kaggle:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-2"></span>
+<span id="cb1-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Download via Kaggle API</span></span>
+<span id="cb1-4"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>kaggle datasets download <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>d yasunorim<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>mlb<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>pitcher<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>arsenal<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2020</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2025</span></span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Load data</span></span>
+<span id="cb1-7">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pitcher_arsenal_evolution_2020_2025.csv'</span>)</span></code></pre></div></div>
+</section>
+<section id="analysis-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-notebook">Analysis Notebook</h3>
+<p>A comprehensive analysis notebook is also available:</p>
+<p>https://www.kaggle.com/code/yasunorim/pitcher-arsenal-analysis</p>
+<p>The notebook includes:</p>
+<ul>
+<li>Individual pitcher arsenal trend analysis</li>
+<li>MLB-wide pitch type trends (2020-2025)</li>
+<li>Velocity change analysis</li>
+<li>Correlation heatmaps</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="use-cases" class="level2">
+<h2 class="anchored" data-anchor-id="use-cases">Use Cases</h2>
+<section id="pitcher-arsenal-trend-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="pitcher-arsenal-trend-analysis">1. Pitcher Arsenal Trend Analysis</h3>
+<p>Track year-over-year changes in a specific pitcher’s repertoire:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Yusei Kikuchi's pitch usage evolution</span></span>
+<span id="cb2-2">kikuchi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'player_name'</span>].<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">str</span>.contains(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Kikuchi'</span>, case<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>)]</span>
+<span id="cb2-3">kikuchi.plot(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'season'</span>, y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'SL_usage_pct'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'FF_usage_pct'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'CH_usage_pct'</span>])</span></code></pre></div></div>
+<p>For Kikuchi, slider usage increased from ~20% in 2019 to over 40% in 2022-2025, showing a significant shift in pitch mix strategy.</p>
+</section>
+<section id="injury-recovery-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="injury-recovery-analysis">2. Injury Recovery Analysis</h3>
+<p>Analyze changes in pitch mix and velocity before and after injury:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compare two seasons for a specific pitcher</span></span>
+<span id="cb3-2">pitcher_data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'player_id'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">123456</span>]</span>
+<span id="cb3-3">pitcher_data[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'season'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'FF_avg_speed'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'FF_usage_pct'</span>]]</span></code></pre></div></div>
+</section>
+<section id="mlb-wide-trend-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="mlb-wide-trend-analysis">3. MLB-Wide Trend Analysis</h3>
+<p>Visualize league-wide pitch type trends:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate yearly average usage rates</span></span>
+<span id="cb4-2">yearly_avg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df.groupby(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'season'</span>)[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'FF_usage_pct'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'SI_usage_pct'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'SL_usage_pct'</span>]].mean()</span>
+<span id="cb4-3">yearly_avg.plot(kind<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'line'</span>, marker<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'o'</span>)</span></code></pre></div></div>
+<p>Recent trends show increasing usage of sliders and sweepers across MLB.</p>
+</section>
+<section id="machine-learning-features" class="level3">
+<h3 class="anchored" data-anchor-id="machine-learning-features">4. Machine Learning Features</h3>
+<p>Use arsenal metrics as features for pitcher performance prediction:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate pitch diversity</span></span>
+<span id="cb5-2">df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pitch_diversity'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (df[[col <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> col <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> df.columns <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'usage_pct'</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> col]] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>).<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(axis<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="data-collection-method" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection-method">Data Collection Method</h2>
+<p>The data collection notebook is also available for reproducing the dataset with updated seasons:</p>
+<p>https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025?select=pitcher_arsenal_evolution_2020_2025.ipynb</p>
+<section id="collection-process" class="level3">
+<h3 class="anchored" data-anchor-id="collection-process">Collection Process</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pybaseball <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> statcast_pitcher</span>
+<span id="cb6-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb6-3"></span>
+<span id="cb6-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Example: Collect arsenal data for a pitcher</span></span>
+<span id="cb6-5">pitcher_id <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">660271</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Shohei Ohtani</span></span>
+<span id="cb6-6">season <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2025</span></span>
+<span id="cb6-7"></span>
+<span id="cb6-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Get pitch-by-pitch data</span></span>
+<span id="cb6-9">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> statcast_pitcher(</span>
+<span id="cb6-10">    start_dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>season<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">-03-01"</span>,</span>
+<span id="cb6-11">    end_dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>season<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">-11-30"</span>,</span>
+<span id="cb6-12">    player_id<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>pitcher_id</span>
+<span id="cb6-13">)</span>
+<span id="cb6-14"></span>
+<span id="cb6-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Aggregate by pitch type</span></span>
+<span id="cb6-16">arsenal <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df.groupby(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pitch_type'</span>).agg({</span>
+<span id="cb6-17">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'release_speed'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'mean'</span>,</span>
+<span id="cb6-18">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'release_spin_rate'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'mean'</span>,</span>
+<span id="cb6-19">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pfx_x'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'mean'</span>,</span>
+<span id="cb6-20">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pfx_z'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'mean'</span>,</span>
+<span id="cb6-21">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pitch_type'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'count'</span></span>
+<span id="cb6-22">})</span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="related-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="related-datasets">Related Datasets</h2>
+<p>I’ve published other MLB datasets on Kaggle:</p>
+<ul>
+<li><a href="https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast">Japanese MLB Players Statcast (2015-2025)</a></li>
+<li><a href="https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025">MLB Bat Tracking (2024-2025)</a></li>
+</ul>
+<p>All datasets have a quality score of 10.0/10.</p>
+<hr>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>I hope this dataset is useful for baseball analytics research and machine learning projects. If you have any questions or feedback, feel free to leave a comment or start a discussion on Kaggle!</p>
+<hr>
+</section>
+<section id="links" class="level2">
+<h2 class="anchored" data-anchor-id="links">Links</h2>
+<ul>
+<li><strong>Dataset</strong>: https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025</li>
+<li><strong>Analysis Notebook</strong>: https://www.kaggle.com/code/yasunorim/pitcher-arsenal-analysis</li>
+<li><strong>GitHub Repository</strong>: https://github.com/yasumorishima/kaggle-datasets</li>
+</ul>
 
 
+</section>
 
  ]]></description>
-  <category>news</category>
-  <category>code</category>
-  <category>analysis</category>
-  <guid>https://yasumorishima.github.io/quarto-blog/posts/post-with-code/</guid>
+  <category>baseball</category>
+  <category>mlb</category>
+  <category>kaggle</category>
+  <category>dataset</category>
+  <category>pitching</category>
+  <category>arsenal</category>
+  <guid>https://yasumorishima.github.io/quarto-blog/posts/dataset3-pitcher-arsenal/</guid>
   <pubDate>Mon, 09 Feb 2026 00:00:00 GMT</pubDate>
-  <media:content url="https://yasumorishima.github.io/quarto-blog/posts/post-with-code/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://storage.googleapis.com/kaggle-datasets-images/6275933/10286009/d8dcdcfac01e8b7bfc39869e79eb2f48/dataset-cover.png?t=2026-02-09-11-56-20" medium="image"/>
 </item>
 <item>
-  <title>Welcome To My Blog</title>
-  <dc:creator>Tristan O&#39;Malley</dc:creator>
-  <link>https://yasumorishima.github.io/quarto-blog/posts/welcome/</link>
+  <title>MLB Bat Tracking Dataset (2024-2025)</title>
+  <dc:creator>Yasunori Morishima</dc:creator>
+  <link>https://yasumorishima.github.io/quarto-blog/posts/dataset2-bat-tracking/</link>
   <description><![CDATA[ 
 
 
 
 
 
-<p>This is the first post in a Quarto blog. Welcome!</p>
-<p><img src="https://yasumorishima.github.io/quarto-blog/posts/welcome/thumbnail.jpg" class="img-fluid"></p>
-<p>Since this post doesn’t specify an explicit <code>image</code>, the first image in the post will be used in the listing page of posts.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>I’ve published a Kaggle dataset containing MLB Bat Tracking metrics for the 2024 and 2025 seasons. This dataset provides swing speed, attack angle, and other bat tracking statistics that were introduced by MLB in 2024.</p>
+<p><strong>Dataset Link:</strong> https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025</p>
+</section>
+<section id="dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h2>
+<p><strong>MLB Bat Tracking (2024-2025)</strong></p>
+<ul>
+<li><strong>Batters</strong>: 452 batters (226 per season)</li>
+<li><strong>Columns</strong>: 19 columns</li>
+<li><strong>Seasons</strong>: 2024, 2025</li>
+<li><strong>Source</strong>: Baseball Savant (directly accessed, not via pybaseball)</li>
+<li><strong>Quality Score</strong>: 10.0/10 on Kaggle</li>
+</ul>
+<hr>
+</section>
+<section id="what-is-bat-tracking" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-bat-tracking">What is Bat Tracking?</h2>
+<p>Bat Tracking is a new technology introduced by MLB in 2024 that measures swing metrics using high-speed cameras. It provides insights into swing mechanics that were previously unavailable.</p>
+<section id="key-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="key-metrics">Key Metrics</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bat_speed</code></td>
+<td>Swing speed at contact (mph)</td>
+</tr>
+<tr class="even">
+<td><code>swing_length</code></td>
+<td>Length of swing path (feet)</td>
+</tr>
+<tr class="odd">
+<td><code>squared_up_rate</code></td>
+<td>Rate of optimal bat-ball contact (0-1)</td>
+</tr>
+<tr class="even">
+<td><code>attack_angle</code></td>
+<td>Swing plane angle (degrees)</td>
+</tr>
+<tr class="odd">
+<td><code>blast_avg</code></td>
+<td>Percentage of swings with both high speed and optimal contact</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="data-collection" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection">Data Collection</h2>
+<p>This dataset was collected directly from Baseball Savant using custom scraping, as pybaseball does not yet support bat tracking data.</p>
+<section id="data-source" class="level3">
+<h3 class="anchored" data-anchor-id="data-source">Data Source</h3>
+<p>Baseball Savant Leaderboard: <a href="https://baseballsavant.mlb.com/leaderboard/bat-tracking">Bat Tracking Stats</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> requests</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> bs4 <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> BeautifulSoup</span>
+<span id="cb1-4"></span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Example: Fetching 2024 bat tracking data</span></span>
+<span id="cb1-6">url <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"https://baseballsavant.mlb.com/leaderboard/bat-tracking?year=2024"</span></span>
+<span id="cb1-7">response <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> requests.get(url)</span>
+<span id="cb1-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Parse HTML and extract table data</span></span>
+<span id="cb1-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># (Full implementation available in the dataset repository)</span></span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="dataset-schema" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-schema">Dataset Schema</h2>
+<section id="main-columns" class="level3">
+<h3 class="anchored" data-anchor-id="main-columns">Main Columns</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>year</code></td>
+<td>int</td>
+<td>Season year (2024 or 2025)</td>
+</tr>
+<tr class="even">
+<td><code>player_name</code></td>
+<td>str</td>
+<td>Player name</td>
+</tr>
+<tr class="odd">
+<td><code>player_id</code></td>
+<td>int</td>
+<td>MLBAM player ID</td>
+</tr>
+<tr class="even">
+<td><code>bat_speed</code></td>
+<td>float</td>
+<td>Average bat speed (mph)</td>
+</tr>
+<tr class="odd">
+<td><code>swing_length</code></td>
+<td>float</td>
+<td>Average swing length (feet)</td>
+</tr>
+<tr class="even">
+<td><code>squared_up_rate</code></td>
+<td>float</td>
+<td>Rate of squared-up contact (0-100%)</td>
+</tr>
+<tr class="odd">
+<td><code>attack_angle</code></td>
+<td>float</td>
+<td>Average attack angle (degrees)</td>
+</tr>
+<tr class="even">
+<td><code>blast_avg</code></td>
+<td>float</td>
+<td>BLAST score (0-100)</td>
+</tr>
+<tr class="odd">
+<td><code>fast_swing_rate</code></td>
+<td>float</td>
+<td>Percentage of fast swings (0-100%)</td>
+</tr>
+<tr class="even">
+<td><code>swords_rate</code></td>
+<td>float</td>
+<td>Percentage of swings-and-misses on pitches in zone (0-100%)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="usage-in-kaggle-notebooks" class="level2">
+<h2 class="anchored" data-anchor-id="usage-in-kaggle-notebooks">Usage in Kaggle Notebooks</h2>
+<section id="loading-the-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="loading-the-dataset">Loading the Dataset</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Load bat tracking data</span></span>
+<span id="cb2-4">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'/kaggle/input/mlb-bat-tracking-2024-2025/bat_tracking_2024_2025.csv'</span>)</span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Total records: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(df)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb2-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Seasons: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>unique()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>)</span>
+<span id="cb2-8"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Average bat speed: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bat_speed'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>mean()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> mph"</span>)</span></code></pre></div></div>
+</section>
+<section id="year-over-year-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="year-over-year-comparison">Year-over-Year Comparison</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb3-2"></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compare bat speed distribution between seasons</span></span>
+<span id="cb3-4">df_2024 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2024</span>]</span>
+<span id="cb3-5">df_2025 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2025</span>]</span>
+<span id="cb3-6"></span>
+<span id="cb3-7">plt.hist(df_2024[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bat_speed'</span>], alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2024'</span>, bins<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>)</span>
+<span id="cb3-8">plt.hist(df_2025[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bat_speed'</span>], alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025'</span>, bins<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20</span>)</span>
+<span id="cb3-9">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Bat Speed (mph)'</span>)</span>
+<span id="cb3-10">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Frequency'</span>)</span>
+<span id="cb3-11">plt.legend()</span>
+<span id="cb3-12">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Bat Speed Distribution: 2024 vs 2025'</span>)</span>
+<span id="cb3-13">plt.show()</span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="analysis-examples" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-examples">Analysis Examples</h2>
+<section id="top-performers-by-bat-speed" class="level3">
+<h3 class="anchored" data-anchor-id="top-performers-by-bat-speed">Top Performers by Bat Speed</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Top 10 fastest bat speeds in 2025</span></span>
+<span id="cb4-2">top_bat_speed <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2025</span>].nlargest(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bat_speed'</span>)[</span>
+<span id="cb4-3">    [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'player_name'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bat_speed'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'squared_up_rate'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'attack_angle'</span>]</span>
+<span id="cb4-4">]</span>
+<span id="cb4-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(top_bat_speed)</span></code></pre></div></div>
+</section>
+<section id="squared-up-rate-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="squared-up-rate-analysis">Squared-Up Rate Analysis</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> seaborn <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> sns</span>
+<span id="cb5-2"></span>
+<span id="cb5-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Relationship between bat speed and squared-up rate</span></span>
+<span id="cb5-4">sns.scatterplot(data<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>df, x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bat_speed'</span>, y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'squared_up_rate'</span>, hue<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb5-5">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Bat Speed (mph)'</span>)</span>
+<span id="cb5-6">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Squared-Up Rate (%)'</span>)</span>
+<span id="cb5-7">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Bat Speed vs Squared-Up Rate'</span>)</span>
+<span id="cb5-8">plt.show()</span></code></pre></div></div>
+</section>
+<section id="attack-angle-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="attack-angle-distribution">Attack Angle Distribution</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Distribution of attack angles</span></span>
+<span id="cb6-2">plt.hist(df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'attack_angle'</span>], bins<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'black'</span>)</span>
+<span id="cb6-3">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Attack Angle (degrees)'</span>)</span>
+<span id="cb6-4">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Count'</span>)</span>
+<span id="cb6-5">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Attack Angle Distribution (2024-2025)'</span>)</span>
+<span id="cb6-6">plt.axvline(df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'attack_angle'</span>].mean(), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Mean'</span>)</span>
+<span id="cb6-7">plt.legend()</span>
+<span id="cb6-8">plt.show()</span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="analysis-notebook" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-notebook">Analysis Notebook</h2>
+<p>A full analysis notebook demonstrating the use of this dataset:</p>
+<p><a href="https://www.kaggle.com/code/yasunorim/bat-tracking-japanese-mlb-batters-2024-2025">MLB Bat Tracking Analysis (2024-2025)</a></p>
+<hr>
+</section>
+<section id="insights-from-bat-tracking-data" class="level2">
+<h2 class="anchored" data-anchor-id="insights-from-bat-tracking-data">Insights from Bat Tracking Data</h2>
+<section id="what-makes-a-good-hitter" class="level3">
+<h3 class="anchored" data-anchor-id="what-makes-a-good-hitter">What Makes a Good Hitter?</h3>
+<p>Bat tracking data reveals that elite hitters typically have:</p>
+<ul>
+<li><strong>High bat speed</strong> (75+ mph)</li>
+<li><strong>High squared-up rate</strong> (30%+)</li>
+<li><strong>Optimal attack angle</strong> (10-20 degrees for most hitters)</li>
+<li><strong>Short swing length</strong> (Efficient swing mechanics)</li>
+</ul>
+</section>
+<section id="comparing-swing-profiles" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-swing-profiles">Comparing Swing Profiles</h3>
+<p>Different player types show distinct swing profiles:</p>
+<ul>
+<li><strong>Power hitters</strong>: High bat speed, steep attack angle</li>
+<li><strong>Contact hitters</strong>: Lower swing length, high squared-up rate</li>
+<li><strong>Speed-focused players</strong>: Fast swing rate, shallow attack angle</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="links" class="level2">
+<h2 class="anchored" data-anchor-id="links">Links</h2>
+<ul>
+<li><strong>Dataset</strong>: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025</li>
+<li><strong>GitHub Repository</strong>: https://github.com/yasumorishima/kaggle-datasets</li>
+<li><strong>Baseball Savant</strong>: https://baseballsavant.mlb.com/leaderboard/bat-tracking</li>
+</ul>
 
 
+</section>
 
  ]]></description>
-  <category>news</category>
-  <guid>https://yasumorishima.github.io/quarto-blog/posts/welcome/</guid>
-  <pubDate>Fri, 06 Feb 2026 00:00:00 GMT</pubDate>
+  <category>baseball</category>
+  <category>mlb</category>
+  <category>kaggle</category>
+  <category>dataset</category>
+  <category>bat-tracking</category>
+  <guid>https://yasumorishima.github.io/quarto-blog/posts/dataset2-bat-tracking/</guid>
+  <pubDate>Sun, 08 Feb 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://storage.googleapis.com/kaggle-datasets-images/6262899/10269697/c7b52e8cd9eff3b2d8cb9c6ea01bde29/dataset-cover.png?t=2026-02-08-23-37-16" medium="image"/>
+</item>
+<item>
+  <title>Japanese MLB Players Statcast Dataset (2015-2025)</title>
+  <dc:creator>Yasunori Morishima</dc:creator>
+  <link>https://yasumorishima.github.io/quarto-blog/posts/dataset1-japanese-mlb/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>I’ve published a Kaggle dataset containing Statcast data for Japanese MLB players from 2015 to 2025. This dataset provides pitch-by-pitch and batted ball data for analyzing performance trends of Japanese players in Major League Baseball.</p>
+<p><strong>Dataset Link:</strong> https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast</p>
+</section>
+<section id="dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h2>
+<p><strong>Japan MLB Pitchers Batters Statcast (2015-2025)</strong></p>
+<ul>
+<li><strong>Pitching Data</strong>: 25 pitchers, 118,226 pitches (65MB)</li>
+<li><strong>Batting Data</strong>: 10 batters, 56,362 batted balls (31MB)</li>
+<li><strong>Player Metadata</strong>: 34 players</li>
+<li><strong>Period</strong>: 2015-2025 (since Statcast introduction)</li>
+<li><strong>Quality Score</strong>: 10.0/10 on Kaggle</li>
+</ul>
+<hr>
+</section>
+<section id="data-collection-process" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection-process">Data Collection Process</h2>
+<section id="getting-player-ids-with-pybaseball" class="level3">
+<h3 class="anchored" data-anchor-id="getting-player-ids-with-pybaseball">1. Getting Player IDs with pybaseball</h3>
+<p>First, retrieve the MLBAM ID for each player:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pybaseball <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> playerid_lookup</span>
+<span id="cb1-2"></span>
+<span id="cb1-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Search by player name</span></span>
+<span id="cb1-4">player <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> playerid_lookup(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ohtani"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"shohei"</span>)</span>
+<span id="cb1-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(player)</span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># key_mlbam column contains MLBAM ID (660271)</span></span></code></pre></div></div>
+</section>
+<section id="fetching-statcast-data" class="level3">
+<h3 class="anchored" data-anchor-id="fetching-statcast-data">2. Fetching Statcast Data</h3>
+<p>Use the MLBAM ID to retrieve pitch-by-pitch data:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pybaseball <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> statcast_pitcher, statcast_batter</span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Pitcher data</span></span>
+<span id="cb2-4">df_pitching <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> statcast_pitcher(</span>
+<span id="cb2-5">    start_dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2015-03-01"</span>,</span>
+<span id="cb2-6">    end_dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-02-08"</span>,</span>
+<span id="cb2-7">    player_id<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">660271</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Shohei Ohtani</span></span>
+<span id="cb2-8">)</span>
+<span id="cb2-9"></span>
+<span id="cb2-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Batter data</span></span>
+<span id="cb2-11">df_batting <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> statcast_batter(</span>
+<span id="cb2-12">    start_dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2015-03-01"</span>,</span>
+<span id="cb2-13">    end_dt<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-02-08"</span>,</span>
+<span id="cb2-14">    player_id<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">660271</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Shohei Ohtani</span></span>
+<span id="cb2-15">)</span></code></pre></div></div>
+</section>
+<section id="combining-multiple-players" class="level3">
+<h3 class="anchored" data-anchor-id="combining-multiple-players">3. Combining Multiple Players</h3>
+<p>Concatenate data from all players:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb3-2"></span>
+<span id="cb3-3">pitcher_ids <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">660271</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">506433</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">808967</span>, ...]  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># All pitcher IDs</span></span>
+<span id="cb3-4">batting_ids <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">660271</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">673548</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">807799</span>, ...]  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># All batter IDs</span></span>
+<span id="cb3-5"></span>
+<span id="cb3-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Pitching data</span></span>
+<span id="cb3-7">pitching_dfs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb3-8"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> pid <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> pitcher_ids:</span>
+<span id="cb3-9">    df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> statcast_pitcher(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2015-03-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-02-08"</span>, pid)</span>
+<span id="cb3-10">    pitching_dfs.append(df)</span>
+<span id="cb3-11">df_all_pitching <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.concat(pitching_dfs, ignore_index<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb3-12"></span>
+<span id="cb3-13"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Batting data</span></span>
+<span id="cb3-14">batting_dfs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb3-15"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> bid <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> batting_ids:</span>
+<span id="cb3-16">    df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> statcast_batter(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2015-03-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2025-02-08"</span>, bid)</span>
+<span id="cb3-17">    batting_dfs.append(df)</span>
+<span id="cb3-18">df_all_batting <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.concat(batting_dfs, ignore_index<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="dataset-contents" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-contents">Dataset Contents</h2>
+<section id="japanese_mlb_pitching.csv-pitching-data" class="level3">
+<h3 class="anchored" data-anchor-id="japanese_mlb_pitching.csv-pitching-data"><code>japanese_mlb_pitching.csv</code> (Pitching Data)</h3>
+<p>Pitch-by-pitch data with key columns:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pitcher</code></td>
+<td>Pitcher’s MLBAM ID</td>
+</tr>
+<tr class="even">
+<td><code>game_date</code></td>
+<td>Game date</td>
+</tr>
+<tr class="odd">
+<td><code>pitch_type</code></td>
+<td>Pitch type (FF, SL, CU, CH, SI, etc.)</td>
+</tr>
+<tr class="even">
+<td><code>release_speed</code></td>
+<td>Release velocity (mph)</td>
+</tr>
+<tr class="odd">
+<td><code>release_pos_x</code>, <code>release_pos_y</code>, <code>release_pos_z</code></td>
+<td>Release point coordinates</td>
+</tr>
+<tr class="even">
+<td><code>pfx_x</code>, <code>pfx_z</code></td>
+<td>Movement (feet, gravity-adjusted)</td>
+</tr>
+<tr class="odd">
+<td><code>release_spin_rate</code></td>
+<td>Spin rate (rpm)</td>
+</tr>
+<tr class="even">
+<td><code>events</code></td>
+<td>Batted ball outcome (single, strikeout, etc.)</td>
+</tr>
+<tr class="odd">
+<td><code>game_type</code></td>
+<td>R=Regular season, S=Spring, F/D/L/W=Postseason</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="japanese_mlb_batting.csv-batting-data" class="level3">
+<h3 class="anchored" data-anchor-id="japanese_mlb_batting.csv-batting-data"><code>japanese_mlb_batting.csv</code> (Batting Data)</h3>
+<p>Batted ball data with key columns:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>batter</code></td>
+<td>Batter’s MLBAM ID</td>
+</tr>
+<tr class="even">
+<td><code>launch_speed</code></td>
+<td>Exit velocity (mph)</td>
+</tr>
+<tr class="odd">
+<td><code>launch_angle</code></td>
+<td>Launch angle (degrees)</td>
+</tr>
+<tr class="even">
+<td><code>hit_distance_sc</code></td>
+<td>Hit distance (feet)</td>
+</tr>
+<tr class="odd">
+<td><code>estimated_ba_using_speedangle</code></td>
+<td>Expected batting average (xBA)</td>
+</tr>
+<tr class="even">
+<td><code>estimated_woba_using_speedangle</code></td>
+<td>Expected weighted on-base average (xwOBA)</td>
+</tr>
+<tr class="odd">
+<td><code>events</code></td>
+<td>Batted ball outcome</td>
+</tr>
+<tr class="even">
+<td><code>game_type</code></td>
+<td>Game type</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="players.csv-player-metadata" class="level3">
+<h3 class="anchored" data-anchor-id="players.csv-player-metadata"><code>players.csv</code> (Player Metadata)</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>mlbam_id</code></td>
+<td>MLBAM ID</td>
+</tr>
+<tr class="even">
+<td><code>player_name</code></td>
+<td>Player name</td>
+</tr>
+<tr class="odd">
+<td><code>position</code></td>
+<td>pitcher / batter</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="usage-in-kaggle-notebooks" class="level2">
+<h2 class="anchored" data-anchor-id="usage-in-kaggle-notebooks">Usage in Kaggle Notebooks</h2>
+<section id="add-dataset-to-kernel-metadata.json" class="level3">
+<h3 class="anchored" data-anchor-id="add-dataset-to-kernel-metadata.json">1. Add Dataset to kernel-metadata.json</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span id="cb4-2">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"id"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"your-username/your-notebook-slug"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-3">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"title"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Your Notebook Title"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-4">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"code_file"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"your-notebook.ipynb"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-5">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"language"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"python"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-6">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"kernel_type"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"notebook"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-7">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"is_private"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"false"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-8">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"enable_gpu"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"false"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-9">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"enable_tpu"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"false"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-10">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"enable_internet"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"false"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-11">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"dataset_sources"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">[</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"yasunorim/japan-mlb-pitchers-batters-statcast"</span><span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">]</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-12">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"competition_sources"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">[]</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-13">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"kernel_sources"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">[]</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">,</span></span>
+<span id="cb4-14">  <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">"model_sources"</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">:</span> <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">[]</span></span>
+<span id="cb4-15"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">}</span></span></code></pre></div></div>
+</section>
+<section id="load-data-in-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="load-data-in-notebook">2. Load Data in Notebook</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb5-2"></span>
+<span id="cb5-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Pitching data</span></span>
+<span id="cb5-4">df_pitching <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'/kaggle/input/japan-mlb-pitchers-batters-statcast/japanese_mlb_pitching.csv'</span>)</span>
+<span id="cb5-5"></span>
+<span id="cb5-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Batting data</span></span>
+<span id="cb5-7">df_batting <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'/kaggle/input/japan-mlb-pitchers-batters-statcast/japanese_mlb_batting.csv'</span>)</span>
+<span id="cb5-8"></span>
+<span id="cb5-9"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Player metadata</span></span>
+<span id="cb5-10">df_players <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'/kaggle/input/japan-mlb-pitchers-batters-statcast/players.csv'</span>)</span>
+<span id="cb5-11"></span>
+<span id="cb5-12"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Pitching data: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(df_pitching)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> records'</span>)</span>
+<span id="cb5-13"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Batting data: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(df_batting)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> records'</span>)</span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="analysis-examples" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-examples">Analysis Examples</h2>
+<section id="sql-queries-with-duckdb" class="level3">
+<h3 class="anchored" data-anchor-id="sql-queries-with-duckdb">SQL Queries with DuckDB</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb6-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> duckdb</span>
+<span id="cb6-3"></span>
+<span id="cb6-4">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"japanese_mlb_pitching.csv"</span>)</span>
+<span id="cb6-5">con <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> duckdb.<span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">connect</span>()</span>
+<span id="cb6-6"></span>
+<span id="cb6-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Yu Darvish (MLBAM ID: 506433) regular season data</span></span>
+<span id="cb6-8">df_darvish <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> con.execute(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"""</span></span>
+<span id="cb6-9"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    SELECT game_year, pitch_type, COUNT(*) as count,</span></span>
+<span id="cb6-10"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">           AVG(release_speed) as avg_speed,</span></span>
+<span id="cb6-11"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">           AVG(release_spin_rate) as avg_spin</span></span>
+<span id="cb6-12"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    FROM df</span></span>
+<span id="cb6-13"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    WHERE pitcher = 506433 AND game_type = 'R'</span></span>
+<span id="cb6-14"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    GROUP BY game_year, pitch_type</span></span>
+<span id="cb6-15"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    ORDER BY game_year, count DESC</span></span>
+<span id="cb6-16"><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"""</span>).df()</span></code></pre></div></div>
+</section>
+<section id="batted-ball-visualization" class="level3">
+<h3 class="anchored" data-anchor-id="batted-ball-visualization">Batted Ball Visualization</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb7-2"></span>
+<span id="cb7-3">df_batting <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.read_csv(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"japanese_mlb_batting.csv"</span>)</span>
+<span id="cb7-4">df_ohtani <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df_batting[df_batting[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"batter"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">660271</span>]</span>
+<span id="cb7-5"></span>
+<span id="cb7-6">plt.scatter(df_ohtani[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"launch_angle"</span>], df_ohtani[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"launch_speed"</span>], alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)</span>
+<span id="cb7-7">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Launch Angle (degrees)"</span>)</span>
+<span id="cb7-8">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Launch Speed (mph)"</span>)</span>
+<span id="cb7-9">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Batted Ball Profile - Shohei Ohtani"</span>)</span>
+<span id="cb7-10">plt.show()</span></code></pre></div></div>
+<hr>
+</section>
+</section>
+<section id="analysis-notebooks-using-this-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-notebooks-using-this-dataset">Analysis Notebooks Using This Dataset</h2>
+<ol type="1">
+<li><a href="https://www.kaggle.com/code/yasunorim/darvish-pitching-evolution">Yu Darvish Pitching Evolution (2021-2025)</a></li>
+<li><a href="https://www.kaggle.com/code/yasunorim/imanaga-rookie-to-sophomore-pitching">Shota Imanaga: Rookie to Sophomore Changes (2024-2025)</a></li>
+<li><a href="https://www.kaggle.com/code/yasunorim/senga-ghost-fork-analysis-2023-2025">Kodai Senga’s “Ghost Fork” Analysis (2023-2025)</a></li>
+<li><a href="https://www.kaggle.com/code/yasunorim/kikuchi-slider-revolution-2019-2025">Yusei Kikuchi’s Slider Evolution (2019-2025)</a></li>
+</ol>
+<hr>
+</section>
+<section id="links" class="level2">
+<h2 class="anchored" data-anchor-id="links">Links</h2>
+<ul>
+<li><strong>Dataset</strong>: https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast</li>
+<li><strong>GitHub Repository</strong>: https://github.com/yasumorishima/kaggle-datasets</li>
+<li><strong>Analysis Notebooks (GitHub)</strong>: https://github.com/yasumorishima/mlb-statcast-visualization</li>
+</ul>
+
+
+</section>
+
+ ]]></description>
+  <category>baseball</category>
+  <category>mlb</category>
+  <category>kaggle</category>
+  <category>dataset</category>
+  <category>statcast</category>
+  <category>japan</category>
+  <guid>https://yasumorishima.github.io/quarto-blog/posts/dataset1-japanese-mlb/</guid>
+  <pubDate>Sun, 08 Feb 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://storage.googleapis.com/kaggle-datasets-images/6250855/10255828/d60e0bb8c2d60d4f93ca35c27f8d2e0f/dataset-cover.png?t=2026-02-08-14-06-46" medium="image"/>
 </item>
 </channel>
 </rss>

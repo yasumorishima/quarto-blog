@@ -21,11 +21,67 @@
     "text": "Projects\n\nKaggle Datasets: 3 datasets with 10.0/10 quality score\nOpen Source Contributions: Active contributor to pybaseball and other projects\nData Visualization: MLB player performance analysis using Jupyter notebooks"
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "objectID": "posts/dataset1-japanese-mlb/index.html",
+    "href": "posts/dataset1-japanese-mlb/index.html",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
     "section": "",
-    "text": "This is a post with executable code."
+    "text": "I’ve published a Kaggle dataset containing Statcast data for Japanese MLB players from 2015 to 2025. This dataset provides pitch-by-pitch and batted ball data for analyzing performance trends of Japanese players in Major League Baseball.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#introduction",
+    "href": "posts/dataset1-japanese-mlb/index.html#introduction",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "",
+    "text": "I’ve published a Kaggle dataset containing Statcast data for Japanese MLB players from 2015 to 2025. This dataset provides pitch-by-pitch and batted ball data for analyzing performance trends of Japanese players in Major League Baseball.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#dataset-overview",
+    "href": "posts/dataset1-japanese-mlb/index.html#dataset-overview",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\nJapan MLB Pitchers Batters Statcast (2015-2025)\n\nPitching Data: 25 pitchers, 118,226 pitches (65MB)\nBatting Data: 10 batters, 56,362 batted balls (31MB)\nPlayer Metadata: 34 players\nPeriod: 2015-2025 (since Statcast introduction)\nQuality Score: 10.0/10 on Kaggle"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#data-collection-process",
+    "href": "posts/dataset1-japanese-mlb/index.html#data-collection-process",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "Data Collection Process",
+    "text": "Data Collection Process\n\n1. Getting Player IDs with pybaseball\nFirst, retrieve the MLBAM ID for each player:\nfrom pybaseball import playerid_lookup\n\n# Search by player name\nplayer = playerid_lookup(\"ohtani\", \"shohei\")\nprint(player)\n# key_mlbam column contains MLBAM ID (660271)\n\n\n2. Fetching Statcast Data\nUse the MLBAM ID to retrieve pitch-by-pitch data:\nfrom pybaseball import statcast_pitcher, statcast_batter\n\n# Pitcher data\ndf_pitching = statcast_pitcher(\n    start_dt=\"2015-03-01\",\n    end_dt=\"2025-02-08\",\n    player_id=660271  # Shohei Ohtani\n)\n\n# Batter data\ndf_batting = statcast_batter(\n    start_dt=\"2015-03-01\",\n    end_dt=\"2025-02-08\",\n    player_id=660271  # Shohei Ohtani\n)\n\n\n3. Combining Multiple Players\nConcatenate data from all players:\nimport pandas as pd\n\npitcher_ids = [660271, 506433, 808967, ...]  # All pitcher IDs\nbatting_ids = [660271, 673548, 807799, ...]  # All batter IDs\n\n# Pitching data\npitching_dfs = []\nfor pid in pitcher_ids:\n    df = statcast_pitcher(\"2015-03-01\", \"2025-02-08\", pid)\n    pitching_dfs.append(df)\ndf_all_pitching = pd.concat(pitching_dfs, ignore_index=True)\n\n# Batting data\nbatting_dfs = []\nfor bid in batting_ids:\n    df = statcast_batter(\"2015-03-01\", \"2025-02-08\", bid)\n    batting_dfs.append(df)\ndf_all_batting = pd.concat(batting_dfs, ignore_index=True)"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#dataset-contents",
+    "href": "posts/dataset1-japanese-mlb/index.html#dataset-contents",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "Dataset Contents",
+    "text": "Dataset Contents\n\njapanese_mlb_pitching.csv (Pitching Data)\nPitch-by-pitch data with key columns:\n\n\n\n\n\n\n\nColumn\nDescription\n\n\n\n\npitcher\nPitcher’s MLBAM ID\n\n\ngame_date\nGame date\n\n\npitch_type\nPitch type (FF, SL, CU, CH, SI, etc.)\n\n\nrelease_speed\nRelease velocity (mph)\n\n\nrelease_pos_x, release_pos_y, release_pos_z\nRelease point coordinates\n\n\npfx_x, pfx_z\nMovement (feet, gravity-adjusted)\n\n\nrelease_spin_rate\nSpin rate (rpm)\n\n\nevents\nBatted ball outcome (single, strikeout, etc.)\n\n\ngame_type\nR=Regular season, S=Spring, F/D/L/W=Postseason\n\n\n\n\n\njapanese_mlb_batting.csv (Batting Data)\nBatted ball data with key columns:\n\n\n\n\n\n\n\nColumn\nDescription\n\n\n\n\nbatter\nBatter’s MLBAM ID\n\n\nlaunch_speed\nExit velocity (mph)\n\n\nlaunch_angle\nLaunch angle (degrees)\n\n\nhit_distance_sc\nHit distance (feet)\n\n\nestimated_ba_using_speedangle\nExpected batting average (xBA)\n\n\nestimated_woba_using_speedangle\nExpected weighted on-base average (xwOBA)\n\n\nevents\nBatted ball outcome\n\n\ngame_type\nGame type\n\n\n\n\n\nplayers.csv (Player Metadata)\n\n\n\nColumn\nDescription\n\n\n\n\nmlbam_id\nMLBAM ID\n\n\nplayer_name\nPlayer name\n\n\nposition\npitcher / batter"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#usage-in-kaggle-notebooks",
+    "href": "posts/dataset1-japanese-mlb/index.html#usage-in-kaggle-notebooks",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "Usage in Kaggle Notebooks",
+    "text": "Usage in Kaggle Notebooks\n\n1. Add Dataset to kernel-metadata.json\n{\n  \"id\": \"your-username/your-notebook-slug\",\n  \"title\": \"Your Notebook Title\",\n  \"code_file\": \"your-notebook.ipynb\",\n  \"language\": \"python\",\n  \"kernel_type\": \"notebook\",\n  \"is_private\": \"false\",\n  \"enable_gpu\": \"false\",\n  \"enable_tpu\": \"false\",\n  \"enable_internet\": \"false\",\n  \"dataset_sources\": [\"yasunorim/japan-mlb-pitchers-batters-statcast\"],\n  \"competition_sources\": [],\n  \"kernel_sources\": [],\n  \"model_sources\": []\n}\n\n\n2. Load Data in Notebook\nimport pandas as pd\n\n# Pitching data\ndf_pitching = pd.read_csv('/kaggle/input/japan-mlb-pitchers-batters-statcast/japanese_mlb_pitching.csv')\n\n# Batting data\ndf_batting = pd.read_csv('/kaggle/input/japan-mlb-pitchers-batters-statcast/japanese_mlb_batting.csv')\n\n# Player metadata\ndf_players = pd.read_csv('/kaggle/input/japan-mlb-pitchers-batters-statcast/players.csv')\n\nprint(f'Pitching data: {len(df_pitching)} records')\nprint(f'Batting data: {len(df_batting)} records')"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#analysis-examples",
+    "href": "posts/dataset1-japanese-mlb/index.html#analysis-examples",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "Analysis Examples",
+    "text": "Analysis Examples\n\nSQL Queries with DuckDB\nimport pandas as pd\nimport duckdb\n\ndf = pd.read_csv(\"japanese_mlb_pitching.csv\")\ncon = duckdb.connect()\n\n# Yu Darvish (MLBAM ID: 506433) regular season data\ndf_darvish = con.execute(\"\"\"\n    SELECT game_year, pitch_type, COUNT(*) as count,\n           AVG(release_speed) as avg_speed,\n           AVG(release_spin_rate) as avg_spin\n    FROM df\n    WHERE pitcher = 506433 AND game_type = 'R'\n    GROUP BY game_year, pitch_type\n    ORDER BY game_year, count DESC\n\"\"\").df()\n\n\nBatted Ball Visualization\nimport matplotlib.pyplot as plt\n\ndf_batting = pd.read_csv(\"japanese_mlb_batting.csv\")\ndf_ohtani = df_batting[df_batting[\"batter\"] == 660271]\n\nplt.scatter(df_ohtani[\"launch_angle\"], df_ohtani[\"launch_speed\"], alpha=0.5)\nplt.xlabel(\"Launch Angle (degrees)\")\nplt.ylabel(\"Launch Speed (mph)\")\nplt.title(\"Batted Ball Profile - Shohei Ohtani\")\nplt.show()"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#analysis-notebooks-using-this-dataset",
+    "href": "posts/dataset1-japanese-mlb/index.html#analysis-notebooks-using-this-dataset",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "Analysis Notebooks Using This Dataset",
+    "text": "Analysis Notebooks Using This Dataset\n\nYu Darvish Pitching Evolution (2021-2025)\nShota Imanaga: Rookie to Sophomore Changes (2024-2025)\nKodai Senga’s “Ghost Fork” Analysis (2023-2025)\nYusei Kikuchi’s Slider Evolution (2019-2025)"
+  },
+  {
+    "objectID": "posts/dataset1-japanese-mlb/index.html#links",
+    "href": "posts/dataset1-japanese-mlb/index.html#links",
+    "title": "Japanese MLB Players Statcast Dataset (2015-2025)",
+    "section": "Links",
+    "text": "Links\n\nDataset: https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast\nGitHub Repository: https://github.com/yasumorishima/kaggle-datasets\nAnalysis Notebooks (GitHub): https://github.com/yasumorishima/mlb-statcast-visualization"
   },
   {
     "objectID": "index.html",
@@ -42,10 +98,150 @@
     "text": "Featured Datasets\nAll datasets are available on Kaggle with quality score 10.0/10."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "posts/dataset2-bat-tracking/index.html",
+    "href": "posts/dataset2-bat-tracking/index.html",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
     "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+    "text": "I’ve published a Kaggle dataset containing MLB Bat Tracking metrics for the 2024 and 2025 seasons. This dataset provides swing speed, attack angle, and other bat tracking statistics that were introduced by MLB in 2024.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#introduction",
+    "href": "posts/dataset2-bat-tracking/index.html#introduction",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "",
+    "text": "I’ve published a Kaggle dataset containing MLB Bat Tracking metrics for the 2024 and 2025 seasons. This dataset provides swing speed, attack angle, and other bat tracking statistics that were introduced by MLB in 2024.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#dataset-overview",
+    "href": "posts/dataset2-bat-tracking/index.html#dataset-overview",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\nMLB Bat Tracking (2024-2025)\n\nBatters: 452 batters (226 per season)\nColumns: 19 columns\nSeasons: 2024, 2025\nSource: Baseball Savant (directly accessed, not via pybaseball)\nQuality Score: 10.0/10 on Kaggle"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#what-is-bat-tracking",
+    "href": "posts/dataset2-bat-tracking/index.html#what-is-bat-tracking",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "What is Bat Tracking?",
+    "text": "What is Bat Tracking?\nBat Tracking is a new technology introduced by MLB in 2024 that measures swing metrics using high-speed cameras. It provides insights into swing mechanics that were previously unavailable.\n\nKey Metrics\n\n\n\n\n\n\n\nMetric\nDescription\n\n\n\n\nbat_speed\nSwing speed at contact (mph)\n\n\nswing_length\nLength of swing path (feet)\n\n\nsquared_up_rate\nRate of optimal bat-ball contact (0-1)\n\n\nattack_angle\nSwing plane angle (degrees)\n\n\nblast_avg\nPercentage of swings with both high speed and optimal contact"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#data-collection",
+    "href": "posts/dataset2-bat-tracking/index.html#data-collection",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Data Collection",
+    "text": "Data Collection\nThis dataset was collected directly from Baseball Savant using custom scraping, as pybaseball does not yet support bat tracking data.\n\nData Source\nBaseball Savant Leaderboard: Bat Tracking Stats\nimport pandas as pd\nimport requests\nfrom bs4 import BeautifulSoup\n\n# Example: Fetching 2024 bat tracking data\nurl = \"https://baseballsavant.mlb.com/leaderboard/bat-tracking?year=2024\"\nresponse = requests.get(url)\n# Parse HTML and extract table data\n# (Full implementation available in the dataset repository)"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#dataset-schema",
+    "href": "posts/dataset2-bat-tracking/index.html#dataset-schema",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Dataset Schema",
+    "text": "Dataset Schema\n\nMain Columns\n\n\n\n\n\n\n\n\nColumn\nType\nDescription\n\n\n\n\nyear\nint\nSeason year (2024 or 2025)\n\n\nplayer_name\nstr\nPlayer name\n\n\nplayer_id\nint\nMLBAM player ID\n\n\nbat_speed\nfloat\nAverage bat speed (mph)\n\n\nswing_length\nfloat\nAverage swing length (feet)\n\n\nsquared_up_rate\nfloat\nRate of squared-up contact (0-100%)\n\n\nattack_angle\nfloat\nAverage attack angle (degrees)\n\n\nblast_avg\nfloat\nBLAST score (0-100)\n\n\nfast_swing_rate\nfloat\nPercentage of fast swings (0-100%)\n\n\nswords_rate\nfloat\nPercentage of swings-and-misses on pitches in zone (0-100%)"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#usage-in-kaggle-notebooks",
+    "href": "posts/dataset2-bat-tracking/index.html#usage-in-kaggle-notebooks",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Usage in Kaggle Notebooks",
+    "text": "Usage in Kaggle Notebooks\n\nLoading the Dataset\nimport pandas as pd\n\n# Load bat tracking data\ndf = pd.read_csv('/kaggle/input/mlb-bat-tracking-2024-2025/bat_tracking_2024_2025.csv')\n\nprint(f\"Total records: {len(df)}\")\nprint(f\"Seasons: {df['year'].unique()}\")\nprint(f\"Average bat speed: {df['bat_speed'].mean():.2f} mph\")\n\n\nYear-over-Year Comparison\nimport matplotlib.pyplot as plt\n\n# Compare bat speed distribution between seasons\ndf_2024 = df[df['year'] == 2024]\ndf_2025 = df[df['year'] == 2025]\n\nplt.hist(df_2024['bat_speed'], alpha=0.5, label='2024', bins=20)\nplt.hist(df_2025['bat_speed'], alpha=0.5, label='2025', bins=20)\nplt.xlabel('Bat Speed (mph)')\nplt.ylabel('Frequency')\nplt.legend()\nplt.title('Bat Speed Distribution: 2024 vs 2025')\nplt.show()"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#analysis-examples",
+    "href": "posts/dataset2-bat-tracking/index.html#analysis-examples",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Analysis Examples",
+    "text": "Analysis Examples\n\nTop Performers by Bat Speed\n# Top 10 fastest bat speeds in 2025\ntop_bat_speed = df[df['year'] == 2025].nlargest(10, 'bat_speed')[\n    ['player_name', 'bat_speed', 'squared_up_rate', 'attack_angle']\n]\nprint(top_bat_speed)\n\n\nSquared-Up Rate Analysis\nimport seaborn as sns\n\n# Relationship between bat speed and squared-up rate\nsns.scatterplot(data=df, x='bat_speed', y='squared_up_rate', hue='year', alpha=0.6)\nplt.xlabel('Bat Speed (mph)')\nplt.ylabel('Squared-Up Rate (%)')\nplt.title('Bat Speed vs Squared-Up Rate')\nplt.show()\n\n\nAttack Angle Distribution\n# Distribution of attack angles\nplt.hist(df['attack_angle'], bins=30, edgecolor='black')\nplt.xlabel('Attack Angle (degrees)')\nplt.ylabel('Count')\nplt.title('Attack Angle Distribution (2024-2025)')\nplt.axvline(df['attack_angle'].mean(), color='red', linestyle='--', label='Mean')\nplt.legend()\nplt.show()"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#analysis-notebook",
+    "href": "posts/dataset2-bat-tracking/index.html#analysis-notebook",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Analysis Notebook",
+    "text": "Analysis Notebook\nA full analysis notebook demonstrating the use of this dataset:\nMLB Bat Tracking Analysis (2024-2025)"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#insights-from-bat-tracking-data",
+    "href": "posts/dataset2-bat-tracking/index.html#insights-from-bat-tracking-data",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Insights from Bat Tracking Data",
+    "text": "Insights from Bat Tracking Data\n\nWhat Makes a Good Hitter?\nBat tracking data reveals that elite hitters typically have:\n\nHigh bat speed (75+ mph)\nHigh squared-up rate (30%+)\nOptimal attack angle (10-20 degrees for most hitters)\nShort swing length (Efficient swing mechanics)\n\n\n\nComparing Swing Profiles\nDifferent player types show distinct swing profiles:\n\nPower hitters: High bat speed, steep attack angle\nContact hitters: Lower swing length, high squared-up rate\nSpeed-focused players: Fast swing rate, shallow attack angle"
+  },
+  {
+    "objectID": "posts/dataset2-bat-tracking/index.html#links",
+    "href": "posts/dataset2-bat-tracking/index.html#links",
+    "title": "MLB Bat Tracking Dataset (2024-2025)",
+    "section": "Links",
+    "text": "Links\n\nDataset: https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025\nGitHub Repository: https://github.com/yasumorishima/kaggle-datasets\nBaseball Savant: https://baseballsavant.mlb.com/leaderboard/bat-tracking"
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html",
+    "href": "posts/dataset3-pitcher-arsenal/index.html",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "",
+    "text": "I’ve published a Kaggle dataset that tracks the year-over-year evolution of MLB pitchers’ arsenals from 2020 to 2025. This dataset enables analysis of how pitchers adjust their pitch mix, velocity, and spin rates over time.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025"
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#introduction",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#introduction",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "",
+    "text": "I’ve published a Kaggle dataset that tracks the year-over-year evolution of MLB pitchers’ arsenals from 2020 to 2025. This dataset enables analysis of how pitchers adjust their pitch mix, velocity, and spin rates over time.\nDataset Link: https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025"
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#dataset-overview",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#dataset-overview",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\nThis dataset provides pitch-by-pitch aggregated metrics for MLB pitchers across six seasons (2020-2025).\n\nBasic Information\n\nPeriod: 2020-2025 seasons (6 seasons)\nRows: 4,253 rows (pitcher × season combinations)\nColumns: 111 columns\nFormat: Wide format (1 row = 1 pitcher × 1 season)\nFilter: Only pitchers with 100+ pitches in a season\nQuality Score: 10.0/10 on Kaggle\n\n\n\nData Source\nData is sourced from MLB Advanced Media (Statcast) via the pybaseball library and aggregated by pitcher × season × pitch type."
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#data-structure",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#data-structure",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Data Structure",
+    "text": "Data Structure\n\nIdentifier Columns (3 columns)\n\nplayer_id: MLB player ID\nplayer_name: Player name\nseason: Season year (2020-2025)\n\n\n\nPitch Metrics (18 pitch types × 6 metrics = 108 columns)\nFor each pitch type, the dataset includes 6 metrics:\n\nusage_pct: Usage rate (0-100%)\navg_speed: Average velocity (mph)\navg_spin: Average spin rate (rpm)\nwhiff_rate: Whiff rate (0-1)\navg_pfx_x: Average horizontal movement (inches, gravity-adjusted)\navg_pfx_z: Average vertical movement (inches, gravity-adjusted)\n\n\n\nPitch Types (18 types)\nFF (Four-seam), SI (Sinker), FC (Cutter), SL (Slider), CU (Curve), CH (Changeup), FS (Splitter), KC (Knuckle Curve), FO (Forkball), EP (Eephus), KN (Knuckleball), ST (Sweeper), SV (Slurve), and more."
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#usage",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#usage",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Usage",
+    "text": "Usage\n\nDownloading the Data\nDownload the CSV directly from Kaggle:\nimport pandas as pd\n\n# Download via Kaggle API\n!kaggle datasets download -d yasunorim/mlb-pitcher-arsenal-2020-2025\n\n# Load data\ndf = pd.read_csv('pitcher_arsenal_evolution_2020_2025.csv')\n\n\nAnalysis Notebook\nA comprehensive analysis notebook is also available:\nhttps://www.kaggle.com/code/yasunorim/pitcher-arsenal-analysis\nThe notebook includes:\n\nIndividual pitcher arsenal trend analysis\nMLB-wide pitch type trends (2020-2025)\nVelocity change analysis\nCorrelation heatmaps"
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#use-cases",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#use-cases",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Use Cases",
+    "text": "Use Cases\n\n1. Pitcher Arsenal Trend Analysis\nTrack year-over-year changes in a specific pitcher’s repertoire:\n# Yusei Kikuchi's pitch usage evolution\nkikuchi = df[df['player_name'].str.contains('Kikuchi', case=False)]\nkikuchi.plot(x='season', y=['SL_usage_pct', 'FF_usage_pct', 'CH_usage_pct'])\nFor Kikuchi, slider usage increased from ~20% in 2019 to over 40% in 2022-2025, showing a significant shift in pitch mix strategy.\n\n\n2. Injury Recovery Analysis\nAnalyze changes in pitch mix and velocity before and after injury:\n# Compare two seasons for a specific pitcher\npitcher_data = df[df['player_id'] == 123456]\npitcher_data[['season', 'FF_avg_speed', 'FF_usage_pct']]\n\n\n3. MLB-Wide Trend Analysis\nVisualize league-wide pitch type trends:\n# Calculate yearly average usage rates\nyearly_avg = df.groupby('season')[['FF_usage_pct', 'SI_usage_pct', 'SL_usage_pct']].mean()\nyearly_avg.plot(kind='line', marker='o')\nRecent trends show increasing usage of sliders and sweepers across MLB.\n\n\n4. Machine Learning Features\nUse arsenal metrics as features for pitcher performance prediction:\n# Calculate pitch diversity\ndf['pitch_diversity'] = (df[[col for col in df.columns if 'usage_pct' in col]] &gt; 5).sum(axis=1)"
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#data-collection-method",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#data-collection-method",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Data Collection Method",
+    "text": "Data Collection Method\nThe data collection notebook is also available for reproducing the dataset with updated seasons:\nhttps://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025?select=pitcher_arsenal_evolution_2020_2025.ipynb\n\nCollection Process\nfrom pybaseball import statcast_pitcher\nimport pandas as pd\n\n# Example: Collect arsenal data for a pitcher\npitcher_id = 660271  # Shohei Ohtani\nseason = 2025\n\n# Get pitch-by-pitch data\ndf = statcast_pitcher(\n    start_dt=f\"{season}-03-01\",\n    end_dt=f\"{season}-11-30\",\n    player_id=pitcher_id\n)\n\n# Aggregate by pitch type\narsenal = df.groupby('pitch_type').agg({\n    'release_speed': 'mean',\n    'release_spin_rate': 'mean',\n    'pfx_x': 'mean',\n    'pfx_z': 'mean',\n    'pitch_type': 'count'\n})"
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#related-datasets",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#related-datasets",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Related Datasets",
+    "text": "Related Datasets\nI’ve published other MLB datasets on Kaggle:\n\nJapanese MLB Players Statcast (2015-2025)\nMLB Bat Tracking (2024-2025)\n\nAll datasets have a quality score of 10.0/10."
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#conclusion",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#conclusion",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Conclusion",
+    "text": "Conclusion\nI hope this dataset is useful for baseball analytics research and machine learning projects. If you have any questions or feedback, feel free to leave a comment or start a discussion on Kaggle!"
+  },
+  {
+    "objectID": "posts/dataset3-pitcher-arsenal/index.html#links",
+    "href": "posts/dataset3-pitcher-arsenal/index.html#links",
+    "title": "MLB Pitcher Arsenal Evolution Dataset (2020-2025)",
+    "section": "Links",
+    "text": "Links\n\nDataset: https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025\nAnalysis Notebook: https://www.kaggle.com/code/yasunorim/pitcher-arsenal-analysis\nGitHub Repository: https://github.com/yasumorishima/kaggle-datasets"
   }
 ]

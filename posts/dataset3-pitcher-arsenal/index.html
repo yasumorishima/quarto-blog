@@ -6,10 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Harlow Malloc">
+<meta name="author" content="Yasunori Morishima">
 <meta name="dcterms.date" content="2026-02-09">
+<meta name="description" content="Comprehensive pitch arsenal metrics tracking the evolution of MLB pitchers’ repertoires from 2020 to 2025">
 
-<title>Post With Code – MLB Data Analysis Blog</title>
+<title>MLB Pitcher Arsenal Evolution Dataset (2020-2025) – MLB Data Analysis Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +22,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -122,11 +158,19 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Post With Code</h1>
-                                <div class="quarto-categories">
-                <div class="quarto-category">news</div>
-                <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
+      <h1 class="title">MLB Pitcher Arsenal Evolution Dataset (2020-2025)</h1>
+                  <div>
+        <div class="description">
+          Comprehensive pitch arsenal metrics tracking the evolution of MLB pitchers’ repertoires from 2020 to 2025
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">baseball</div>
+                <div class="quarto-category">mlb</div>
+                <div class="quarto-category">kaggle</div>
+                <div class="quarto-category">dataset</div>
+                <div class="quarto-category">pitching</div>
+                <div class="quarto-category">arsenal</div>
               </div>
                   </div>
   </div>
@@ -137,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Harlow Malloc </p>
+               <p>Yasunori Morishima </p>
             </div>
     </div>
       
@@ -155,8 +199,44 @@ ul.task-list li input[type="checkbox"] {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#dataset-overview" id="toc-dataset-overview" class="nav-link" data-scroll-target="#dataset-overview">Dataset Overview</a>
+  <ul class="collapse">
+  <li><a href="#basic-information" id="toc-basic-information" class="nav-link" data-scroll-target="#basic-information">Basic Information</a></li>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a></li>
+  </ul></li>
+  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">Data Structure</a>
+  <ul class="collapse">
+  <li><a href="#identifier-columns-3-columns" id="toc-identifier-columns-3-columns" class="nav-link" data-scroll-target="#identifier-columns-3-columns">Identifier Columns (3 columns)</a></li>
+  <li><a href="#pitch-metrics-18-pitch-types-6-metrics-108-columns" id="toc-pitch-metrics-18-pitch-types-6-metrics-108-columns" class="nav-link" data-scroll-target="#pitch-metrics-18-pitch-types-6-metrics-108-columns">Pitch Metrics (18 pitch types × 6 metrics = 108 columns)</a></li>
+  <li><a href="#pitch-types-18-types" id="toc-pitch-types-18-types" class="nav-link" data-scroll-target="#pitch-types-18-types">Pitch Types (18 types)</a></li>
+  </ul></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a>
+  <ul class="collapse">
+  <li><a href="#downloading-the-data" id="toc-downloading-the-data" class="nav-link" data-scroll-target="#downloading-the-data">Downloading the Data</a></li>
+  <li><a href="#analysis-notebook" id="toc-analysis-notebook" class="nav-link" data-scroll-target="#analysis-notebook">Analysis Notebook</a></li>
+  </ul></li>
+  <li><a href="#use-cases" id="toc-use-cases" class="nav-link" data-scroll-target="#use-cases">Use Cases</a>
+  <ul class="collapse">
+  <li><a href="#pitcher-arsenal-trend-analysis" id="toc-pitcher-arsenal-trend-analysis" class="nav-link" data-scroll-target="#pitcher-arsenal-trend-analysis">1. Pitcher Arsenal Trend Analysis</a></li>
+  <li><a href="#injury-recovery-analysis" id="toc-injury-recovery-analysis" class="nav-link" data-scroll-target="#injury-recovery-analysis">2. Injury Recovery Analysis</a></li>
+  <li><a href="#mlb-wide-trend-analysis" id="toc-mlb-wide-trend-analysis" class="nav-link" data-scroll-target="#mlb-wide-trend-analysis">3. MLB-Wide Trend Analysis</a></li>
+  <li><a href="#machine-learning-features" id="toc-machine-learning-features" class="nav-link" data-scroll-target="#machine-learning-features">4. Machine Learning Features</a></li>
+  </ul></li>
+  <li><a href="#data-collection-method" id="toc-data-collection-method" class="nav-link" data-scroll-target="#data-collection-method">Data Collection Method</a>
+  <ul class="collapse">
+  <li><a href="#collection-process" id="toc-collection-process" class="nav-link" data-scroll-target="#collection-process">Collection Process</a></li>
+  </ul></li>
+  <li><a href="#related-datasets" id="toc-related-datasets" class="nav-link" data-scroll-target="#related-datasets">Related Datasets</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links">Links</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -165,9 +245,175 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>This is a post with executable code.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>I’ve published a Kaggle dataset that tracks the year-over-year evolution of MLB pitchers’ arsenals from 2020 to 2025. This dataset enables analysis of how pitchers adjust their pitch mix, velocity, and spin rates over time.</p>
+<p><strong>Dataset Link:</strong> https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025</p>
+</section>
+<section id="dataset-overview" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-overview">Dataset Overview</h2>
+<p>This dataset provides pitch-by-pitch aggregated metrics for MLB pitchers across six seasons (2020-2025).</p>
+<section id="basic-information" class="level3">
+<h3 class="anchored" data-anchor-id="basic-information">Basic Information</h3>
+<ul>
+<li><strong>Period</strong>: 2020-2025 seasons (6 seasons)</li>
+<li><strong>Rows</strong>: 4,253 rows (pitcher × season combinations)</li>
+<li><strong>Columns</strong>: 111 columns</li>
+<li><strong>Format</strong>: Wide format (1 row = 1 pitcher × 1 season)</li>
+<li><strong>Filter</strong>: Only pitchers with 100+ pitches in a season</li>
+<li><strong>Quality Score</strong>: 10.0/10 on Kaggle</li>
+</ul>
+</section>
+<section id="data-source" class="level3">
+<h3 class="anchored" data-anchor-id="data-source">Data Source</h3>
+<p>Data is sourced from MLB Advanced Media (Statcast) via the <a href="https://github.com/jldbc/pybaseball">pybaseball</a> library and aggregated by pitcher × season × pitch type.</p>
+<hr>
+</section>
+</section>
+<section id="data-structure" class="level2">
+<h2 class="anchored" data-anchor-id="data-structure">Data Structure</h2>
+<section id="identifier-columns-3-columns" class="level3">
+<h3 class="anchored" data-anchor-id="identifier-columns-3-columns">Identifier Columns (3 columns)</h3>
+<ul>
+<li><code>player_id</code>: MLB player ID</li>
+<li><code>player_name</code>: Player name</li>
+<li><code>season</code>: Season year (2020-2025)</li>
+</ul>
+</section>
+<section id="pitch-metrics-18-pitch-types-6-metrics-108-columns" class="level3">
+<h3 class="anchored" data-anchor-id="pitch-metrics-18-pitch-types-6-metrics-108-columns">Pitch Metrics (18 pitch types × 6 metrics = 108 columns)</h3>
+<p>For each pitch type, the dataset includes 6 metrics:</p>
+<ol type="1">
+<li><strong>usage_pct</strong>: Usage rate (0-100%)</li>
+<li><strong>avg_speed</strong>: Average velocity (mph)</li>
+<li><strong>avg_spin</strong>: Average spin rate (rpm)</li>
+<li><strong>whiff_rate</strong>: Whiff rate (0-1)</li>
+<li><strong>avg_pfx_x</strong>: Average horizontal movement (inches, gravity-adjusted)</li>
+<li><strong>avg_pfx_z</strong>: Average vertical movement (inches, gravity-adjusted)</li>
+</ol>
+</section>
+<section id="pitch-types-18-types" class="level3">
+<h3 class="anchored" data-anchor-id="pitch-types-18-types">Pitch Types (18 types)</h3>
+<p>FF (Four-seam), SI (Sinker), FC (Cutter), SL (Slider), CU (Curve), CH (Changeup), FS (Splitter), KC (Knuckle Curve), FO (Forkball), EP (Eephus), KN (Knuckleball), ST (Sweeper), SV (Slurve), and more.</p>
+<hr>
+</section>
+</section>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<section id="downloading-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="downloading-the-data">Downloading the Data</h3>
+<p>Download the CSV directly from Kaggle:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Download via Kaggle API</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>kaggle datasets download <span class="op">-</span>d yasunorim<span class="op">/</span>mlb<span class="op">-</span>pitcher<span class="op">-</span>arsenal<span class="op">-</span><span class="dv">2020</span><span class="op">-</span><span class="dv">2025</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'pitcher_arsenal_evolution_2020_2025.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="analysis-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-notebook">Analysis Notebook</h3>
+<p>A comprehensive analysis notebook is also available:</p>
+<p>https://www.kaggle.com/code/yasunorim/pitcher-arsenal-analysis</p>
+<p>The notebook includes:</p>
+<ul>
+<li>Individual pitcher arsenal trend analysis</li>
+<li>MLB-wide pitch type trends (2020-2025)</li>
+<li>Velocity change analysis</li>
+<li>Correlation heatmaps</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="use-cases" class="level2">
+<h2 class="anchored" data-anchor-id="use-cases">Use Cases</h2>
+<section id="pitcher-arsenal-trend-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="pitcher-arsenal-trend-analysis">1. Pitcher Arsenal Trend Analysis</h3>
+<p>Track year-over-year changes in a specific pitcher’s repertoire:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Yusei Kikuchi's pitch usage evolution</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>kikuchi <span class="op">=</span> df[df[<span class="st">'player_name'</span>].<span class="bu">str</span>.contains(<span class="st">'Kikuchi'</span>, case<span class="op">=</span><span class="va">False</span>)]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>kikuchi.plot(x<span class="op">=</span><span class="st">'season'</span>, y<span class="op">=</span>[<span class="st">'SL_usage_pct'</span>, <span class="st">'FF_usage_pct'</span>, <span class="st">'CH_usage_pct'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For Kikuchi, slider usage increased from ~20% in 2019 to over 40% in 2022-2025, showing a significant shift in pitch mix strategy.</p>
+</section>
+<section id="injury-recovery-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="injury-recovery-analysis">2. Injury Recovery Analysis</h3>
+<p>Analyze changes in pitch mix and velocity before and after injury:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare two seasons for a specific pitcher</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pitcher_data <span class="op">=</span> df[df[<span class="st">'player_id'</span>] <span class="op">==</span> <span class="dv">123456</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>pitcher_data[[<span class="st">'season'</span>, <span class="st">'FF_avg_speed'</span>, <span class="st">'FF_usage_pct'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="mlb-wide-trend-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="mlb-wide-trend-analysis">3. MLB-Wide Trend Analysis</h3>
+<p>Visualize league-wide pitch type trends:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate yearly average usage rates</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>yearly_avg <span class="op">=</span> df.groupby(<span class="st">'season'</span>)[[<span class="st">'FF_usage_pct'</span>, <span class="st">'SI_usage_pct'</span>, <span class="st">'SL_usage_pct'</span>]].mean()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>yearly_avg.plot(kind<span class="op">=</span><span class="st">'line'</span>, marker<span class="op">=</span><span class="st">'o'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Recent trends show increasing usage of sliders and sweepers across MLB.</p>
+</section>
+<section id="machine-learning-features" class="level3">
+<h3 class="anchored" data-anchor-id="machine-learning-features">4. Machine Learning Features</h3>
+<p>Use arsenal metrics as features for pitcher performance prediction:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate pitch diversity</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'pitch_diversity'</span>] <span class="op">=</span> (df[[col <span class="cf">for</span> col <span class="kw">in</span> df.columns <span class="cf">if</span> <span class="st">'usage_pct'</span> <span class="kw">in</span> col]] <span class="op">&gt;</span> <span class="dv">5</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="data-collection-method" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection-method">Data Collection Method</h2>
+<p>The data collection notebook is also available for reproducing the dataset with updated seasons:</p>
+<p>https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025?select=pitcher_arsenal_evolution_2020_2025.ipynb</p>
+<section id="collection-process" class="level3">
+<h3 class="anchored" data-anchor-id="collection-process">Collection Process</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pybaseball <span class="im">import</span> statcast_pitcher</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: Collect arsenal data for a pitcher</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>pitcher_id <span class="op">=</span> <span class="dv">660271</span>  <span class="co"># Shohei Ohtani</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>season <span class="op">=</span> <span class="dv">2025</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Get pitch-by-pitch data</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> statcast_pitcher(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    start_dt<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>season<span class="sc">}</span><span class="ss">-03-01"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    end_dt<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>season<span class="sc">}</span><span class="ss">-11-30"</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    player_id<span class="op">=</span>pitcher_id</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate by pitch type</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>arsenal <span class="op">=</span> df.groupby(<span class="st">'pitch_type'</span>).agg({</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'release_speed'</span>: <span class="st">'mean'</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'release_spin_rate'</span>: <span class="st">'mean'</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pfx_x'</span>: <span class="st">'mean'</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pfx_z'</span>: <span class="st">'mean'</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pitch_type'</span>: <span class="st">'count'</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="related-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="related-datasets">Related Datasets</h2>
+<p>I’ve published other MLB datasets on Kaggle:</p>
+<ul>
+<li><a href="https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast">Japanese MLB Players Statcast (2015-2025)</a></li>
+<li><a href="https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025">MLB Bat Tracking (2024-2025)</a></li>
+</ul>
+<p>All datasets have a quality score of 10.0/10.</p>
+<hr>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>I hope this dataset is useful for baseball analytics research and machine learning projects. If you have any questions or feedback, feel free to leave a comment or start a discussion on Kaggle!</p>
+<hr>
+</section>
+<section id="links" class="level2">
+<h2 class="anchored" data-anchor-id="links">Links</h2>
+<ul>
+<li><strong>Dataset</strong>: https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025</li>
+<li><strong>Analysis Notebook</strong>: https://www.kaggle.com/code/yasunorim/pitcher-arsenal-analysis</li>
+<li><strong>GitHub Repository</strong>: https://github.com/yasumorishima/kaggle-datasets</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
