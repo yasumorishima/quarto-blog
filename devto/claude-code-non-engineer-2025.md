@@ -54,10 +54,10 @@ Finding where to fix something, verifying the fix is appropriate, writing the PR
 
 I created and published four Kaggle datasets on baseball (MLB).
 
-- Dataset 1: Japanese MLB Players Statcast (2015-2025)
-- Dataset 2: MLB Bat Tracking (2024-2025)
-- Dataset 3: MLB Pitcher Arsenal Evolution (2020-2025)
-- Dataset 4: MLB Statcast + Bat Tracking (2024-2025) (~1.44M rows)
+- [Dataset 1: Japanese MLB Players Statcast (2015-2025)](https://www.kaggle.com/datasets/yasunorim/japan-mlb-pitchers-batters-statcast)
+- [Dataset 2: MLB Bat Tracking (2024-2025)](https://www.kaggle.com/datasets/yasunorim/mlb-bat-tracking-2024-2025)
+- [Dataset 3: MLB Pitcher Arsenal Evolution (2020-2025)](https://www.kaggle.com/datasets/yasunorim/mlb-pitcher-arsenal-2020-2025)
+- [Dataset 4: MLB Statcast + Bat Tracking (2024-2025)](https://www.kaggle.com/datasets/yasunorim/mlb-statcast-bat-tracking-2024-2025) (~1.44M rows)
 
 Data collection scripts, bulk column description input scripts, analysis notebooks, and blog posts — all of it was done alongside Claude Code.
 
