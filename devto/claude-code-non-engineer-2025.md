@@ -45,9 +45,9 @@ Contributing to open-source projects always felt like something that required be
 But reading through codebases with Claude Code, things started standing out: "this error message isn't helpful," "this method is going to be deprecated." I ran cycles of identifying an issue, confirming the fix with Claude Code, and submitting a PR. Over time, the results looked like this:
 
 - **team-mirai-volunteer/action-board**: 11 PRs merged (bug fixes, refactoring, test additions)
-- **pybaseball** (Python library for MLB data): 7 PRs submitted
-- **dfinity/icp-js-core**: error message improvement PR
-- **line/line-bot-mcp-server**: added get_follower_ids tool PR
+- **pybaseball** (Python library for MLB data): [PR #498–#504](https://github.com/jldbc/pybaseball/pulls?q=is%3Apr+author%3Ayasumorishima) — 7 PRs submitted
+- **dfinity/icp-js-core**: [PR #1270](https://github.com/dfinity/icp-js-core/pull/1270) — error message improvement
+- **line/line-bot-mcp-server**: [PR #369](https://github.com/line/line-bot-mcp-server/pull/369) — added get_follower_ids tool
 
 Finding where to fix something, verifying the fix is appropriate, writing the PR description — I did all of this alongside Claude Code. I made the decisions; Claude Code helped with the implementation.
 
