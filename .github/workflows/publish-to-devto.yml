@@ -81,5 +81,5 @@ jobs:
             # Show result
             echo "  Result: $(echo "$response" | jq -r '.url // .error // "unknown"')"
 
-            sleep 5
+            sleep 30
           done
