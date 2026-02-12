@@ -25,9 +25,9 @@ jobs:
           for file in devto/*.md; do
             echo "=== Processing $file ==="
 
-            # Extract frontmatter fields (handle quoted and unquoted values)
-            title=$(sed -n 's/^title: *"\?\(.*\)"\?$/\1/p' "$file")
-            description=$(sed -n 's/^description: *"\?\(.*\)"\?$/\1/p' "$file")
+            # Extract frontmatter fields (strip optional surrounding quotes)
+            title=$(sed -n 's/^title: *//p' "$file" | sed 's/^"//; s/"$//')
+            description=$(sed -n 's/^description: *//p' "$file" | sed 's/^"//; s/"$//')
             tags=$(sed -n 's/^tags: *//p' "$file")
             canonical_url=$(sed -n 's/^canonical_url: *//p' "$file")
             cover_image=$(sed -n 's/^cover_image: *//p' "$file")

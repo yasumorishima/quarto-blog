@@ -4,7 +4,6 @@ published: true
 description: How I built a 5-tab Streamlit dashboard using my own OSS library (savant-extras) to visualize Baseball Savant bat tracking data.
 tags: streamlit, python, baseball, mlb
 cover_image: https://raw.githubusercontent.com/yasumorishima/zenn-content/main/images/streamlit-dashboard-top.png
-canonical_url: https://yasumorishima.github.io/quarto-blog/
 ---
 
 ## What I Built
