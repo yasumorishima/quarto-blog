@@ -6,6 +6,7 @@ on:
     paths:
       - 'devto/**/*.md'
       - '.github/workflows/publish-to-devto.yml'
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -17,34 +18,68 @@ jobs:
         env:
           DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
         run: |
+          # Fetch all existing articles (up to 1000)
+          existing=$(curl -s "https://dev.to/api/articles/me?per_page=100" \
+            -H "api-key: $DEVTO_API_KEY")
+
           for file in devto/*.md; do
-            echo "Processing $file"
+            echo "=== Processing $file ==="
 
-            # Extract frontmatter and content
-            title=$(sed -n 's/^title: //p' "$file")
-            description=$(sed -n 's/^description: //p' "$file")
-            tags=$(sed -n 's/^tags: //p' "$file")
-            canonical_url=$(sed -n 's/^canonical_url: //p' "$file")
+            # Extract frontmatter fields (handle quoted and unquoted values)
+            title=$(sed -n 's/^title: *"\?\(.*\)"\?$/\1/p' "$file")
+            description=$(sed -n 's/^description: *"\?\(.*\)"\?$/\1/p' "$file")
+            tags=$(sed -n 's/^tags: *//p' "$file")
+            canonical_url=$(sed -n 's/^canonical_url: *//p' "$file")
+            cover_image=$(sed -n 's/^cover_image: *//p' "$file")
 
-            # Remove frontmatter to get body
-            body=$(sed '1,/^---$/d; /^---$/,$d' "$file")
+            # Extract body: skip lines until second '---', then print the rest
+            body=$(awk 'BEGIN{n=0} /^---$/{n++; next} n>=2{print}' "$file")
 
-            # Create JSON payload
+            if [ -z "$body" ]; then
+              echo "  Warning: empty body, skipping"
+              continue
+            fi
+
+            # Check if article with same title already exists
+            article_id=$(echo "$existing" | jq -r --arg t "$title" \
+              '.[] | select(.title == $t) | .id // empty')
+
+            # Build JSON payload
             json_payload=$(jq -n \
               --arg title "$title" \
               --arg body "$body" \
+              --arg description "$description" \
               --arg tags "$tags" \
               --arg canonical "$canonical_url" \
-              '{article: {title: $title, body_markdown: $body, tags: ($tags | split(", ")), canonical_url: $canonical, published: true}}')
+              --arg cover "$cover_image" \
+              '{article: {
+                title: $title,
+                body_markdown: $body,
+                description: $description,
+                tags: ($tags | split(", ")),
+                canonical_url: (if $canonical != "" then $canonical else null end),
+                cover_image: (if $cover != "" then $cover else null end),
+                published: true
+              }}')
 
-            # Post to DEV.to API
-            response=$(curl -X POST https://dev.to/api/articles \
-              -H "Content-Type: application/json" \
-              -H "api-key: $DEVTO_API_KEY" \
-              -d "$json_payload")
+            if [ -n "$article_id" ]; then
+              # Update existing article
+              echo "  Updating existing article (id: $article_id)"
+              response=$(curl -s -X PUT "https://dev.to/api/articles/$article_id" \
+                -H "Content-Type: application/json" \
+                -H "api-key: $DEVTO_API_KEY" \
+                -d "$json_payload")
+            else
+              # Create new article
+              echo "  Creating new article"
+              response=$(curl -s -X POST "https://dev.to/api/articles" \
+                -H "Content-Type: application/json" \
+                -H "api-key: $DEVTO_API_KEY" \
+                -d "$json_payload")
+            fi
 
-            echo "Response: $response"
+            # Show result
+            echo "  Result: $(echo "$response" | jq -r '.url // .error // "unknown"')"
 
-            # Wait 10 seconds between posts to avoid rate limit
-            sleep 10
+            sleep 5
           done

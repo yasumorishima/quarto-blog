@@ -1,9 +1,9 @@
 ---
 title: "I built savant-extras: Date Range Support for Baseball Savant Data"
-published: true
 description: "pybaseball only supports full-season leaderboards. savant-extras adds date range support for monthly splits, first/second half comparisons, and more."
-tags: python, baseball, opensource, pypi
-canonical_url: https://yasumorishima.github.io/quarto-blog/posts/savant-extras-pypi-library/
+author: "Yasunori Morishima"
+date: "2026-02-11"
+categories: [python, baseball, opensource, pypi]
 ---
 
 ## The Problem
