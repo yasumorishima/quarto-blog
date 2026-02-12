@@ -10,7 +10,424 @@
 <atom:link href="https://yasumorishima.github.io/quarto-blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Baseball analytics and Kaggle datasets</description>
 <generator>quarto-1.8.27</generator>
-<lastBuildDate>Tue, 10 Feb 2026 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 11 Feb 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>I built savant-extras: Date Range Support for Baseball Savant Data</title>
+  <dc:creator>Yasunori Morishima</dc:creator>
+  <link>https://yasumorishima.github.io/quarto-blog/posts/savant-extras-pypi-library/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="the-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem">The Problem</h2>
+<p><a href="https://github.com/jldbc/pybaseball">pybaseball</a> is the go-to Python library for accessing Baseball Savant data. It provides dozens of functions for Statcast pitch-level data, leaderboards, fielding metrics, and more.</p>
+<p>However, all of pybaseball’s leaderboard functions share a common limitation:</p>
+<p><strong>They only support full-season data.</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># pybaseball: full season only</span></span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pybaseball <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> statcast_batter_bat_tracking</span>
+<span id="cb1-3"></span>
+<span id="cb1-4">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> statcast_batter_bat_tracking(year<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2024</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># entire 2024 season</span></span>
+<span id="cb1-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Can't filter to just April, or first half, or any custom date range</span></span></code></pre></div></div>
+<p>Want to compare a player’s bat speed in April vs.&nbsp;September? Analyze first-half vs.&nbsp;second-half performance? Look at pre-trade vs.&nbsp;post-trade numbers? pybaseball can’t do it.</p>
+</section>
+<section id="the-solution-savant-extras" class="level2">
+<h2 class="anchored" data-anchor-id="the-solution-savant-extras">The Solution: savant-extras</h2>
+<p>I built <a href="https://github.com/yasumorishima/savant-extras">savant-extras</a> — a Python library that adds <strong>date range support</strong> for Baseball Savant’s bat tracking leaderboard.</p>
+<p>It’s designed as a complement to pybaseball, not a replacement. Use pybaseball for pitch-level Statcast data, and savant-extras when you need leaderboard data for custom date ranges.</p>
+<p>Bat tracking data (Hawk-Eye) is available from the <strong>2024 season onward</strong>.</p>
+</section>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">pip</span> install savant-extras</span></code></pre></div></div>
+</section>
+<section id="usage" class="level2">
+<h2 class="anchored" data-anchor-id="usage">Usage</h2>
+<section id="bat_tracking-custom-date-range" class="level3">
+<h3 class="anchored" data-anchor-id="bat_tracking-custom-date-range">1. <code>bat_tracking()</code> — Custom Date Range</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> savant_extras <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> bat_tracking</span>
+<span id="cb3-2"></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># April 2024 batter data</span></span>
+<span id="cb3-4">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-04-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-04-30"</span>)</span>
+<span id="cb3-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(df[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"avg_bat_speed"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"attack_angle"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"competitive_swings"</span>]].head(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span></code></pre></div></div>
+<p>Output:</p>
+<pre><code>                 name  avg_bat_speed  attack_angle  competitive_swings
+0  Stanton, Giancarlo      80.776081      7.886978                 135
+1         Cruz, Oneil      77.538084      9.574513                 127
+2    Robert Jr., Luis      77.198599     11.955779                  12
+3     Schwarber, Kyle      77.093025     14.716905                 167
+4       Chapman, Matt      77.088279      5.304906                 153</code></pre>
+<p>You can also get the pitcher perspective:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Pitcher bat tracking, April-June 2024</span></span>
+<span id="cb5-2">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-04-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-06-30"</span>, player_type<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"pitcher"</span>)</span>
+<span id="cb5-3"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(df[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"avg_bat_speed"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"competitive_swings"</span>]].head(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span></code></pre></div></div>
+<p>Output:</p>
+<pre><code>              name  avg_bat_speed  competitive_swings
+0      Buttó, José      72.870642                 254
+1        Sears, JP      72.681473                 577
+2     Snell, Blake      72.646426                 182
+3  Walker, Taijuan      72.646226                 298
+4    Pérez, Martín      72.557050                 402</code></pre>
+</section>
+<section id="bat_tracking_monthly-season-long-monthly-splits" class="level3">
+<h3 class="anchored" data-anchor-id="bat_tracking_monthly-season-long-monthly-splits">2. <code>bat_tracking_monthly()</code> — Season-Long Monthly Splits</h3>
+<p>Fetches bat tracking data for each month of the season (April–October) and adds a <code>month</code> column.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> savant_extras <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> bat_tracking_monthly</span>
+<span id="cb7-2"></span>
+<span id="cb7-3">df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking_monthly(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2024</span>, min_swings<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb7-4"></span>
+<span id="cb7-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Stanton's monthly bat speed trend</span></span>
+<span id="cb7-6">stanton <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> df[df[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Stanton, Giancarlo"</span>]</span>
+<span id="cb7-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(stanton[[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"month"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"avg_bat_speed"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"competitive_swings"</span>]])</span></code></pre></div></div>
+<p>Output:</p>
+<pre><code>   month  avg_bat_speed  competitive_swings
+       4      80.776081                 135
+       5      80.548995                 148
+       6      81.011443                 137
+       7      82.736527                  18
+       8      81.483215                 133
+       9      82.096844                 143</code></pre>
+<p>Stanton’s bat speed increased from 80.5 in May to 82.1 in September — a noticeable in-season improvement.</p>
+<p>You can also compute league-wide averages:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(df.groupby(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"month"</span>)[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"avg_bat_speed"</span>].mean())</span></code></pre></div></div>
+</section>
+<section id="bat_tracking_splits-first-half-second-half" class="level3">
+<h3 class="anchored" data-anchor-id="bat_tracking_splits-first-half-second-half">3. <code>bat_tracking_splits()</code> — First Half / Second Half</h3>
+<p>Splits the season at the All-Star break (approximated as July 13/14).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> savant_extras <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> bat_tracking_splits</span>
+<span id="cb10-2"></span>
+<span id="cb10-3">splits <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking_splits(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2024</span>)</span>
+<span id="cb10-4">first <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> splits[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"first_half"</span>]</span>
+<span id="cb10-5">second <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> splits[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"second_half"</span>]</span>
+<span id="cb10-6"></span>
+<span id="cb10-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Stanton's splits</span></span>
+<span id="cb10-8">s1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> first[first[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Stanton, Giancarlo"</span>]</span>
+<span id="cb10-9">s2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> second[second[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"name"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Stanton, Giancarlo"</span>]</span>
+<span id="cb10-10"></span>
+<span id="cb10-11"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"First half:  </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>s1[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'avg_bat_speed'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>values[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.1f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> mph (</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>s1[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'competitive_swings'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>values[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.0f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> swings)"</span>)</span>
+<span id="cb10-12"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Second half: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>s2[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'avg_bat_speed'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>values[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.1f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> mph (</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>s2[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'competitive_swings'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>values[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.0f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> swings)"</span>)</span></code></pre></div></div>
+<p>Output:</p>
+<pre><code>First half:  80.8 mph (420 swings)
+Second half: 81.9 mph (294 swings)</code></pre>
+<p>Stanton’s bat speed was 1.1 mph faster in the second half.</p>
+</section>
+</section>
+<section id="use-cases" class="level2">
+<h2 class="anchored" data-anchor-id="use-cases">Use Cases</h2>
+<section id="slump-hot-streak-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="slump-hot-streak-analysis">Slump / Hot Streak Analysis</h3>
+<p>Compare bat tracking metrics during a cold stretch vs.&nbsp;a hot month:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1">hot <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-05-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-05-31"</span>)</span>
+<span id="cb12-2">cold <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-08-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-08-31"</span>)</span></code></pre></div></div>
+</section>
+<section id="pre-trade-vs.-post-trade" class="level3">
+<h3 class="anchored" data-anchor-id="pre-trade-vs.-post-trade">Pre-Trade vs.&nbsp;Post-Trade</h3>
+<p>Evaluate a player’s performance before and after the trade deadline (July 30):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">before <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-04-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-07-29"</span>)</span>
+<span id="cb13-2">after <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-07-30"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-09-30"</span>)</span></code></pre></div></div>
+</section>
+<section id="early-season-vs.-late-season" class="level3">
+<h3 class="anchored" data-anchor-id="early-season-vs.-late-season">Early Season vs.&nbsp;Late Season</h3>
+<p>See how the league adjusts over the course of a season:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">early <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-04-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-04-30"</span>)</span>
+<span id="cb14-2">late <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> bat_tracking(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-09-01"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2024-09-30"</span>)</span></code></pre></div></div>
+</section>
+</section>
+<section id="pybaseball-vs.-savant-extras" class="level2">
+<h2 class="anchored" data-anchor-id="pybaseball-vs.-savant-extras">pybaseball vs.&nbsp;savant-extras</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>pybaseball</th>
+<th>savant-extras</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Full season data</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>Monthly splits</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr class="odd">
+<td>First/second half</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>Custom date range</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr class="odd">
+<td>Pre/post trade</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="technical-notes" class="level2">
+<h2 class="anchored" data-anchor-id="technical-notes">Technical Notes</h2>
+<ul>
+<li>Uses the same public CSV endpoint as pybaseball (Baseball Savant leaderboard)</li>
+<li>Issues a warning when querying dates before 2024 (Hawk-Eye data not available)</li>
+<li><code>bat_tracking_monthly()</code> includes a 1-second sleep between requests to avoid overwhelming the server</li>
+<li>Returns an empty DataFrame when the response is HTML or empty</li>
+</ul>
+</section>
+<section id="links" class="level2">
+<h2 class="anchored" data-anchor-id="links">Links</h2>
+<ul>
+<li><strong>PyPI</strong>: https://pypi.org/project/savant-extras/</li>
+<li><strong>GitHub</strong>: https://github.com/yasumorishima/savant-extras</li>
+<li><strong>pybaseball</strong>: https://github.com/jldbc/pybaseball</li>
+</ul>
+
+
+</section>
+
+ ]]></description>
+  <category>python</category>
+  <category>baseball</category>
+  <category>opensource</category>
+  <category>pypi</category>
+  <guid>https://yasumorishima.github.io/quarto-blog/posts/savant-extras-pypi-library/</guid>
+  <pubDate>Wed, 11 Feb 2026 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>MLB Statcast + Bat Tracking Dataset (2024-2025)</title>
   <dc:creator>Yasunori Morishima</dc:creator>

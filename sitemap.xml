@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset4-mlb-statcast-bat-tracking/index.html</loc>
-    <lastmod>2026-02-11T14:46:08.742Z</lastmod>
-  </url>
-  <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset2-bat-tracking/index.html</loc>
-    <lastmod>2026-02-11T14:46:08.742Z</lastmod>
-  </url>
-  <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/index.html</loc>
-    <lastmod>2026-02-11T14:46:08.742Z</lastmod>
-  </url>
-  <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/about.html</loc>
-    <lastmod>2026-02-11T14:46:08.740Z</lastmod>
-  </url>
-  <url>
-    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset1-japanese-mlb/index.html</loc>
-    <lastmod>2026-02-11T14:46:08.742Z</lastmod>
+    <loc>https://yasumorishima.github.io/quarto-blog/posts/savant-extras-pypi-library/index.html</loc>
+    <lastmod>2026-02-12T03:38:40.777Z</lastmod>
   </url>
   <url>
     <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset3-pitcher-arsenal/index.html</loc>
-    <lastmod>2026-02-11T14:46:08.742Z</lastmod>
+    <lastmod>2026-02-12T03:38:40.773Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset1-japanese-mlb/index.html</loc>
+    <lastmod>2026-02-12T03:38:40.773Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/about.html</loc>
+    <lastmod>2026-02-12T03:38:40.771Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/index.html</loc>
+    <lastmod>2026-02-12T03:38:40.773Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset2-bat-tracking/index.html</loc>
+    <lastmod>2026-02-12T03:38:40.773Z</lastmod>
+  </url>
+  <url>
+    <loc>https://yasumorishima.github.io/quarto-blog/posts/dataset4-mlb-statcast-bat-tracking/index.html</loc>
+    <lastmod>2026-02-12T03:38:40.773Z</lastmod>
   </url>
 </urlset>
