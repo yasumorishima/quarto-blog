@@ -76,6 +76,7 @@ jobs:
                 -H "Content-Type: application/json" \
                 -H "api-key: $DEVTO_API_KEY" \
                 -d "$json_payload")
+              sleep 30  # Rate limit: only for new article creation
             fi
 
             # Show result
