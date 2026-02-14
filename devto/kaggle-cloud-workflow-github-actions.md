@@ -1,19 +1,19 @@
 ---
-title: "Kaggle Code Competitions Without a Local GPU: GitHub Actions + Kaggle API Cloud Workflow"
+title: "Git-Driven Kaggle: Manage Notebooks in GitHub, Auto-Deploy via Actions"
 published: true
-description: How to edit notebooks locally, push to Kaggle via GitHub Actions, and submit — all from any device. Plus why full automation isn't possible yet.
+description: Stop editing notebooks in Kaggle's browser editor. Use Git for version control, VSCode for editing, and GitHub Actions to auto-deploy to Kaggle.
 tags: kaggle, githubactions, python, machinelearning
 ---
 
 ## The Problem
 
-I wanted to compete on Kaggle but:
+Are you editing Kaggle Notebooks directly in the browser editor?
 
-- No local GPU
-- Limited disk space (Celeron N4500 / 4GB RAM)
-- Wanted to work from any device
+- No version control — can't diff, branch, or roll back changes
+- Stuck with Kaggle's editor instead of VSCode or your preferred tools
+- Manual upload every time you change something
 
-The goal: **edit a notebook anywhere, push to GitHub, and have it appear on Kaggle ready to submit**.
+The goal: **manage notebook code in GitHub with full Git workflow, and auto-deploy to Kaggle via `git push`**.
 
 ## The Workflow
 
@@ -153,6 +153,6 @@ The iteration cycle is fast: edit locally → push → submit → check score.
 
 ## Summary
 
-Full automation of Kaggle code competition submissions isn't possible via the public API (as of Feb 2026). But automating everything up to the submit button still saves a lot of time and lets you work from any device.
+Full automation of Kaggle code competition submissions isn't possible via the public API (as of Feb 2026). But managing notebooks in GitHub gives you proper version control, your favorite editor, and one-command deployment to Kaggle.
 
-The one manual click is a small price to pay.
+The one manual click to submit is a small price for a proper Git workflow.
