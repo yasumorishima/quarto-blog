@@ -1,5 +1,5 @@
 ---
-title: "I Built a Free Baseball Info Twitter Bot on Raspberry Pi"
+title: "OpenClaw Intro: Building a Twitter Bot with Raspberry Pi and Gemini"
 published: true
 description: "How I automated baseball tweets using Raspberry Pi 5 + OpenClaw + Gemini API free tier. Running cost: ~$2/month (electricity only)."
 tags: raspberrypi, python, bot, gemini
