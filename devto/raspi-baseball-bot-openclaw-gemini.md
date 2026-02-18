@@ -71,7 +71,7 @@ The character is "a slightly quirky baseball-obsessed old guy." The tweet qualit
 - Gateway for LLMs (Gemini, Claude, Ollama, etc.)
 - Runs scheduled tasks via cron
 - Has an `exec` tool — AI can run shell commands directly
-- Has `web_search` for real-time information
+- Has `web_search` for real-time information (a Brave Search API key may be required)
 - Integrates with Discord, Slack, Telegram, etc.
 
 The flow here is: **cron → Gemini → web_search → exec (tweet.js)**
@@ -168,7 +168,7 @@ After solving all of that, **llama3.2:3b's tool calling accuracy was terrible**:
 - Outputs tool calls as plain text instead of function calls
 - When asked about the Hanshin Tigers, replied in English: "Let's go Orix!" (wrong team entirely)
 
-**After 2 days of fighting, I switched to Gemini. It posted a tweet in 18 seconds.** Some problems are worth paying (or not paying) to solve.
+**After 2 days of fighting, I switched to Gemini. It posted a tweet in 18 seconds.** Sometimes you just have to let go of what you're attached to.
 
 See [OLLAMA_TROUBLESHOOTING.md](https://github.com/yasumorishima/raspi-baseball-bot/blob/master/OLLAMA_TROUBLESHOOTING.md) for the full breakdown.
 
