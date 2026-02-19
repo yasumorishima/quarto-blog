@@ -65,21 +65,27 @@ jobs:
             if [ -n "$article_id" ]; then
               # Update existing article
               echo "  Updating existing article (id: $article_id)"
-              response=$(curl -s -X PUT "https://dev.to/api/articles/$article_id" \
+              response=$(curl -s -w "\n__HTTP_STATUS__:%{http_code}" -X PUT "https://dev.to/api/articles/$article_id" \
                 -H "Content-Type: application/json" \
                 -H "api-key: $DEVTO_API_KEY" \
                 -d "$json_payload")
             else
               # Create new article
               echo "  Creating new article"
-              response=$(curl -s -X POST "https://dev.to/api/articles" \
+              response=$(curl -s -w "\n__HTTP_STATUS__:%{http_code}" -X POST "https://dev.to/api/articles" \
                 -H "Content-Type: application/json" \
                 -H "api-key: $DEVTO_API_KEY" \
                 -d "$json_payload")
               sleep 30  # Rate limit: only for new article creation
             fi
 
+            # Extract HTTP status code and body
+            http_status=$(echo "$response" | grep "__HTTP_STATUS__:" | sed 's/.*__HTTP_STATUS__://')
+            response_body=$(echo "$response" | grep -v "__HTTP_STATUS__:")
+            echo "  HTTP Status: $http_status"
+            echo "  Raw response: $response_body"
+
             # Show result
-            echo "  Result: $(echo "$response" | jq -r '.url // .error // "unknown"')"
+            echo "  Result: $(echo "$response_body" | jq -r '.url // .error // "unknown"' 2>&1)"
 
           done
