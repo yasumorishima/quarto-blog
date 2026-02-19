@@ -30,21 +30,21 @@ Each national team has its own independent Streamlit app (30 apps total).
 
 Spray charts, exit velocity, launch angle, and count-based performance.
 
-![Spray Chart](https://raw.githubusercontent.com/yasumorishima/zenn-content/main/images/wbc-batter-spray-chart.png)
+![Spray Chart](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-batter-spray-chart.png)
 
 Strike zone split into a 3x3 grid with performance heatmaps for each zone.
 
-![Zone Heatmap](https://raw.githubusercontent.com/yasumorishima/zenn-content/main/images/wbc-batter-zone-heatmap.png)
+![Zone Heatmap](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-batter-zone-heatmap.png)
 
 ### Pitcher Dashboard Features
 
 Pitch location distribution by pitch type, L/R splits, and count-based tendencies.
 
-![Pitch Location](https://raw.githubusercontent.com/yasumorishima/zenn-content/main/images/wbc-pitcher-location.png)
+![Pitch Location](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-pitcher-location.png)
 
 Pitch movement chart showing horizontal and vertical break by pitch type.
 
-![Pitch Movement](https://raw.githubusercontent.com/yasumorishima/zenn-content/main/images/wbc-pitcher-movement.png)
+![Pitch Movement](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-pitcher-movement.png)
 
 ### Dashboard URLs
 
@@ -76,7 +76,7 @@ Pitch movement chart showing horizontal and vertical break by pitch type.
 
 https://www.kaggle.com/datasets/yasunorim/wbc-2026-scouting
 
-![Dataset Page](https://raw.githubusercontent.com/yasumorishima/zenn-content/main/images/wbc-kaggle-dataset.png)
+![Dataset Page](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-kaggle-dataset.png)
 
 Pitch-by-pitch Statcast data for MLB-affiliated WBC 2026 roster players. Data sourced from [Baseball Savant](https://baseballsavant.mlb.com/) via [pybaseball](https://github.com/jldbc/pybaseball).
 
@@ -99,7 +99,7 @@ https://www.kaggle.com/code/yasunorim/wbc-2026-scouting-eda-statcast-analysis
 
 An exploratory analysis of the dataset, including country-by-country fastball velocity comparisons and batting profiles.
 
-![Notebook Graph](https://raw.githubusercontent.com/yasumorishima/zenn-content/main/images/wbc-notebook-graph.png)
+![Notebook Graph](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-notebook-graph.png)
 
 ---
 
