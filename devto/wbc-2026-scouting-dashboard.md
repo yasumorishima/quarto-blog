@@ -3,7 +3,6 @@ title: I Built a WBC 2026 Scouting Dashboard with MLB Statcast Data
 published: true
 description: 30 Streamlit apps and a Kaggle dataset covering 20 national teams with pitch-by-pitch MLB Statcast data for WBC 2026 roster players
 tags: baseball, kaggle, streamlit, python
-cover_image: https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-batter-spray-chart.png
 ---
 
 ## What I Built
