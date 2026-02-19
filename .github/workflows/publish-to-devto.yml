@@ -69,6 +69,7 @@ jobs:
                 -H "Content-Type: application/json" \
                 -H "api-key: $DEVTO_API_KEY" \
                 -d "$json_payload")
+              sleep 5  # Rate limit: avoid 429 on consecutive updates
             else
               # Create new article
               echo "  Creating new article"
@@ -76,7 +77,7 @@ jobs:
                 -H "Content-Type: application/json" \
                 -H "api-key: $DEVTO_API_KEY" \
                 -d "$json_payload")
-              sleep 30  # Rate limit: only for new article creation
+              sleep 30  # Rate limit: stricter for new article creation
             fi
 
             # Extract HTTP status code and body
