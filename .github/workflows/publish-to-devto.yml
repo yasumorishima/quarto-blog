@@ -18,9 +18,12 @@ jobs:
         env:
           DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
         run: |
-          # Fetch all existing articles (up to 1000)
-          existing=$(curl -s "https://dev.to/api/articles/me?per_page=100" \
+          # Fetch all existing articles (published + unpublished/drafts)
+          published=$(curl -s "https://dev.to/api/articles/me?per_page=100" \
             -H "api-key: $DEVTO_API_KEY")
+          unpublished=$(curl -s "https://dev.to/api/articles/me/unpublished?per_page=100" \
+            -H "api-key: $DEVTO_API_KEY")
+          existing=$(echo "$published $unpublished" | jq -s 'add')
 
           for file in devto/*.md; do
             echo "=== Processing $file ==="
