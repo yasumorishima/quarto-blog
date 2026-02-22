@@ -150,6 +150,28 @@ The WBC 2026 Scouting dataset also powers an interactive dashboard:
 
 Per-player batting and pitching stats for all 18 countries, built from the same Statcast data.
 
+## v0.2.0: Strike Zone Support
+
+v0.2.0 adds two new functions:
+
+| Function | Description |
+|---|---|
+| `draw_strike_zone(ax, sz_top=3.5, sz_bot=1.5)` | Draw strike zone rectangle in plate_x/plate_z coordinates |
+| `pitch_zone_chart(ax, df, color_by='pitch_type')` | Plot pitch locations with auto-sized strike zone |
+
+```python
+from pybaseball import statcast_pitcher
+from baseball_field_viz import pitch_zone_chart
+
+df = statcast_pitcher('2025-03-01', '2025-10-31', 592789)  # Yoshinobu Yamamoto
+
+fig, ax = plt.subplots(figsize=(6, 6))
+pitch_zone_chart(ax, df, color_by='pitch_type', title='Yamamoto 2025 — Pitch Locations')
+plt.show()
+```
+
+Statcast includes per-pitch `sz_top`/`sz_bot` columns (Hawk-Eye measured, not height-derived). When present in the DataFrame, `pitch_zone_chart` uses their mean automatically — so the strike zone reflects each batter's actual stance, not an estimate.
+
 ## Installation
 
 ```bash
