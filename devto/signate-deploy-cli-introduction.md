@@ -91,18 +91,16 @@ Both run via `gh workflow run` — everything executes on GitHub Actions.
 | `task-list` | List tasks |
 | `file-list` | List files |
 
-## Real Example: Medical Paper Classification
+## Real Example
 
-I used signate-deploy for a SIGNATE competition on classifying medical papers (binary classification: diagnostic accuracy study or not).
+I used signate-deploy for a SIGNATE competition. The entire flow — from token setup to submission — ran on GitHub Actions.
 
 ```bash
-python -m signate_deploy setup-token
-python -m signate_deploy download
+python -m signate_deploy setup-token   # Set up API token
+python -m signate_deploy download      # Download data
 # ... write training code ...
-python -m signate_deploy submit
+python -m signate_deploy submit        # Submit
 ```
-
-Using TF-IDF + LogisticRegression with threshold tuning (0.05), I scored **0.798** on FBeta (β=7). The entire flow — from token setup to submission — ran on GitHub Actions.
 
 ## Gotchas
 
