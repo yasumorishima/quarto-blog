@@ -83,7 +83,7 @@ plt.show()
 
 I published a Kaggle notebook using this library with the WBC 2026 Scouting dataset — **MLB regular season Statcast data (2024–2025) for players on WBC 2026 rosters** across all 18 countries. Note: this is not WBC game data, but MLB data for WBC-eligible players.
 
-**Kaggle Notebook**: https://www.kaggle.com/code/yasunorim/wbc-2026-spray-charts-with-baseball-field-viz
+**Kaggle Notebook**: https://www.kaggle.com/code/yasunorim/mlb-statcast-spray-charts-for-wbc-2026-players
 
 ### All 18 countries — overview spray chart
 
