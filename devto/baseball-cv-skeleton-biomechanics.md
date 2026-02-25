@@ -73,7 +73,7 @@ pose = mp_pose.Pose(
 )
 ```
 
-The advantage: no motion capture equipment needed — a smartphone video is enough.
+This article analyzed C3D data from motion capture, but MediaPipe's advantage is that it can work from regular smartphone video — no specialized equipment needed.
 
 ---
 
@@ -128,7 +128,7 @@ This suggests that "how far a pitcher can rotate their trunk" may contribute to 
 - Visualized 3D pitching and hitting skeletons from Driveline OBP C3D data using ezc3d
 - Extracted joint angle and angular velocity time series
 - Trunk rotation range showed the strongest correlation with pitch velocity (r=0.425)
-- MediaPipe enables skeleton detection without motion capture equipment
+- MediaPipe can detect skeletons from regular video (this article used motion capture C3D data)
 
 → **GitHub**: https://github.com/yasumorishima/baseball-cv
 
