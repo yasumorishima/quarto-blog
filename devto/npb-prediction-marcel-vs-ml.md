@@ -175,7 +175,7 @@ uvicorn api:app --reload
 | `GET /rankings/pitchers` | Pitcher rankings |
 | `GET /pythagorean` | All teams' Pythagorean win% |
 
-### Sample response (Maki Shugo, 2025 projection)
+### Sample response (Maki Shugo, next season projection)
 
 ```json
 {
