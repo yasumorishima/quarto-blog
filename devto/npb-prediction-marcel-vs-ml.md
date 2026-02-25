@@ -108,25 +108,26 @@ features = [
 
 ---
 
-## Results: 2024 Backtesting
+## Results: Two Years of Backtesting
 
-Trained on 2015–2023, evaluated against 2024 actual stats.
+I ran backtests for both 2024 and 2025 to see if the pattern holds.
 
-### Batter OPS
+### 2024 Backtest (trained on 2015–2023, predicted 2024)
 
-| Method | MAE | Sample |
+| Method | OPS MAE | ERA MAE |
 |---|---|---|
-| **Marcel** | **.055** | Qualified batters |
-| LightGBM | .077 | Qualified batters |
+| **Marcel** | **.055** | **0.62** |
+| LightGBM | .077 | 0.95 |
 
-### Pitcher ERA
+### 2025 Backtest (trained on 2015–2024, predicted 2025)
 
-| Method | MAE | Sample |
+| Method | OPS MAE | ERA MAE |
 |---|---|---|
-| **Marcel** | **0.62** | 100+ IP |
-| LightGBM | 0.95 | 100+ IP |
+| **Marcel** | **.048** | **0.63** |
+| XGBoost | .062 | 0.92 |
+| LightGBM | .065 | 0.92 |
 
-**Marcel won — by a significant margin.**
+**Marcel won consistently across both years.** The 2025 batter OPS MAE of .048 was particularly impressive.
 
 Adding wOBA/wRC+ as features didn't change the outcome. This aligns with the well-known finding that Marcel is a "surprisingly strong baseline."
 
@@ -135,6 +136,34 @@ Why does Marcel hold up so well?
 - Player true talent changes slowly (1–2 years)
 - ML tends to overfit with limited sample sizes
 - Simple weighted averages fit the actual distribution of year-to-year changes
+
+---
+
+## Player Stories: Where Marcel Shines and Struggles
+
+### Austin (DeNA) — Prediction error of just .008
+
+After missing most of 2022–2023 due to injuries, Austin returned in 2024 with an incredible OPS of .983. For 2025, Marcel predicted:
+
+| | OPS | PA |
+|---|---|---|
+| Marcel prediction | .842 | 213 |
+| 2025 actual | .834 | 246 |
+| **Error** | **.008** | — |
+
+Marcel's regression toward league average perfectly captured the expected decline from an unsustainably high 2024, while also accounting for his injury-prone playing time.
+
+### Tsutsugo Yoshitomo (DeNA) — A comeback Marcel couldn't see
+
+A former NPB star (OPS ~.900 through 2019), Tsutsugo returned from MLB in 2024 and struggled to OPS .683 in just 168 PA.
+
+| | OPS | PA |
+|---|---|---|
+| Marcel prediction | .656 | 168 |
+| 2025 actual | .876 | 257 |
+| **Error** | **.220** | — |
+
+Marcel was anchored to his poor 2024 season and predicted continued decline. Instead, Tsutsugo hit 20 home runs and posted OPS .876 — a full-blown resurgence that a weighted-average model simply cannot anticipate. This highlights Marcel's inherent limitation: it struggles with players whose recent performance doesn't reflect their true ability level.
 
 ---
 
@@ -195,12 +224,12 @@ Docker support included — `docker compose up --build` to run.
 | Item | Detail |
 |---|---|
 | Data | baseball-data.com + npb.jp (2015–2025, 5 datasets) |
-| Marcel accuracy | Batter OPS MAE=.055 / Pitcher ERA MAE=0.62 |
-| ML accuracy | Batter OPS MAE=.077 / Pitcher ERA MAE=0.95 |
+| Marcel accuracy (2025) | Batter OPS MAE=.048 / Pitcher ERA MAE=0.63 |
+| ML accuracy (2025) | Batter OPS MAE=.062 / Pitcher ERA MAE=0.92 |
 | Pythagorean | NPB optimal k=1.72, MAE=3.20 wins |
 | API | FastAPI 7 endpoints, Docker-ready |
 
-The biggest takeaway: **newer doesn't always mean better**. Marcel, a method designed in the 1980s, consistently outperformed modern ML on NPB data.
+The biggest takeaway: **newer doesn't always mean better**. Across two years of backtesting, Marcel — a method from the 1980s — consistently outperformed modern ML on NPB data. At the same time, player stories like Austin (error .008) and Tsutsugo (error .220) show both the power and limits of any projection system.
 
 → **GitHub**: https://github.com/yasumorishima/npb-prediction
 
