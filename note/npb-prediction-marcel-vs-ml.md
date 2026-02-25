@@ -158,7 +158,30 @@ pip install -r requirements.txt
 uvicorn api:app --reload
 ```
 
-起動後、ブラウザで `http://localhost:8000/docs` を開くと操作画面が表示されます。選手名を入力するだけで予測結果が返ってきます。
+起動後、ブラウザで `http://localhost:8000/docs` を開くと操作画面が表示されます。
+
+**操作手順**
+
+1. `/predict/hitter/{name}` をクリック
+2. 右上の「Try it out」ボタンを押す
+3. name欄に選手名（例: `牧`）を入力
+4. 「Execute」ボタンを押す
+
+**結果の見方**
+
+```
+"marcel": {           ← Marcel法による予測
+  "OPS": 0.812,       ← 出塁率＋長打率
+  "AVG": 0.287,       ← 打率
+  "HR": 19.5,         ← ホームラン数
+  "RBI": 66.2         ← 打点
+},
+"ml": {               ← AI（機械学習）による予測
+  "pred_OPS": 0.749   ← AIが予測したOPS
+}
+```
+
+2つの数字が表示されるのは、Marcel法とAIそれぞれの予測値を並べているためです。この記事で検証した通り、Marcel法の方が精度が高い傾向があります。
 
 ---
 
