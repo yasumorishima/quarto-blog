@@ -36,7 +36,7 @@ Collected via `pandas.read_html()`.
 | Player birthdays | 2,479 |
 | Detailed batting stats | 4,538 |
 
-> **Credit**: Data sourced from [baseball-data.com](https://baseball-data.com) and [npb.jp](https://npb.jp). Raw data is not redistributed.
+Data source: [Pro Baseball Data Freak](https://baseball-data.com) / [NPB Official](https://npb.jp)
 
 ---
 
