@@ -141,9 +141,21 @@ Why does Marcel hold up so well?
 
 ## Player Stories: Where Marcel Shines and Struggles
 
-### Austin (DeNA) — Prediction error of just .008
+### Austin (DeNA) — A tale of two predictions
 
-After missing most of 2022–2023 due to injuries, Austin returned in 2024 with an incredible OPS of .983. For 2025, Marcel predicted:
+Tracking Austin's comeback from 2022–2023 injuries reveals both Marcel's weakness and strength.
+
+**2024 prediction (based on 2021–2023 data):**
+
+| | OPS | PA |
+|---|---|---|
+| Marcel prediction | .818 | 145 |
+| 2024 actual | .983 | 445 |
+| **Error** | **.165** | — |
+
+With only 38 PA in 2022 and 54 PA in 2023 due to injuries, Marcel regressed heavily toward league average. It completely missed the OPS .983 comeback.
+
+**2025 prediction (based on 2022–2024 data):**
 
 | | OPS | PA |
 |---|---|---|
@@ -151,7 +163,9 @@ After missing most of 2022–2023 due to injuries, Austin returned in 2024 with 
 | 2025 actual | .834 | 246 |
 | **Error** | **.008** | — |
 
-Marcel's regression toward league average perfectly captured the expected decline from an unsustainably high 2024, while also accounting for his injury-prone playing time.
+The very next year, Marcel nailed it with an error of just .008. With the strong 2024 season now in the data, regression worked in the opposite direction — pulling an unsustainably high OPS back down to a realistic level.
+
+Same player, same method, wildly different accuracy — a perfect illustration of how data availability shapes projection quality.
 
 ### Tsutsugo Yoshitomo (DeNA) — A comeback Marcel couldn't see
 
@@ -217,6 +231,29 @@ uvicorn api:app --reload
 
 Docker support included — `docker compose up --build` to run.
 
+### Team Roster Simulation
+
+v0.3.0 adds `/simulate/team/{team}` — swap players in/out and see how projected wins change.
+
+```
+GET /simulate/team/DeNA?year=2025&add=山川&remove=宮﨑
+```
+
+It adjusts team runs scored by each player's wRAA and recalculates Pythagorean win expectation.
+
+---
+
+## Streamlit Dashboard
+
+All API features are also available through an interactive Streamlit dashboard.
+
+```bash
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+8 pages covering batter/pitcher projections, rankings, sabermetrics trends, Pythagorean standings, and team roster simulation. Charts are built with Plotly, using NPB team colors for all 12 teams.
+
 ---
 
 ## Summary
@@ -227,9 +264,10 @@ Docker support included — `docker compose up --build` to run.
 | Marcel accuracy (2025) | Batter OPS MAE=.048 / Pitcher ERA MAE=0.63 |
 | ML accuracy (2025) | Batter OPS MAE=.062 / Pitcher ERA MAE=0.92 |
 | Pythagorean | NPB optimal k=1.72, MAE=3.20 wins |
-| API | FastAPI 7 endpoints, Docker-ready |
+| API | FastAPI 8 endpoints, Docker-ready |
+| Dashboard | Streamlit 8 pages, Plotly charts |
 
-The biggest takeaway: **newer doesn't always mean better**. Across two years of backtesting, Marcel — a method from the 1980s — consistently outperformed modern ML on NPB data. At the same time, player stories like Austin (error .008) and Tsutsugo (error .220) show both the power and limits of any projection system.
+The biggest takeaway: **newer doesn't always mean better**. Across two years of backtesting, Marcel — a method from the 1980s — consistently outperformed modern ML on NPB data. At the same time, player stories like Austin (error .165 in 2024, then .008 in 2025) and Tsutsugo (error .220) show both the power and limits of any projection system.
 
 → **GitHub**: https://github.com/yasumorishima/npb-prediction
 
