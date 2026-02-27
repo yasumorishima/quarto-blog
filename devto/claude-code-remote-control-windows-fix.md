@@ -3,7 +3,7 @@ title: Fix "Workspace not trusted" Error for Claude Code remote-control on Windo
 published: true
 description: How to fix the workspace trust error when running claude remote-control on Windows by editing .claude.json directly.
 tags: claudecode, windows, ai, tutorial
-canonical_url: https://yasumorishima.github.io/quarto-blog/
+canonical_url: https://zenn.dev/shogaku/articles/claude-code-remote-control-windows-fix
 ---
 
 ## Overview
