@@ -13,6 +13,12 @@ For WBC 2026 (World Baseball Classic), I created three scouting tools using MLB 
 2. **Kaggle Dataset** — Statcast data for 20 countries, 540,000+ pitches
 3. **Kaggle EDA Notebook** — Country-by-country analysis
 
+## 🌐 Landing Page
+
+**[https://wbc-2026-scouting-dashboard-zvg.caffeine.xyz/](https://wbc-2026-scouting-dashboard-zvg.caffeine.xyz/)**
+
+A landing page with all team dashboard links organized by pool (hosted on ICP / Caffeine, English & Japanese).
+
 ---
 
 ## 1. Scouting Dashboards
