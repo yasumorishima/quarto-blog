@@ -256,6 +256,25 @@ streamlit run streamlit_app.py
 
 ---
 
+## Current Limitations and Future Plans
+
+### Handling New Foreign Players and Rookies
+
+Marcel requires **3 years of NPB data**, which means new foreign players, rookies, and players returning from long-term injuries are all excluded from the calculation. Currently, these players are implicitly treated as **league-average contributors (wRAA=0)**.
+
+The dashboard now visualizes these uncounted players — orange badges on team cards and an expander listing each player by name — to make the limitation transparent. However, **numerical compensation is not yet implemented**.
+
+Planned improvements:
+
+| Approach | Description | Difficulty |
+|---|---|---|
+| **Historical average** | Use average first-year NPB stats for foreign players | ★★☆ |
+| **League translation factors** | Apply MLB/KBO → NPB conversion rates | ★★★ |
+| **Draft position priors** | Assign different expected values by draft round | ★★☆ |
+| **Confidence intervals** | Widen prediction range for teams with more uncounted players | ★★★ |
+
+Teams with more uncounted players carry higher prediction uncertainty. That uncertainty itself is a meaningful signal — a team ranked lower by the model may still have significant upside if their new additions outperform historical averages.
+
 ## Summary
 
 | Item | Detail |
