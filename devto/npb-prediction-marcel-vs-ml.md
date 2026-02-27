@@ -252,7 +252,25 @@ pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-8 pages covering batter/pitcher projections, rankings, sabermetrics trends, Pythagorean standings, and team roster simulation. Charts are built with Plotly, using NPB team colors for all 12 teams.
+7 pages covering batter/pitcher projections, rankings, Pythagorean standings, and team win projections. Charts are built with Plotly, using NPB team colors for all 12 teams. The dashboard supports both **Japanese and English**.
+
+### Batter Rankings: wOBA / wRC+ Sort Options
+
+In addition to OPS/AVG/HR/RBI, you can now sort by **wOBA** (run value per plate appearance) and **wRC+** (batting strength with league average = 100).
+
+### Pitcher Rankings: FIP / K% / BB% and More
+
+Beyond ERA/WHIP, pitchers can now be ranked by **FIP** (fielding-independent pitching), **K%** (strikeout rate), **BB%** (walk rate), **K-BB%** (strikeout minus walk rate), **K/9**, **BB/9**, and **HR/9**.
+
+```
+FIP = (13×HR + 3×(BB+HBP) - 2×SO) / IP + constant C
+```
+
+A pitcher with FIP lower than ERA may be performing better than their results suggest (bad defense behind them), while FIP higher than ERA may indicate defensive support inflating their stats.
+
+### Prediction Pages: Formula Explanations
+
+Batter predictions now show wOBA/wRC+/wRAA metric cards with a **wRC+ trend chart**. Pitcher predictions show FIP/K%/BB%/K-BB%/K9/BB9/HR9 cards with a **radar chart**. Each metric includes an expandable formula explanation with benchmark values.
 
 ---
 
@@ -306,7 +324,7 @@ Just like the uncounted-player problem, **teams with several young players appro
 | ML accuracy (2025) | Batter OPS MAE=.062 / Pitcher ERA MAE=0.92 |
 | Pythagorean | NPB optimal k=1.72, MAE=3.20 wins |
 | API | FastAPI 8 endpoints, Docker-ready |
-| Dashboard | Streamlit 8 pages, Plotly charts |
+| Dashboard | Streamlit 7 pages, Plotly charts, JA/EN bilingual |
 
 The biggest takeaway: **newer doesn't always mean better**. Across two years of backtesting, Marcel — a method from the 1980s — consistently outperformed modern ML on NPB data. At the same time, player stories like Austin (error .165 in 2024, then .008 in 2025) and Tsutsugo (error .220) show both the power and limits of any projection system.
 
