@@ -262,18 +262,34 @@ streamlit run streamlit_app.py
 
 Marcel requires **3 years of NPB data**, which means new foreign players, rookies, and players returning from long-term injuries are all excluded from the calculation. Currently, these players are implicitly treated as **league-average contributors (wRAA=0)**.
 
-The dashboard now visualizes these uncounted players — orange badges on team cards and an expander listing each player by name — to make the limitation transparent. However, **numerical compensation is not yet implemented**.
+The dashboard visualizes uncounted players with orange badges and an expander listing each player. I've also **implemented prediction ranges (confidence intervals)** to show this uncertainty directly on the chart.
 
-Planned improvements:
+### ✅ Implemented: Prediction ranges (confidence intervals)
+
+Uncounted players are treated as wRAA=0 (league-average contribution), but first-year performance for foreign players varies widely in practice.
+
+**The logic:**
+
+1. Historically, first-year NPB foreign players show wRAA ranging from roughly **-15 to +25 runs**
+2. Baseball's rule of thumb: **10 runs ≈ 1 win** (derived from Pythagorean win expectation)
+3. → Uncertainty per uncounted player ≈ **±1.5 wins**
+
+```
+Prediction range = uncounted players × 1.5 wins
+Example: 3 uncounted players, 70 projected wins → displayed as "67–74 wins"
+```
+
+The orange error bars on the chart show this range. Teams with more uncounted players have wider bars — a direct visual representation of "this team's actual finish could vary significantly depending on how their new players perform."
+
+### Remaining work
 
 | Approach | Description | Difficulty |
 |---|---|---|
 | **Historical average** | Use average first-year NPB stats for foreign players | ★★☆ |
 | **League translation factors** | Apply MLB/KBO → NPB conversion rates | ★★★ |
 | **Draft position priors** | Assign different expected values by draft round | ★★☆ |
-| **Confidence intervals** | Widen prediction range for teams with more uncounted players | ★★★ |
 
-Teams with more uncounted players carry higher prediction uncertainty. That uncertainty itself is a meaningful signal — a team ranked lower by the model may still have significant upside if their new additions outperform historical averages.
+Teams with more uncounted players carry higher prediction uncertainty — a team ranked lower by the model may still have significant upside if their new additions outperform historical averages.
 
 ## Summary
 
