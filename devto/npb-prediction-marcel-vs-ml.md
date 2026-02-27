@@ -291,6 +291,12 @@ The orange error bars on the chart show this range. Teams with more uncounted pl
 
 Teams with more uncounted players carry higher prediction uncertainty — a team ranked lower by the model may still have significant upside if their new additions outperform historical averages.
 
+### Marcel's other blind spot: young player breakouts
+
+Marcel's age adjustment is only **+0.3% per year below age 27** — small enough that it can't capture sudden growth. When a 23–26-year-old player is on the verge of a breakout, Marcel pulls their projection back toward their past three-year average, systematically underestimating what they're capable of.
+
+Just like the uncounted-player problem, **teams with several young players approaching a breakout are likely underrated by this model**. This uncertainty is not currently reflected in the orange confidence interval bars, so the actual gap between prediction and reality may be wider than the chart suggests.
+
 ## Summary
 
 | Item | Detail |
