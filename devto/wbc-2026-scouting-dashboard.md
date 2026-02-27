@@ -28,7 +28,9 @@ Each national team has its own independent Streamlit app (30 apps total).
 
 ### Batter Dashboard Features
 
-Spray charts, exit velocity, launch angle, and count-based performance.
+The page immediately shows **TOP 3 batters by OPS** as highlight cards and a **team batting radar chart** (AVG, OBP, SLG, K%, BB% — 5 axes). You can see the team's batting profile at a glance without selecting a player.
+
+Spray charts, exit velocity, launch angle, and count-based performance. Each section includes brief captions explaining the metrics, making it accessible even without deep baseball knowledge.
 
 ![Spray Chart](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-batter-spray-chart.png)
 
@@ -37,6 +39,8 @@ Strike zone split into a 3x3 grid with performance heatmaps for each zone.
 ![Zone Heatmap](https://raw.githubusercontent.com/yasumorishima/zenn-content/master/images/wbc-batter-zone-heatmap.png)
 
 ### Pitcher Dashboard Features
+
+The page immediately shows **TOP 3 pitchers by K%** as highlight cards and a **team pitching radar chart** (K%, Whiff%, BB%, Opp AVG, xwOBA, Velo — 6 axes).
 
 Pitch location distribution by pitch type, L/R splits, and count-based tendencies.
 
