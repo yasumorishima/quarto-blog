@@ -65,7 +65,7 @@ Three panels:
 
 **Center (R² steps)**: Each bar shows how much predictive power is added by each factor. Taller = more explained.
 
-**Right (Q1 vs Q5)**: Z-score comparison between the least and most efficient quintiles across all 5 factors.
+**Right (Q1 vs Q5)**: Each bar shows how far each group deviates from the overall average (positive = favorable direction for pitch speed, negative = unfavorable).
 
 ---
 
@@ -89,18 +89,18 @@ Three panels:
 
 **Arm chain (whip)**: Ratio of elbow speed to wrist speed. Lower = body is pulling the elbow (body-driven). Higher = arm working independently.
 
-**Knee smoothness**: RMS jerk (rate of change of acceleration) of the lead knee's 3D position. Lower = smoother movement.
+**Knee smoothness**: How smoothly the lead knee moves through its 3D trajectory. Measured by the irregularity of the knee's path — lower = smoother, more controlled movement.
 
 ---
 
-## Why Does Knee Smoothness Matter? — A Suppressor Variable
+## Why Does Knee Smoothness Matter?
 
 This is the most counterintuitive finding:
 
-- **Raw correlation**: r=+0.12 (fast pitchers have intense whole-body movement, so jerk is also high)
+- **Looking at all pitchers**: r=+0.12 (faster pitchers move their whole body more intensely, so knee irregularity tends to be higher too)
 - **After controlling for arm speed**: r=−0.45*** (among pitchers with the same arm speed, smoother knees = faster pitches)
 
-The effect only appears after removing arm speed's influence. This is a classic **suppressor variable**.
+The effect only appears after removing arm speed's influence — meaning the raw data masks the true relationship. Once you account for arm speed, smoother knees consistently predict faster pitches.
 
 Proposed mechanism: **smooth knee → more efficient pelvis rotation → higher pelvis/arm speed ratio (+17%) → the body "whips" the arm through the kinematic chain**
 
@@ -164,7 +164,7 @@ Weak ankle brake → short stride
 - Among pitchers with the same arm speed, pitch velocity can vary by 13 mph
 - A "body efficiency" residual metric exposes this gap
 - 5 body mechanics factors explain 64.8% of pitch speed variance (R²=0.648)
-- Knee smoothness contributes most (+0.087 R²), acting as a suppressor variable
+- Knee smoothness contributes most (+0.087 R²); its effect only becomes visible after controlling for arm speed
 - Root cause: ankle braking and knee lift → stride → kinematic chain
 
 The data suggests that "how the body is sequenced" matters as much as raw arm speed — consistent with established biomechanics literature on the kinematic chain.
