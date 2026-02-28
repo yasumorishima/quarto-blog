@@ -140,6 +140,49 @@ Please treat the results as a reference, not a definitive source.
 
 ---
 
+## Things I Added Later
+
+### Mobile support
+
+The sidebar was always open on mobile and got in the way. Fixed with two changes:
+
+```python
+st.set_page_config(
+    ...,
+    initial_sidebar_state="collapsed",  # start closed on mobile
+)
+
+st.markdown("""
+<style>
+@media (max-width: 768px) {
+    .block-container { padding: 1rem 0.5rem !important; }
+    [data-testid="column"] { min-width: 45% !important; flex: 1 1 45% !important; }
+    [data-testid="stHorizontalBlock"] { flex-wrap: wrap !important; }
+}
+</style>
+""", unsafe_allow_html=True)
+```
+
+Also added `use_container_width=True` to every `st.pyplot()` call. Without this, charts don't resize to the container width and overflow on small screens.
+
+### Auto-load on first visit
+
+Originally you had to open the sidebar and click "Load Data". Changed it so data loads automatically on first visit:
+
+```python
+# Before: only load when button is clicked
+if load_btn:
+    ...
+
+# After: also auto-load on first visit
+if load_btn or "df_raw" not in st.session_state:
+    ...
+```
+
+Since `@st.cache_data` caches the result, subsequent tab switches and filter changes use the cache — no waiting after the first load.
+
+---
+
 ## Summary
 
 - Used **savant-extras** (my own OSS library) for data fetching
