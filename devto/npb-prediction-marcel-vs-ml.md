@@ -231,6 +231,16 @@ uvicorn api:app --reload
 
 Docker support included — `docker compose up --build` to run.
 
+### Deployed on Raspberry Pi 5 + Tailscale Funnel
+
+Beyond running locally, the API is deployed on a Raspberry Pi 5 as a Docker container with `restart: unless-stopped`. To make it publicly accessible, I used **Tailscale Funnel** — one command to get a public HTTPS URL:
+
+```bash
+sudo tailscale funnel --bg 8000
+```
+
+This exposes the FastAPI at a fixed HTTPS URL with no router configuration needed. Tailscale handles certificates, port forwarding, and NAT traversal automatically.
+
 ### Team Roster Simulation
 
 v0.3.0 adds `/simulate/team/{team}` — swap players in/out and see how projected wins change.
