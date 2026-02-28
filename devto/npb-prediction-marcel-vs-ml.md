@@ -270,7 +270,9 @@ A pitcher with FIP lower than ERA may be performing better than their results su
 
 ### Prediction Pages: Formula Explanations
 
-Batter predictions now show wOBA/wRC+/wRAA metric cards with a **wRC+ trend chart**. Pitcher predictions show FIP/K%/BB%/K-BB%/K9/BB9/HR9 cards with a **radar chart**. Each metric includes an expandable formula explanation with benchmark values.
+Batter predictions show wOBA/wRC+/wRAA metric cards with a **wRC+ trend chart**. Pitcher predictions show FIP/K%/BB%/K-BB%/K9/BB9/HR9 cards — K/9, BB/9, and HR/9 now include league average deltas. Each metric includes an expandable formula explanation with benchmark values.
+
+Radar charts are updated to **6 axes**: batters use HR/AVG/OBP/SLG/wOBA/wRC+ (OPS removed as redundant); pitchers use ERA/WHIP/SO/K9/BB9/HR9 (W and IP removed, sabermetric rate stats added).
 
 ---
 
