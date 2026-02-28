@@ -299,6 +299,23 @@ Example: 3 uncounted players, 70 projected wins → displayed as "67–74 wins"
 
 The orange error bars on the chart show this range. Teams with more uncounted players have wider bars — a direct visual representation of "this team's actual finish could vary significantly depending on how their new players perform."
 
+### ✅ Implemented: Data-year badges for players with 1–2 years of NPB data
+
+Separate from completely uncounted players, there's another issue: **players with only 1–2 years of NPB data** also carry high projection uncertainty. Marcel's regression toward league average gets stronger the fewer data points exist.
+
+```python
+# Pitcher with 1 year (60 IP): weighted_ip = 60×5 = 300
+# proj_ERA = (player_ERA×300 + league_avg_ERA×600) / 900
+#           ≈ 1/3 player + 2/3 league average
+```
+
+- **1 year of data only** → ~**2/3** of the projection is pulled toward league average
+- **2 years of data** → ~**half** of the projection is pulled toward league average
+
+A foreign pitcher who played one year for Team A and moved to Team B this season has data, but that data is thin. Their projection coming out near league average doesn't mean they're average — it means the model doesn't know enough yet.
+
+To make this visible, the dashboard now **automatically shows "1yr NPB" or "2yr NPB" badges next to player names** (125 batters and 180 pitchers are flagged). Treat badged projections as rough estimates and cross-reference with prior season performance.
+
 ### Remaining work
 
 | Approach | Description | Difficulty |
