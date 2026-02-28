@@ -34,6 +34,8 @@ jobs:
             tags=$(sed -n 's/^tags: *//p' "$file")
             canonical_url=$(sed -n 's/^canonical_url: *//p' "$file")
             cover_image=$(sed -n 's/^cover_image: *//p' "$file")
+            published_raw=$(sed -n 's/^published: *//p' "$file")
+            published=$([ "$published_raw" = "false" ] && echo "false" || echo "true")
 
             # Extract body: skip lines until second '---', then print the rest
             body=$(awk 'BEGIN{n=0} /^---$/{n++; next} n>=2{print}' "$file")
@@ -55,6 +57,7 @@ jobs:
               --arg tags "$tags" \
               --arg canonical "$canonical_url" \
               --arg cover "$cover_image" \
+              --arg published "$published" \
               '{article: {
                 title: $title,
                 body_markdown: $body,
@@ -62,7 +65,7 @@ jobs:
                 tags: ($tags | split(", ")),
                 canonical_url: (if $canonical != "" then $canonical else null end),
                 cover_image: (if $cover != "" then $cover else null end),
-                published: true
+                published: ($published == "true")
               }}')
 
             if [ -n "$article_id" ]; then
