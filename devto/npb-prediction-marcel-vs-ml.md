@@ -282,7 +282,15 @@ A pitcher with FIP lower than ERA may be performing better than their results su
 
 Batter predictions show wOBA/wRC+/wRAA metric cards with a **wRC+ trend chart**. Pitcher predictions show FIP/K%/BB%/K-BB%/K9/BB9/HR9 cards — K/9, BB/9, and HR/9 now include league average deltas. Each metric includes an expandable formula explanation with benchmark values.
 
-Radar charts are updated to **6 axes**: batters use HR/AVG/OBP/SLG/wOBA/wRC+ (OPS removed as redundant); pitchers use ERA/WHIP/SO/K9/BB9/HR9 (W and IP removed, sabermetric rate stats added).
+Radar charts are updated: batters use **6 axes** (HR/AVG/OBP/SLG/wOBA/wRC+, OPS removed as redundant); pitchers now use **7 axes** (ERA/WHIP/SO/K9/BB9/HR9/FIP added).
+
+### Top Page: wRC+ / FIP-Sorted TOP3 + Starter vs. Reliever Split
+
+Changed the batter TOP3 on the top page to **wRC+ order** (from OPS) and pitcher TOP3 to **FIP order** (from ERA). Both metrics are less influenced by defense, better reflecting true batting/pitching ability.
+
+Pitchers are now split into **starters (IP ≥ 100) and relievers (IP 20–99)**, each showing FIP-sorted TOP3. Since the split is based on innings pitched, some starters with injury-reduced workloads may appear in the reliever section.
+
+Card bar charts are also now aligned with radar charts: batter cards show **wOBA/wRC+**, pitcher cards show **FIP/K9/BB9/HR9**.
 
 ---
 
