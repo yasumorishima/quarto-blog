@@ -1,7 +1,7 @@
 ---
-title: "Why Marcel Beat LightGBM: Building an NPB Player Performance Prediction System"
+title: "Marcel vs LightGBM: Building an NPB Player Performance Prediction System"
 published: true
-description: "I built a Japanese professional baseball (NPB) player performance prediction system using Marcel projection, LightGBM/XGBoost, custom wOBA/wRC+ calculation, and FastAPI. Marcel outperformed ML — just like the research says."
+description: "I built a Japanese professional baseball (NPB) player performance prediction system using Marcel projection, LightGBM/XGBoost, custom wOBA/wRC+ calculation, and FastAPI. Marcel held its own against ML — ERA prediction showed Marcel's advantage."
 tags: python, baseball, machinelearning, datascience
 canonical_url: https://zenn.dev/shogaku/articles/npb-prediction-marcel-vs-ml
 cover_image:
@@ -17,7 +17,9 @@ Two prediction methods:
 - **Marcel projection** — a simple statistical method from the 1980s
 - **LightGBM / XGBoost** — modern machine learning
 
-The key finding: **Marcel outperformed ML.** This is well-known in baseball analytics, but confirming it with NPB data was the most interesting part of this project.
+The key finding: **Marcel outperformed ML on ERA prediction, and the two were essentially tied on OPS prediction.** This aligns with the well-known finding that Marcel is a surprisingly strong baseline.
+
+> **[March 2026 Correction]** I re-evaluated using the same player set (PA≥100 / IP≥30) for both Marcel and ML. The original article overstated Marcel's OPS advantage. Corrected numbers are in the backtest section below.
 
 ---
 
@@ -108,28 +110,31 @@ features = [
 
 ---
 
-## Results: Two Years of Backtesting
+## Results: 2025 Backtest
 
-I ran backtests for both 2024 and 2025 to see if the pattern holds.
+Trained on 2015–2024, tested against 2025 actuals. Marcel and ML are evaluated on the **same player set (batters PA≥100, pitchers IP≥30)**.
 
-### 2024 Backtest (trained on 2015–2023, predicted 2024)
+### Batter OPS MAE (2025, n=172 players)
 
-| Method | OPS MAE | ERA MAE |
-|---|---|---|
-| **Marcel** | **.055** | **0.62** |
-| LightGBM | .077 | 0.95 |
+| Method | OPS MAE |
+|---|---|
+| **Marcel** | **.063** |
+| XGBoost | .063 |
+| LightGBM | .066 |
 
-### 2025 Backtest (trained on 2015–2024, predicted 2025)
+→ **Essentially tied** (difference < .001).
 
-| Method | OPS MAE | ERA MAE |
-|---|---|---|
-| **Marcel** | **.048** | **0.63** |
-| XGBoost | .062 | 0.92 |
-| LightGBM | .065 | 0.92 |
+### Pitcher ERA MAE (2025, n=145 players)
 
-**Marcel won consistently across both years.** The 2025 batter OPS MAE of .048 was particularly impressive.
+| Method | ERA MAE |
+|---|---|
+| **Marcel** | **0.78** |
+| XGBoost | 0.93 |
+| LightGBM | 0.92 |
 
-Adding wOBA/wRC+ as features didn't change the outcome. This aligns with the well-known finding that Marcel is a "surprisingly strong baseline."
+→ **Marcel wins** (gap ~0.14).
+
+Marcel clearly outperformed ML on ERA prediction. For OPS prediction, the two are virtually identical — which itself confirms that Marcel is a "surprisingly strong baseline."
 
 Why does Marcel hold up so well?
 
@@ -357,13 +362,13 @@ Just like the uncounted-player problem, **teams with several young players appro
 | Item | Detail |
 |---|---|
 | Data | baseball-data.com + npb.jp (2015–2025, 5 datasets) |
-| Marcel accuracy (2025) | Batter OPS MAE=.048 / Pitcher ERA MAE=0.63 |
-| ML accuracy (2025) | Batter OPS MAE=.062 / Pitcher ERA MAE=0.92 |
+| Marcel accuracy (2025) | Batter OPS MAE=.063 / Pitcher ERA MAE=0.78 |
+| ML accuracy (2025) | Batter OPS MAE=.063 / Pitcher ERA MAE=0.92 |
 | Pythagorean | NPB optimal k=1.72, MAE=3.20 wins |
 | API | FastAPI 8 endpoints, Docker-ready |
 | Dashboard | Streamlit 7 pages, Plotly charts, JA/EN bilingual |
 
-The biggest takeaway: **newer doesn't always mean better**. Across two years of backtesting, Marcel — a method from the 1980s — consistently outperformed modern ML on NPB data. At the same time, player stories like Austin (error .165 in 2024, then .008 in 2025) and Tsutsugo (error .220) show both the power and limits of any projection system.
+The biggest takeaway: **newer doesn't always mean better**. On pitcher ERA, Marcel outperformed ML. On batter OPS, the two were essentially tied. Marcel — a method from the 1980s — held its own against modern ML on NPB data. Player stories like Austin (error .165 in 2024, then .008 in 2025) and Tsutsugo (error .220) show both the power and limits of any projection system.
 
 → **GitHub**: https://github.com/yasumorishima/npb-prediction
 
