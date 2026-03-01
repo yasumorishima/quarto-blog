@@ -143,24 +143,21 @@ The Pacific told the same story: SoftBank, Nippon Ham, and Seibu (all rated as s
 
 ## The Other Side: What Happened to the Teams That Collapsed
 
-The collapsed teams share a common pattern: **key players Marcel projected at prior-year levels saw their playing time drop sharply**. The numbers tell the same story across teams.
+For the collapsed teams, Marcel projected a certain level of aggregate production from its top-rated players. Here's how much of that production actually materialized.
 
-| Team | Player | Marcel Proj. | Actual |
-|------|--------|-------------|--------|
-| Giants | Nakata Sho | 532 plate appearances | 106 plate appearances |
-| Giants | Ino Shoichi | 75 innings | 5 innings |
-| Giants | Yo Daikang | 178 plate appearances | 7 plate appearances |
-| DeNA | Taira Kentaro | 75 innings | 10 innings |
-| DeNA | Higashi Katsuki | 88 innings | 19 innings |
-| SoftBank | Valentin | 397 plate appearances | 60 plate appearances |
-| SoftBank | Uebayashi Tomonori | 322 plate appearances | 72 plate appearances |
-| SoftBank | Senga Kodai | 146 innings | 84 innings |
-| Nippon Ham | Ota Taiji | 506 plate appearances | 206 plate appearances |
-| Nippon Ham | Kimura Fuminori | 302 plate appearances | 36 plate appearances |
-| Seibu | Sotosaki Shuta | 543 plate appearances | 300 plate appearances |
-| Seibu | Kaneko Yuji | 404 plate appearances | 220 plate appearances |
+| Team | Batters: Marcel proj. → Actual | Pitchers: Marcel proj. → Actual |
+|------|-------------------------------|--------------------------------|
+| Nippon Ham | 3,617 → 2,371 PA (**-1,246**) | 591 → 625 IP (+34) |
+| Seibu | 4,292 → 3,165 PA (**-1,127**) | 886 → 721 IP (-165) |
+| Giants | 4,812 → 4,058 PA (**-754**) | 840 → 744 IP (-96) |
+| DeNA | 2,480 → 2,752 PA (+272) | 950 → 642 IP (**-308**) |
+| SoftBank | 4,312 → 4,188 PA (-124) | 908 → 756 IP (-152) |
 
-Marcel projects forward from registered-roster performance. When players who looked strong in prior seasons couldn't contribute in 2021, the projection ended up above reality.
+*Batters projected at 200+ PA and pitchers projected at 50+ IP*
+
+Marcel projects forward from registered-roster performance. When aggregate playing time for projected contributors falls short, the team-level projection ends up above reality.
+
+The failure mode also differed by team: Nippon Ham and Seibu saw massive batter shortfalls while pitching roughly held. DeNA's batters exceeded projection, but the pitching staff fell far short. SoftBank and the Giants saw modest-to-moderate shortfalls across both.
 
 ---
 
