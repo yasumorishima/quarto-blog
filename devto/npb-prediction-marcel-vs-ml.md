@@ -17,7 +17,7 @@ Two prediction methods:
 - **Marcel projection** — a simple statistical method from the 1980s
 - **LightGBM / XGBoost** — modern machine learning
 
-The key finding: **Marcel outperformed ML on ERA prediction, and the two were essentially tied on OPS prediction.** This aligns with the well-known finding that Marcel is a surprisingly strong baseline.
+The key finding: **Marcel outperformed ML on ERA prediction, and the two were essentially tied on OPS prediction.**
 
 > **[March 2026 Correction]** I re-evaluated using the same player set (PA≥100 / IP≥30) for both Marcel and ML. The original article overstated Marcel's OPS advantage. Corrected numbers are in the backtest section below.
 
@@ -134,9 +134,9 @@ Trained on 2015–2024, tested against 2025 actuals. Marcel and ML are evaluated
 
 → **Marcel wins** (gap ~0.14).
 
-Marcel clearly outperformed ML on ERA prediction. For OPS prediction, the two are virtually identical — which itself confirms that Marcel is a "surprisingly strong baseline."
+Marcel clearly outperformed ML on ERA prediction. For OPS prediction, the two are virtually identical — a simple method matching a modern ML model in this setting.
 
-Why does Marcel hold up so well?
+Why does this happen?
 
 - Player true talent changes slowly (1–2 years)
 - ML tends to overfit with limited sample sizes
