@@ -1,7 +1,7 @@
 ---
 title: "Annual Auto-Retraining for NPB Baseball Predictions with GitHub Actions"
 published: true
-description: "I added CI/CD to my NPB player performance prediction system: joblib model artifacts, annual metrics JSON, a FastAPI /metrics endpoint, and a 7-step GitHub Actions pipeline. Plus the 4 bugs that only showed up in CI."
+description: "I added CI/CD to my NPB player performance prediction system: joblib model artifacts, annual metrics JSON, a FastAPI /metrics endpoint, and an 8-step GitHub Actions pipeline. Plus the 4 bugs that only showed up in CI."
 tags: python, mlops, githubactions, baseball
 canonical_url: https://zenn.dev/shogaku/articles/npb-mlops-cicd
 cover_image:
@@ -13,7 +13,7 @@ I built a Japanese professional baseball (NPB) player performance prediction sys
 
 → Previous article: [Why Marcel Beat LightGBM: Building an NPB Player Performance Prediction System](https://dev.to/yasunorim/why-marcel-beat-lightgbm-building-an-npb-player-performance-prediction-system-2ln4)
 
-After getting it working, I realized I was running `python ml_projection.py` manually every November.
+After getting it working, I realized I was running `python ml_projection.py` manually every March (before the season starts).
 
 That meant all of this was manual:
 - Web scraping (data fetch)
@@ -33,7 +33,7 @@ So I automated it with GitHub Actions, and added model artifact saving and accur
 |---|---|
 | **Model saving** | `joblib` → `.pkl` files in `data/models/`, one per year |
 | **Metrics logging** | Marcel vs ML MAE saved to JSON + FastAPI `/metrics` endpoint |
-| **Auto-run** | GitHub Actions cron, every November 1st |
+| **Auto-run** | GitHub Actions cron, every March 1st (after FA/transfers finalized) |
 
 ---
 
@@ -150,7 +150,7 @@ name: Annual NPB Update
 
 on:
   schedule:
-    - cron: '0 9 1 11 *'   # November 1st, 9:00 UTC (after NPB season ends)
+    - cron: '0 9 1 3 *'   # March 1st, 9:00 UTC (after FA/transfers finalized, before opening day)
   workflow_dispatch:
     inputs:
       data_end_year:
@@ -298,7 +298,8 @@ All 4 bugs were "worked locally" patterns. CI surfaces data quality issues you n
 | `ml_projection.py` | joblib model save + `metrics_*.json` output |
 | `api.py` | `/metrics` endpoint added |
 | `requirements.txt` | `joblib>=1.3` added |
-| `.github/workflows/annual_update.yml` | 7-step pipeline, created from scratch |
+| `.github/workflows/annual_update.yml` | 8-step pipeline, runs every March 1st |
+| `fetch_rosters.py` | Fetch registered player roster (excludes departed/MLB players from Marcel) |
 
 Each run produces:
 
@@ -310,6 +311,6 @@ data/models/xgb_pitchers_2026.pkl
 data/metrics/metrics_2026.json
 ```
 
-All committed to the repo automatically. Once multiple years accumulate, accuracy trends become trackable. Whether this qualifies as "MLOps" is debatable, but it's no longer a "run the script manually every November" operation.
+All committed to the repo automatically. Once multiple years accumulate, accuracy trends become trackable. Whether this qualifies as "MLOps" is debatable, but it's no longer a "run the script manually every March" operation.
 
 → **GitHub**: https://github.com/yasumorishima/npb-prediction
