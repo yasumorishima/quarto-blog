@@ -164,7 +164,8 @@ NPB doesn't publish this level of data. Until it does, the ceiling for projectio
 
 - Previous article (Marcel analysis): https://zenn.dev/shogaku/articles/npb-marcel-lastplace-to-champion
 - Bayes model development log: https://zenn.dev/shogaku/articles/npb-bayes-projection-story
-- Prediction app: https://npb-prediction.streamlit.app/
-- GitHub: https://github.com/yasumorishima/npb-bayes-projection
+- Prediction app (Marcel + Stan projections both available): https://npb-prediction.streamlit.app/
+- GitHub (Marcel): https://github.com/yasumorishima/npb-prediction
+- GitHub (Bayes model): https://github.com/yasumorishima/npb-bayes-projection
 
 Data sources: [baseball-data.com](https://baseball-data.com/) / [npb.jp](https://npb.jp/)
