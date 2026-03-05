@@ -140,7 +140,7 @@ The renovation's effect appeared immediately in the following season.
 | 2024 | 1.212 | 1.089 | Year 2 surge |
 | 2025 | 1.271 | 1.147 | Year 3, continued |
 
-Year 1 was actually pitcher-friendly (right-center field is wide), but PF jumped to 1.212 in Year 2. Players may have needed time to learn the park.
+Year 1 was actually pitcher-friendly (right-center field is wide), but PF jumped to 1.212 in Year 2. Players may have needed time to adjust to the dimensions and wall caroms of the new park.
 
 ### 4. Vantelin Dome (Chunichi) — Pitcher's paradise for 10 straight years
 
