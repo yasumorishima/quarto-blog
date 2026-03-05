@@ -174,18 +174,49 @@ The key implication: **Chunichi and Rakuten pitchers may see their ERA rise in 2
 
 ---
 
-## Summary Table
+## 2025 Full Stadium Ranking (by PF_5yr)
 
-| Stadium | 2025 PF_5yr | Character |
-|---|---|---|
-| Vantelin (Chunichi) | 0.844 | Most pitcher-friendly |
-| Rakuten Mobile Park | 0.908 | Pitcher-friendly |
-| Koshien (Hanshin) | 0.942 | Slightly pitcher-friendly |
-| Tokyo Dome (Giants) | 0.981 | Neutral |
-| PayPay Dome (SoftBank) | 1.007 | Neutral |
-| ZOZO Marine (Lotte) | 1.097 | Hitter-friendly |
-| Jingu (Swallows) | 1.129 | Hitter-friendly |
-| ES CON Field (Ham) | 1.147 | Most hitter-friendly |
+| Rank | Team | Stadium | Single-yr PF | PF_5yr | Character |
+|---|---|---|---|---|---|
+| 1 | Nippon Ham | ES CON Field | 1.271 | 1.147 | Most hitter-friendly |
+| 2 | Swallows | Jingu | 1.096 | 1.129 | Hitter-friendly |
+| 3 | DeNA | Yokohama Stadium | 1.184 | 1.102 | Hitter-friendly |
+| 4 | Lotte | ZOZO Marine | 1.010 | 1.097 | Hitter-friendly |
+| 5 | SoftBank | PayPay Dome | 0.976 | 1.007 | Neutral |
+| 6 | Carp | Mazda Stadium | 1.065 | 0.996 | Neutral |
+| 7 | Giants | Tokyo Dome | 0.878 | 0.981 | Neutral |
+| 8 | Lions | Belluna Dome | 0.923 | 0.962 | Slightly pitcher-friendly |
+| 9 | Orix | Kyocera Dome | 0.931 | 0.943 | Slightly pitcher-friendly |
+| 10 | Hanshin | Koshien | 0.830 | 0.942 | Slightly pitcher-friendly |
+| 11 | Eagles | Rakuten Mobile Park | 0.931 | 0.908 | Pitcher-friendly |
+| 12 | Dragons | Vantelin Dome | 0.955 | 0.844 | Most pitcher-friendly |
+
+---
+
+## PF_5yr by Year — All Stadiums (2016–2025)
+
+| Stadium | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| ES CON/Sapporo Dome (Ham) | 0.996 | 0.964 | 0.968 | 0.983 | 0.957 | 0.964 | 0.967 | 0.969 | 1.089 | **1.147** |
+| Jingu (Swallows) | 1.127 | **1.254** | **1.277** | **1.221** | **1.222** | **1.189** | **1.130** | **1.132** | **1.153** | 1.129 |
+| Yokohama Stadium (DeNA) | **1.205** | 1.129 | 1.122 | 1.108 | 1.113 | 1.095 | 1.097 | 1.076 | 1.094 | 1.102 |
+| ZOZO Marine (Lotte) | 0.797 | 0.856 | 0.862 | 0.923 | 1.021 | 1.090 | 1.072 | 1.081 | 1.127 | 1.097 |
+| PayPay Dome (SoftBank) | 1.171 | 1.036 | 1.009 | 1.016 | 0.998 | 0.961 | 0.985 | 1.005 | 0.996 | 1.007 |
+| Mazda Stadium (Carp) | 1.058 | 0.974 | 0.967 | 0.966 | 0.961 | 0.928 | 0.939 | 0.954 | 0.973 | 0.996 |
+| Tokyo Dome (Giants) | 0.919 | 0.967 | 0.992 | 1.045 | 1.041 | 1.098 | 1.100 | 1.067 | 1.008 | 0.981 |
+| Belluna Dome (Lions) | 1.077 | 1.043 | 1.111 | 1.113 | 1.102 | 1.102 | 1.098 | 1.023 | 0.986 | 0.962 |
+| Kyocera Dome (Orix) | 0.896 | 0.973 | 0.970 | 0.969 | 0.968 | 0.961 | 0.933 | 0.954 | 0.949 | 0.943 |
+| Koshien (Hanshin) | 0.962 | 0.910 | 0.870 | 0.875 | 0.873 | 0.881 | 0.901 | 0.949 | 0.948 | 0.942 |
+| Rakuten Mobile Park | 1.072 | 1.112 | 1.079 | 1.011 | 1.024 | 0.982 | 0.974 | 0.939 | 0.937 | 0.908 |
+| Vantelin Dome (Dragons) | **0.773** | **0.819** | **0.808** | **0.825** | **0.831** | **0.839** | **0.839** | **0.844** | **0.827** | **0.844** |
+
+Key takeaways:
+- **Vantelin (Dragons)** ranked last in every single year for 10 years straight
+- **Jingu (Swallows)** ranked 1st or 2nd for 9 consecutive years (2016–2024)
+- **ZOZO Marine (Lotte)** flipped from worst to top-4 after the 2019 HR Lagoon renovation
+- **ES CON Field** surged in its 2nd and 3rd years after opening in 2023
+
+---
 
 **Code & Data**: https://github.com/yasumorishima/npb-prediction
 
