@@ -314,3 +314,9 @@ data/metrics/metrics_2026.json
 All committed to the repo automatically. Once multiple years accumulate, accuracy trends become trackable. Whether this qualifies as "MLOps" is debatable, but it's no longer a "run the script manually every March" operation.
 
 → **GitHub**: https://github.com/yasumorishima/npb-prediction
+
+---
+
+## Related Articles
+
+- [Beyond Marcel: Adding Bayesian Regression to NPB Baseball Predictions — A 15-Step Journey](https://zenn.dev/shogaku/articles/npb-bayes-projection-story)

@@ -220,3 +220,10 @@ Marcel projection reveals the baseline. What it can't show is the breakout rooki
 - **Prediction app**: [npb-prediction.streamlit.app](https://npb-prediction.streamlit.app/)
 - **GitHub**: [yasumorishima/npb-prediction](https://github.com/yasumorishima/npb-prediction)
 - **Data**: [baseball-data.com](https://baseball-data.com/) / [npb.jp](https://npb.jp/)
+
+---
+
+## Related Articles
+
+- [Did Bayesian Projection (Stan/Ridge) Predict the 2021 NPB Last-to-First Upsets?](https://dev.to/yasumorishima/did-bayesian-projection-stanridge-predict-the-2021-npb-last-to-first-upsets-4595)
+- [Beyond Marcel: Adding Bayesian Regression to NPB Baseball Predictions — A 15-Step Journey](https://zenn.dev/shogaku/articles/npb-bayes-projection-story)

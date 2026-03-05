@@ -223,3 +223,9 @@ Key takeaways:
 **Code & Data**: https://github.com/yasumorishima/npb-prediction
 
 Data sources: baseball-data.com / npb.jp (raw data not redistributed)
+
+---
+
+## Related Articles
+
+- [Beyond Marcel: Adding Bayesian Regression to NPB Baseball Predictions — A 15-Step Journey](https://zenn.dev/shogaku/articles/npb-bayes-projection-story)

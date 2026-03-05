@@ -373,3 +373,9 @@ The biggest takeaway: **newer doesn't always mean better**. On pitcher ERA, Marc
 → **GitHub**: https://github.com/yasumorishima/npb-prediction
 
 **Data credit**: [Pro Baseball Data Freak](https://baseball-data.com) / [NPB Official](https://npb.jp)
+
+---
+
+## Related Articles
+
+- [Beyond Marcel: Adding Bayesian Regression to NPB Baseball Predictions — A 15-Step Journey](https://zenn.dev/shogaku/articles/npb-bayes-projection-story)
