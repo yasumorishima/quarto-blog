@@ -84,7 +84,7 @@ Rakuten has two renovation breakpoints (2016 and 2026), so both are registered.
 
 ![NPB Park Factors Trend 2016-2025](https://raw.githubusercontent.com/yasumorishima/npb-prediction/main/images/npb_park_factors_trend.png)
 
-*Bars: single-year PF (blue=hitter-friendly, red=pitcher-friendly) / Line: 5-year average PF / Orange vertical line: renovation completed / Purple dotted line: upcoming renovation*
+*Bars: 2025 PF (blue=hitter-friendly, red=pitcher-friendly) / Line: 5-year average PF / Orange vertical line: renovation completed / Purple dotted line: upcoming renovation*
 
 The visualization explicitly shows renovation timing for every stadium that had changes:
 - **Orange solid line**: renovation already completed (e.g., ZOZO Marine 2019 HR Lagoon)
@@ -176,7 +176,7 @@ The key implication: **Chunichi and Rakuten pitchers may see their ERA rise in 2
 
 ## 2025 Full Stadium Ranking (by PF_5yr)
 
-| Rank | Team | Stadium | Single-yr PF | PF_5yr | Character |
+| Rank | Team | Stadium | 2025 PF | PF_5yr | Character |
 |---|---|---|---|---|---|
 | 1 | Nippon Ham | ES CON Field | 1.271 | 1.147 | Most hitter-friendly |
 | 2 | Swallows | Jingu | 1.096 | 1.129 | Hitter-friendly |
