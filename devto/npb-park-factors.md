@@ -193,28 +193,30 @@ The key implication: **Chunichi and Rakuten pitchers may see their ERA rise in 2
 
 ---
 
-## PF_5yr by Year — All Stadiums (2016–2025)
+## Single-Year PF Ranking by Year (2016–2025)
 
-| Stadium | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+Ranked by actual single-year PF each year — cleaner than PF_5yr for year-to-year comparison since multi-year averages mix in pre-renovation data.
+
+| Rank | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
 |---|---|---|---|---|---|---|---|---|---|---|
-| ES CON/Sapporo Dome (Ham) | 0.996 | 0.964 | 0.968 | 0.983 | 0.957 | 0.964 | 0.967 | 0.969 | 1.089 | **1.147** |
-| Jingu (Swallows) | 1.127 | **1.254** | **1.277** | **1.221** | **1.222** | **1.189** | **1.130** | **1.132** | **1.153** | 1.129 |
-| Yokohama Stadium (DeNA) | **1.205** | 1.129 | 1.122 | 1.108 | 1.113 | 1.095 | 1.097 | 1.076 | 1.094 | 1.102 |
-| ZOZO Marine (Lotte) | 0.797 | 0.856 | 0.862 | 0.923 | 1.021 | 1.090 | 1.072 | 1.081 | 1.127 | 1.097 |
-| PayPay Dome (SoftBank) | 1.171 | 1.036 | 1.009 | 1.016 | 0.998 | 0.961 | 0.985 | 1.005 | 0.996 | 1.007 |
-| Mazda Stadium (Carp) | 1.058 | 0.974 | 0.967 | 0.966 | 0.961 | 0.928 | 0.939 | 0.954 | 0.973 | 0.996 |
-| Tokyo Dome (Giants) | 0.919 | 0.967 | 0.992 | 1.045 | 1.041 | 1.098 | 1.100 | 1.067 | 1.008 | 0.981 |
-| Belluna Dome (Lions) | 1.077 | 1.043 | 1.111 | 1.113 | 1.102 | 1.102 | 1.098 | 1.023 | 0.986 | 0.962 |
-| Kyocera Dome (Orix) | 0.896 | 0.973 | 0.970 | 0.969 | 0.968 | 0.961 | 0.933 | 0.954 | 0.949 | 0.943 |
-| Koshien (Hanshin) | 0.962 | 0.910 | 0.870 | 0.875 | 0.873 | 0.881 | 0.901 | 0.949 | 0.948 | 0.942 |
-| Rakuten Mobile Park | 1.072 | 1.112 | 1.079 | 1.011 | 1.024 | 0.982 | 0.974 | 0.939 | 0.937 | 0.908 |
-| Vantelin Dome (Dragons) | **0.773** | **0.819** | **0.808** | **0.825** | **0.831** | **0.839** | **0.839** | **0.844** | **0.827** | **0.844** |
+| 1st | DeNA 1.205 | Swallows 1.422 | Swallows 1.319 | Giants 1.193 | Swallows 1.230 | Lotte 1.235 | Eagles 1.121 | Swallows 1.374 | Ham 1.212 | Ham 1.271 |
+| 2nd | SB 1.171 | Eagles 1.148 | Lions 1.230 | Lions 1.115 | Lotte 1.164 | Giants 1.201 | Swallows 1.087 | Lotte 1.120 | Swallows 1.166 | DeNA 1.184 |
+| 3rd | Swallows 1.127 | DeNA 1.063 | DeNA 1.107 | Swallows 1.085 | DeNA 1.138 | DeNA 1.117 | DeNA 1.073 | Orix 1.089 | DeNA 1.146 | Swallows 1.096 |
+| 4th | Lions 1.077 | Orix 1.056 | Giants 1.044 | DeNA 1.062 | Eagles 1.079 | Lions 1.067 | SB 1.044 | Carp 1.056 | Lotte 1.095 | Carp 1.065 |
+| 5th | Eagles 1.072 | Giants 1.018 | Eagles 1.013 | SB 1.038 | Lions 1.044 | Ham 1.042 | Giants 1.034 | SB 1.056 | Carp 1.079 | Lotte 1.010 |
+| 6th | Carp 1.058 | Lions 1.011 | Ham 0.980 | Ham 1.028 | Giants 1.023 | Hanshin 1.015 | Lotte 1.016 | Hanshin 1.023 | Lions 1.003 | SB 0.976 |
+| 7th | Ham 0.996 | Ham 0.932 | SB 0.969 | Orix 0.969 | Orix 0.963 | Swallows 0.978 | Hanshin 0.967 | DeNA 0.993 | SB 1.002 | Dragons 0.955 |
+| 8th | Hanshin 0.962 | Lotte 0.921 | Orix 0.963 | Carp 0.958 | Carp 0.941 | SB 0.964 | Carp 0.953 | Ham 0.969 | Giants 0.932 | Orix 0.931 |
+| 9th | Giants 0.919 | SB 0.919 | Carp 0.955 | Lotte 0.923 | SB 0.912 | Carp 0.879 | Ham 0.949 | Lions 0.872 | Orix 0.932 | Eagles 0.931 |
+| 10th | Orix 0.896 | Carp 0.901 | Lotte 0.874 | Hanshin 0.888 | Dragons 0.862 | Eagles 0.868 | Lions 0.938 | Giants 0.871 | Hanshin 0.868 | Lions 0.923 |
+| 11th | Lotte 0.797 | Dragons 0.866 | Hanshin 0.804 | Dragons 0.880 | Hanshin 0.860 | Orix 0.864 | Orix 0.916 | Eagles 0.841 | Eagles 0.814 | Giants 0.878 |
+| 12th | Dragons 0.773 | Hanshin 0.863 | Dragons 0.789 | Eagles 0.839 | Ham 0.846 | Dragons 0.806 | Dragons 0.867 | Dragons 0.797 | Dragons 0.803 | Hanshin 0.830 |
 
 Key takeaways:
-- **Vantelin (Dragons)** ranked last in every single year for 10 years straight
-- **Jingu (Swallows)** ranked 1st or 2nd for 9 consecutive years (2016–2024)
-- **ZOZO Marine (Lotte)** flipped from worst to top-4 after the 2019 HR Lagoon renovation
-- **ES CON Field** surged in its 2nd and 3rd years after opening in 2023
+- **Dragons (Vantelin)** ranked last in 8 of 10 years (only exceptions: 2020, 2021)
+- **Swallows (Jingu)** ranked 1st in 4 years (2017, 2018, 2020, 2023), always near the top
+- **Lotte (ZOZO Marine)** went from 11th in 2016 to 1st in 2021 — direct result of 2019 HR Lagoon renovation
+- **Nippon Ham** went from 12th in 2020 to 1st in 2025 — ES CON Field effect after 2023 move
 
 ---
 
