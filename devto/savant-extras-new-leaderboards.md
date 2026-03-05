@@ -1,23 +1,20 @@
 ---
-title: "Park Factors, OAA, and Stuff+ in One Line of Python (savant-extras v0.3.2–v0.4.1)"
+title: "Park Factors in One Line of Python (savant-extras v0.3.2–v0.4.2)"
 published: true
-description: "New Python package additions: FanGraphs park factors, Outs Above Average, Outfield Jump, and Stuff+/Location+/Pitching+ — all unavailable in pybaseball."
+description: "savant-extras v0.4.2: removed OAA/Outfield Jump/Stuff+ (already in pybaseball). Park factors remain as the unique addition."
 tags: python, baseball, opensource, pypi
 canonical_url: https://yasumorishima.github.io/quarto-blog/posts/savant-extras-new-leaderboards/
 ---
 
-## What's New in savant-extras
+## What Changed in savant-extras
 
-[savant-extras](https://github.com/yasumorishima/savant-extras) is a Python package that fills the gap where [pybaseball](https://github.com/jldbc/pybaseball) leaves off — leaderboards that Baseball Savant and FanGraphs offer but pybaseball doesn't support.
-
-Versions v0.3.2 through v0.4.1 added four new data sources:
-
-| Version | Added |
+| Version | Change |
 |---|---|
-| v0.3.2 | `park_factors` — FanGraphs ballpark run factors (30 teams, 2015+) |
-| v0.3.3 | lxml dependency + StringIO fix for pandas 2.0+ |
-| v0.4.0 | `outs_above_average` / `outfield_jump` — Baseball Savant defensive metrics |
-| v0.4.1 | `pitcher_quality` — Stuff+ / Location+ / Pitching+ from FanGraphs (2020+) |
+| v0.3.2 | Added **park_factors** (FanGraphs ballpark factors) |
+| v0.3.3 | Added lxml dependency, fixed StringIO (pandas 2.0+) |
+| v0.4.0 | Added outs_above_average, outfield_jump |
+| v0.4.1 | Added pitcher_quality |
+| **v0.4.2** | **Removed** outs_above_average, outfield_jump, pitcher_quality |
 
 ```bash
 pip install savant-extras
@@ -25,138 +22,72 @@ pip install savant-extras
 
 ---
 
-## Park Factors (v0.3.2)
+## v0.4.2: Three Functions Removed
 
-FanGraphs publishes ballpark run factors for all 30 MLB teams — but there's no clean Python API for it. `park_factors()` scrapes the FanGraphs Guts page and returns a tidy DataFrame.
+After a closer look, the three functions added in v0.4.0–v0.4.1 were already available in pybaseball with identical data:
+
+| Removed | pybaseball equivalent |
+|---|---|
+| `outs_above_average(year)` | `statcast_outs_above_average(year, 'all')` |
+| `outfield_jump(year)` | `statcast_outfielder_jump(year)` |
+| `pitcher_quality(year)` | `fg_pitching_data(year, qual=0)[["Stuff+", "Location+", "Pitching+"]]` |
+
+They access the same data sources (Baseball Savant / FanGraphs) and return the same columns. Use pybaseball for these:
+
+```python
+from pybaseball import statcast_outs_above_average, statcast_outfielder_jump, fg_pitching_data
+
+df_oaa = statcast_outs_above_average(2024, 'all')
+df_oj  = statcast_outfielder_jump(2024)
+df_pq  = fg_pitching_data(2024, qual=0)[["Name", "Team", "Stuff+", "Location+", "Pitching+"]]
+```
+
+---
+
+## park_factors — Still Unique (v0.3.2+)
+
+FanGraphs Park Factors are **not available in pybaseball**. savant-extras provides clean, per-season access for all 30 MLB teams.
 
 ```python
 from savant_extras import park_factors, park_factors_range
 
-# Single season — 30 rows, one per team
+# Single season (30 teams)
 df = park_factors(2024)
+# Columns: season, team, pf_5yr, pf_3yr, pf_1yr, pf_hr, pf_1b, pf_2b, pf_3b, pf_so, pf_bb, pf_fip
+
 print(df[df["team"] == "COL"][["team", "pf_5yr", "pf_hr"]])
 #    team  pf_5yr  pf_hr
 # 5   COL     113    131
 
-# Multi-season — useful for ML feature engineering
+# Multi-season (for ML feature engineering)
 df = park_factors_range(2020, 2025)
-print(df.shape)  # (180, 12)  — 6 seasons × 30 teams
+print(df.shape)  # (180, 12) — 6 seasons × 30 teams
 ```
 
-Columns include `pf_5yr` (5-year weighted average, recommended), `pf_3yr`, `pf_1yr`, `pf_hr`, `pf_1b`, `pf_2b`, `pf_3b`, `pf_so`, `pf_bb`, and `pf_fip`. All on a scale where 100 = neutral, >100 = hitter-friendly.
+Key columns:
 
-**Use case:** Build a park factor lookup dict for prediction models:
+| Column | Description |
+|---|---|
+| `pf_5yr` | 5-year weighted average (most stable) |
+| `pf_1yr` | Current season only |
+| `pf_hr` | Home run factor |
+| `pf_fip` | FIP adjustment factor |
 
-```python
-pf_lookup = {
-    (int(r.season), str(r.team)): float(r.pf_5yr)
-    for _, r in park_factors_range(2020, 2025).iterrows()
-}
-# pf_lookup.get((2024, "COL"), 100) → 113
-```
-
----
-
-## Outs Above Average (v0.4.0)
-
-OAA measures how many outs a fielder saves compared to what an average fielder would have recorded on the same chances. Baseball Savant provides it, but pybaseball doesn't expose it.
-
-```python
-from savant_extras import outs_above_average, outs_above_average_range
-
-df = outs_above_average(2024)
-print(df[["last_name", "pos", "outs_above_average", "fielding_runs_prevented"]].head(10))
-
-# Multi-season, infielders only
-df = outs_above_average_range(2022, 2024, pos="Infielder")
-```
-
-Directional breakdowns are included: `outs_above_average_infront`, `outs_above_average_behind`, `outs_above_average_lateral_toward3bline`, and `outs_above_average_lateral_toward1bline`. Plus `fielding_runs_prevented` for a run-value translation.
-
----
-
-## Outfield Jump (v0.4.0)
-
-Outfield Jump breaks down an outfielder's first-step reaction into three phases: reaction, burst (acceleration), and routing. Available from 2016 onward.
-
-```python
-from savant_extras import outfield_jump, outfield_jump_range
-
-df = outfield_jump(2024)
-print(df[["last_name",
-          "rel_league_reaction_distance",
-          "rel_league_burst_distance",
-          "rel_league_bootup_distance"]].head(10))
-```
-
-All values are in feet relative to the league average. Positive = better than average. `rel_league_bootup_distance` is the overall Jump score combining all three phases.
-
----
-
-## Stuff+ / Location+ / Pitching+ (v0.4.1)
-
-This one was tricky. FanGraphs' pitcher quality metrics (type=36) are rendered client-side, so neither the CSV export nor a standard scrape returns data. The solution: FanGraphs embeds the full dataset as Next.js server-side JSON in a `<script id="__NEXT_DATA__">` tag.
-
-```python
-import re, json
-
-match = re.search(
-    r'<script id="__NEXT_DATA__"[^>]*>([^<]+)</script>',
-    resp.text,
-)
-raw = json.loads(match.group(1))
-players = raw["props"]["pageProps"]["dehydratedState"]["queries"][0]["state"]["data"]["data"]
-```
-
-The public API is straightforward:
-
-```python
-from savant_extras import pitcher_quality, pitcher_quality_range
-
-df = pitcher_quality(2024)
-print(df.sort_values("stuff_plus", ascending=False).head(10)[
-    ["name", "team", "stuff_plus", "location_plus", "pitching_plus"]
-])
-
-# Three seasons
-df_multi = pitcher_quality_range(2022, 2024)
-df_multi.groupby("season")["stuff_plus"].mean()
-```
-
-Per-pitch-type columns are included for each of FA/SI/FC/SL/CU/CH/ST/FS:
-- `stuff_fa`, `loc_fa`, `pit_fa` (Four-Seam)
-- `stuff_sl`, `loc_sl`, `pit_sl` (Slider)
-- … and so on
-
-`mlbam_id` is also returned, making it easy to join with Statcast data:
-
-```python
-merged = statcast_df.merge(
-    df[["mlbam_id", "season", "stuff_plus", "location_plus"]],
-    on=["mlbam_id", "season"],
-    how="left",
-)
-```
+100 = neutral, >100 = hitter-friendly, <100 = pitcher-friendly.
 
 ---
 
 ## Summary
 
-```python
-from savant_extras import (
-    park_factors, park_factors_range,
-    outs_above_average, outs_above_average_range,
-    outfield_jump, outfield_jump_range,
-    pitcher_quality, pitcher_quality_range,
-)
-```
+savant-extras focuses on data **not available in pybaseball**. After v0.4.2 cleanup, the main unique leaderboards are:
 
-| Function | Source | Not in pybaseball |
-|---|---|---|
-| `park_factors` | FanGraphs guts | ✅ |
-| `outs_above_average` | Baseball Savant | ✅ |
-| `outfield_jump` | Baseball Savant | ✅ |
-| `pitcher_quality` | FanGraphs leaders | ✅ |
+| Function | Description |
+|---|---|
+| `park_factors` / `park_factors_range` | FanGraphs ballpark run factors |
+| `bat_tracking` | Bat speed, attack angle (custom date ranges) |
+| `pitch_tempo` | Pace metrics |
+| `catcher_blocking` / `catcher_stance` | Catcher defense metrics |
+| `timer_infractions` | Pitch clock violations |
 
 - **GitHub**: https://github.com/yasumorishima/savant-extras
 - **PyPI**: https://pypi.org/project/savant-extras/
