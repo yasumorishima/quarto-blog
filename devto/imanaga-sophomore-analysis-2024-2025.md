@@ -15,6 +15,20 @@ In this article, I break his Statcast pitch data into three periods -- "2024," "
 
 > The Google Colab notebook used for this analysis is linked at the bottom of the article.
 
+---
+
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Statcast** | MLB's pitch and ball-tracking system installed in every stadium. Automatically measures velocity, spin rate, movement, and location |
+| **Sophomore Slump** | The tendency for second-year players to underperform compared to their rookie year, often due to opponent adjustments |
+| **Sweeper (ST)** | A slider variant with large horizontal movement. Became widespread in MLB around 2022 |
+| **Whiff%** | Percentage of swings that result in a miss. Higher = more swing-and-miss ability |
+| **Usage%** | Percentage of total pitches thrown that are a specific pitch type |
+
+---
+
 ## Overview of the Three Periods
 
 The 2025 season is split at the All-Star break (mid-July) into first and second halves.

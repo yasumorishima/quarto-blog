@@ -25,6 +25,18 @@ The short answer: **bat speed alone explained almost nothing. Front leg mechanic
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Motion capture** | Technology that records body movement as 3D coordinate data. Used in sports analysis |
+| **C3D file** | A motion capture data format storing full-body marker positions as 3D coordinates |
+| **Lead leg** | The front foot of a batter (left foot for right-handed hitters). Critical for transferring power from the core to the bat |
+| **Exit velocity** | The speed of a batted ball off the bat. Used as a proxy for hitting power |
+| **Bat speed** | The velocity of the bat head during the swing (mph). Different from exit velocity |
+
+---
+
 ## The Data
 
 **Driveline OpenBiomechanics Project (OBP)**

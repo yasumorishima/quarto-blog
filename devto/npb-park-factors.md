@@ -15,6 +15,17 @@ Using 8,619 NPB (Japanese professional baseball) game scores from 2016–2025, I
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Park Factor (PF)** | A measure of how much a stadium inflates or suppresses scoring. 1.0 = neutral; >1.0 = hitter-friendly; <1.0 = pitcher-friendly |
+| **PF_5yr** | 5-year rolling average park factor, smoothed with renovation breakpoints |
+| **Renovation breakpoint** | The year a stadium renovation significantly changes the scoring environment. Data before/after must be separated |
+| **Home runs scored/allowed** | Stats measured at a team's home stadium |
+
+---
+
 ## What Is a Park Factor?
 
 Park Factor measures how much a stadium affects run scoring compared to a neutral park.

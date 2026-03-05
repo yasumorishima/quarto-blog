@@ -18,6 +18,19 @@ This time, I added **park factor (PF) correction** to the team simulation compon
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Park Factor (PF)** | A measure of how much a stadium inflates or suppresses scoring. 1.0 = neutral; >1.0 = hitter-friendly; <1.0 = pitcher-friendly |
+| **Marcel method** | A simple projection method using a 3-year weighted average of past stats (weights: 5:4:3, recent years weighted higher) |
+| **Bayesian prediction (Stan)** | A statistical method that estimates probability distributions from data, capturing uncertainty |
+| **Pythagorean win%** | Estimates win% from runs scored (RS) and allowed (RA): `RS^1.83 / (RS^1.83 + RA^1.83)` |
+| **Monte Carlo simulation** | A numerical method using random sampling to estimate probability distributions |
+| **80% CI** | 80% confidence interval — the range where actual values fall 80% of the time |
+
+---
+
 ## Why Park Factor Correction?
 
 Marcel projections are based on each player's past 3-year stats — but those stats include home park effects. This creates a bias:

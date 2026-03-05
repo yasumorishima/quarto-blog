@@ -13,6 +13,20 @@ This article uses Statcast pitch-tracking data to trace the evolution of Kikuchi
 
 > The Google Colab notebook used for this analysis is linked at the end of the article.
 
+---
+
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Statcast** | MLB's pitch and ball-tracking system installed in every stadium. Automatically measures velocity, spin rate, movement, and location |
+| **Sweeper (ST)** | A slider variant with large horizontal movement. Became widespread in MLB around 2022 |
+| **Whiff%** | Percentage of swings that result in a miss. Higher = more swing-and-miss ability |
+| **Usage%** | Percentage of total pitches thrown that are a specific pitch type |
+| **Movement** | Horizontal and vertical break of a pitch, measured after removing gravity and air resistance |
+
+---
+
 ## Career Overview
 
 | Period | Team | Starts | Pitches | Avg Velocity (all pitches) | Pitch Types |

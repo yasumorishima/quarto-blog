@@ -15,6 +15,20 @@ In this article, I use pybaseball + DuckDB to pull five seasons of Statcast data
 
 > The Google Colab notebook used for this analysis is linked at the bottom of the article.
 
+---
+
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Statcast** | MLB's pitch and ball-tracking system installed in every stadium. Automatically measures velocity, spin rate, movement, and location |
+| **Four-seam fastball (FF)** | The standard straight fastball — highest velocity pitch type |
+| **Whiff%** | Percentage of swings that result in a miss. Higher = more swing-and-miss ability |
+| **Usage%** | Percentage of total pitches thrown that are a specific pitch type |
+| **Movement** | Horizontal and vertical break of a pitch, measured after removing gravity and air resistance |
+
+---
+
 ## Five-Year Timeline
 
 Before diving into the data, here is a brief timeline of key events during this period.

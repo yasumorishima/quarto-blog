@@ -24,6 +24,18 @@ I analyzed 61 pro pitchers using Driveline OpenBiomechanics C3D motion capture d
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Motion capture** | Technology that records body movement as 3D coordinate data. Used in sports analysis |
+| **C3D file** | A motion capture data format storing full-body marker positions as 3D coordinates |
+| **Arm speed** | The velocity of the throwing arm during a pitch (m/s). Correlates with pitch velocity but doesn't fully explain it |
+| **Biomechanics** | The study of human movement using physics and mechanics |
+| **Release point** | The position and timing when the ball leaves the hand. Affects velocity, location, and movement |
+
+---
+
 ## The Data
 
 **Driveline OpenBiomechanics Project (OBP)**

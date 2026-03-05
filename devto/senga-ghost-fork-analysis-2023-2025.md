@@ -15,6 +15,20 @@ In this article, I use Statcast pitch-level data to examine Senga's forkball acr
 
 > The Google Colab notebook used for this analysis is linked at the bottom of the article.
 
+---
+
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Statcast** | MLB's pitch and ball-tracking system installed in every stadium. Automatically measures velocity, spin rate, movement, and location |
+| **Split-finger fastball (SFF)** | A pitch with large downward break — what makes Senga's "ghost fork" so effective |
+| **Whiff%** | Percentage of swings that result in a miss. Higher = more swing-and-miss ability |
+| **Usage%** | Percentage of total pitches thrown that are a specific pitch type |
+| **IL (Injured List)** | MLB's injured player registration system. Minimum 10-day or 60-day periods |
+
+---
+
 ## Overview of the Four Periods
 
 | Period | Starts | Pitches | FF (Four-Seam) Avg Velo | Pitch Types |

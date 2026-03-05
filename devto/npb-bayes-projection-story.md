@@ -30,6 +30,21 @@ Here's what happened over 15 steps.
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Marcel method** | A simple projection method using a 3-year weighted average of past stats (weights: 5:4:3, recent years weighted higher) |
+| **Bayesian regression (Stan)** | A statistical method that estimates probability distributions from data, capturing uncertainty in predictions |
+| **wOBA** | Weighted On-Base Average — a batting metric that weights walks, singles, doubles, and home runs differently |
+| **ERA** | Earned Run Average — earned runs allowed per 9 innings. A basic pitcher performance metric |
+| **K% (strikeout rate)** | Percentage of plate appearances ending in a strikeout. More stable year-to-year than ERA |
+| **BB% (walk rate)** | Percentage of plate appearances ending in a walk |
+| **BABIP** | Batting Average on Balls In Play. Seasons far from ~0.300 suggest luck is a factor |
+| **MAE** | Mean Absolute Error — average prediction miss. Lower is better |
+
+---
+
 ## Step 1: Foreign Player Conversion Factors
 
 NPB teams sign foreign players every year. If we can convert their previous-league stats to NPB scale, we should beat league-average predictions.

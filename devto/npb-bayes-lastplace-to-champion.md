@@ -28,6 +28,20 @@ This article applies a Bayesian model (Stan/Ridge correction) to the same questi
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Marcel method** | A simple projection method using a 3-year weighted average of past stats (weights: 5:4:3, recent years weighted higher) |
+| **Bayesian model (Stan/Ridge)** | Statistical methods that estimate probability distributions from data. Stan = probabilistic programming; Ridge = regularized linear regression |
+| **wOBA** | Weighted On-Base Average — a batting metric that weights different outcomes (walk, single, double, HR) |
+| **ERA** | Earned Run Average — earned runs allowed per 9 innings |
+| **K% (strikeout rate)** | Percentage of plate appearances ending in a strikeout. More stable year-to-year than ERA |
+| **BABIP** | Batting Average on Balls In Play. Seasons far from ~0.300 suggest luck is a factor |
+| **MAE** | Mean Absolute Error — average prediction miss. Lower is better |
+
+---
+
 ## What the Bayesian Model Adds
 
 The Bayes model uses Marcel projections as a starting point, then applies three corrections:

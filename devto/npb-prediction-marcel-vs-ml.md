@@ -23,6 +23,19 @@ The key finding: **Marcel outperformed ML on ERA prediction, and the two were es
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Marcel method** | A simple projection method using a 3-year weighted average of past stats (weights: 5:4:3, recent years weighted higher) |
+| **LightGBM / XGBoost** | Gradient boosting tree models — modern machine learning algorithms that learn from features |
+| **OPS** | On-base Plus Slugging — a composite batting metric (OBP + SLG) |
+| **ERA** | Earned Run Average — earned runs allowed per 9 innings |
+| **MAE** | Mean Absolute Error — average prediction miss. Lower is better |
+| **Backtest** | Validating a prediction model using historical data |
+
+---
+
 ## Data Sources
 
 - [Pro Baseball Data Freak (baseball-data.com)](https://baseball-data.com) — NPB batter/pitcher stats, 2015–2025

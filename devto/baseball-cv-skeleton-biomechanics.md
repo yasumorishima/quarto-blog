@@ -29,6 +29,18 @@ I contributed a bug fix to ezc3d via [PR #384](https://github.com/pyomeca/ezc3d/
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Motion capture** | Technology that records body movement as 3D coordinate data. Used in sports analysis, film, and gaming |
+| **C3D file** | A motion capture data format storing full-body marker positions as 3D coordinates |
+| **Biomechanics** | The study of human movement using physics and mechanics |
+| **MediaPipe** | Google's open-source pose estimation AI library. Automatically detects 33 body landmarks from video |
+| **Joint angle** | The angle formed between two adjacent skeletal segments. Used to analyze pitching and hitting mechanics |
+
+---
+
 ## Step 1: 3D Skeleton Visualization from C3D
 
 C3D files contain 3D coordinates of body markers captured by motion capture systems.

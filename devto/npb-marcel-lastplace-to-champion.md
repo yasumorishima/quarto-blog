@@ -22,6 +22,18 @@ Using data from my [NPB prediction app](https://npb-prediction.streamlit.app/), 
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Marcel method** | A simple projection method using a 3-year weighted average of past stats (weights: 5:4:3, recent years weighted higher) |
+| **Pythagorean win%** | Estimates win% from runs scored (RS) and allowed (RA): `RS^1.83 / (RS^1.83 + RA^1.83)` |
+| **wOBA** | Weighted On-Base Average — a batting metric that weights different outcomes (walk, single, double, HR) |
+| **ERA** | Earned Run Average — earned runs allowed per 9 innings |
+| **MAE** | Mean Absolute Error — average prediction miss. Lower is better |
+
+---
+
 ## What Marcel Said Before the Season
 
 "Marcel projected wins" here means a **pre-season prediction** based on aggregating individual player projections into team run scoring and run prevention, then converting to win% via Pythagorean expectation.

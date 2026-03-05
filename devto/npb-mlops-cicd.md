@@ -27,6 +27,19 @@ So I automated it with GitHub Actions, and added model artifact saving and accur
 
 ---
 
+## Key Terms (for first-time readers)
+
+| Term | Meaning |
+|---|---|
+| **Marcel method** | A simple projection method using a 3-year weighted average of past stats (weights: 5:4:3, recent years weighted higher) |
+| **MLOps** | Practices for continuous development, deployment, and maintenance of machine learning models |
+| **GitHub Actions** | GitHub's CI/CD service — automates tests and deployments on code push |
+| **MAE** | Mean Absolute Error — average prediction miss. Lower is better |
+| **FastAPI** | A Python framework for building high-performance web APIs |
+| **Backtest** | Validating a prediction model using historical data |
+
+---
+
 ## 3 Things I Added
 
 | Feature | What I did |
