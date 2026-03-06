@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Fetch all DEV.to article URLs
         env:
-          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+          DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
         run: |
           echo "=== DEV.to Published Articles ==="
           curl -s "https://dev.to/api/articles/me?per_page=100" \
