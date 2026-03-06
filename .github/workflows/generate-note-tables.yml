@@ -1,0 +1,42 @@
+name: Generate Note Table Images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'note/*.md'
+      - 'note/generate-table-images.js'
+      - '.github/workflows/generate-note-tables.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Playwright
+        working-directory: note
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: Generate table images
+        working-directory: note
+        run: node generate-table-images.js
+
+      - name: Commit images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add note/tables/
+          git diff --staged --quiet && echo "No changes" || \
+            git commit -m "auto: generate table images from note/*.md [skip ci]" && git push

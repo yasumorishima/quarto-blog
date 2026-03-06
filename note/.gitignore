@@ -1,0 +1,4 @@
+node_modules/
+note-auth.json
+_table_*.png
+package-lock.json
