@@ -1,0 +1,18 @@
+name: Get DEV.to Article URLs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-urls:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch all DEV.to article URLs
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEVTO_API_KEY }}
+        run: |
+          echo "=== DEV.to Published Articles ==="
+          curl -s "https://dev.to/api/articles/me?per_page=100" \
+            -H "api-key: $DEVTO_API_KEY" \
+            | jq -r '.[] | "\(.title)\n  \(.url)\n"' \
+            | sort
