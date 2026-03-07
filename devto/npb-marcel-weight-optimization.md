@@ -1,7 +1,7 @@
 ---
 title: "Optimizing Marcel Projection Weights for NPB — Grid Search + Bootstrap Validation"
 published: true
-description: "MLB's default Marcel weights (5/4/3) aren't optimal for NPB. I ran a 720-combination grid search on 11 years of NPB data and found statistically significant improvements (p=0.003)."
+description: "The conventional Marcel weights (5/4/3) used in npb-prediction aren't optimal for NPB. I ran a 720-combination grid search on 11 years of NPB data and found statistically significant improvements (p=0.003)."
 tags: baseball, python, statistics, datascience
 canonical_url: https://yasumorishima.github.io/quarto-blog/posts/npb-marcel-weight-optimization/
 ---
@@ -12,9 +12,9 @@ The [Marcel projection system](https://www.tangotiger.net/marcel/) is a simple b
 
 > **GitHub**: https://github.com/yasumorishima/npb-marcel-weight-study
 
-The default parameters were calibrated for **MLB data**:
+I've been using these default parameters in [npb-prediction](https://github.com/yasumorishima/npb-prediction) ([blog post](https://dev.to/yasumorishima/npb-prediction-marcel-vs-ml)), but they were originally calibrated for **MLB data**:
 
-| Parameter | Meaning | MLB Default |
+| Parameter | Meaning | Previous (MLB Default) |
 |---|---|---|
 | w0 / w1 / w2 | Weights for last 3 years | 5 / 4 / 3 |
 | REG_PA | Regression strength (hitters) | 1200 |
@@ -51,7 +51,7 @@ Are these optimal for NPB (Nippon Professional Baseball)? I ran a comprehensive 
 | 8/5/1 | 2000 | .06145 |
 | 4/3/1 | 1200 | .06146 |
 
-MLB default (5/4/3, REG_PA=1200): **.06227 — ranked 224th out of 720**
+Previous (5/4/3, REG_PA=1200): **.06227 — ranked 224th out of 720**
 
 Improvement: .06227 → .06142 = **1.37% MAE reduction**
 
@@ -78,15 +78,15 @@ AVG favors the oldest season (stability), while SLG minimizes it (recency). The 
 | 3/4/2 | 800 | .68304 | .13099 |
 | 3/3/2 | 800 | .68312 | .13118 |
 
-MLB default (5/4/3, REG_IP=600): **.69105 — ranked 75th out of 600**
+Previous (5/4/3, REG_IP=600): **.69105 — ranked 75th out of 600**
 
-Improvement: 1.35% (with 2020) / 1.53% (without 2020)
+Improvement over previous: 1.35% (with 2020) / 1.53% (without 2020)
 
 ## Bootstrap Validation
 
 300 bootstrap resamples to test if the improvement is statistically significant.
 
-**Hitter OPS (8/4/3 reg=2000 vs 5/4/3 reg=1200):**
+**Hitter OPS (optimal 8/4/3 reg=2000 vs previous 5/4/3 reg=1200):**
 
 | Statistic | Value |
 |---|---|
@@ -101,7 +101,7 @@ The lower bound of the 95% CI is above zero — **statistically significant** (p
 
 ### Hitters: More Recency Bias + Stronger Regression
 
-| Feature | MLB | NPB Optimal |
+| Feature | Previous | NPB Optimal |
 |---|---|---|
 | Recent year weight | 5 | **8** |
 | 2-years-ago weight | 3 | **1–3** |
@@ -115,14 +115,14 @@ NPB has higher roster turnover and larger year-to-year variance, making this "tr
 
 ### Pitchers: Last Year's Performance is Most Predictive
 
-| Feature | MLB | NPB Optimal |
+| Feature | Previous | NPB Optimal |
 |---|---|---|
 | Recent year weight | 5 | **3–4** |
 | 1-year-ago weight | 4 | **4–5** |
 | 2-years-ago weight | 3 | **1–2** |
 | Regression (REG_IP) | 600 | **800** |
 
-The most striking finding: **w1 (1-year-ago) is larger than w0 (most recent)**. This contradicts the MLB convention that the most recent season is always most important.
+The most striking finding: **w1 (1-year-ago) is larger than w0 (most recent)**. This contradicts the conventional assumption that the most recent season is always most important.
 
 NPB pitchers show larger year-to-year ERA variance, and incorporating the prior year helps smooth out temporary fluctuations.
 
@@ -149,7 +149,7 @@ All result CSVs are saved in [`results/`](https://github.com/yasumorishima/npb-m
 
 ## Summary
 
-- MLB's default Marcel weights (5/4/3) are **not optimal for NPB**
+- The conventional Marcel weights (5/4/3) are **not optimal for NPB**
 - Hitters: stronger recency (w0=8) + stronger regression (REG_PA=2000)
 - Pitchers: the prior year is more predictive than the most recent year
 - Bootstrap test confirms significance at **p=0.003**
