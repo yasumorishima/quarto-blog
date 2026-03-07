@@ -312,7 +312,19 @@ async function typeWithFormatting(page, text) {
           imgPath = path.resolve(mdDir, imgPath);
         }
         if (imgPath.startsWith("http")) {
-          console.log(`  -> URL image not supported yet, skipping: ${imgPath}`);
+          // URL画像 → note/images/ にダウンロード済みのローカルコピーを探す
+          const urlFilename = path.basename(new URL(imgPath).pathname);
+          const localCopy = path.join(__dirname, "images", urlFilename);
+          if (fs.existsSync(localCopy)) {
+            console.log(`  -> Using local copy: images/${urlFilename}`);
+            await uploadImage(page, localCopy);
+            await page.click(".ProseMirror", { force: true });
+            await page.waitForTimeout(500);
+            await page.keyboard.press("End");
+          } else {
+            console.log(`  -> URL image not found locally, skipping: ${imgPath}`);
+            console.log(`     Run: node download-url-images.js ${path.basename(mdPath)}`);
+          }
         } else if (fs.existsSync(imgPath)) {
           await uploadImage(page, imgPath);
           // アップロード後エディタにフォーカスを戻す

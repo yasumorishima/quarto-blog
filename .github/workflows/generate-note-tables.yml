@@ -6,8 +6,13 @@ on:
     paths:
       - 'note/*.md'
       - 'note/generate-table-images.js'
+      - 'note/download-url-images.js'
       - '.github/workflows/generate-note-tables.yml'
   workflow_dispatch:
+    inputs:
+      memo:
+        description: 'What triggered this run?'
+        required: false
 
 permissions:
   contents: write
@@ -29,6 +34,10 @@ jobs:
           npm install playwright
           npx playwright install chromium --with-deps
 
+      - name: Download URL images from markdown
+        working-directory: note
+        run: node download-url-images.js
+
       - name: Generate table images
         working-directory: note
         run: node generate-table-images.js
@@ -37,6 +46,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add note/tables/
+          git add note/tables/ note/images/
           git diff --staged --quiet && echo "No changes" || \
-            git commit -m "auto: generate table images from note/*.md [skip ci]" && git push
+            git commit -m "auto: generate note images from note/*.md [skip ci]" && git push
