@@ -111,7 +111,7 @@ The simultaneous increase in both w0 and REG_PA seems contradictory but is actua
 - **w0=8**: Emphasize recent trends in the weighted average
 - **REG_PA=2000**: Pull extreme performances back to the mean more aggressively
 
-NPB has higher roster turnover and larger year-to-year variance, making this "trust trends but don't trust extremes" approach optimal.
+In NPB data, this "trust trends but don't trust extremes" combination proved optimal.
 
 ### Pitchers: Last Year's Performance is Most Predictive
 
@@ -124,7 +124,7 @@ NPB has higher roster turnover and larger year-to-year variance, making this "tr
 
 The most striking finding: **w1 (1-year-ago) is larger than w0 (most recent)**. This contradicts the conventional assumption that the most recent season is always most important.
 
-NPB pitchers show larger year-to-year ERA variance, and incorporating the prior year helps smooth out temporary fluctuations.
+Incorporating the prior year helps smooth out temporary fluctuations.
 
 ## Recommended Parameters
 
@@ -137,15 +137,7 @@ These parameters will be applied to [npb-prediction](https://github.com/yasumori
 
 ## Reproducibility
 
-Run via GitHub Actions:
-
-```bash
-gh workflow run "Optimize Marcel Weights" \
-  --repo yasumorishima/npb-marcel-weight-study \
-  -f memo="weight optimization"
-```
-
-All result CSVs are saved in [`results/`](https://github.com/yasumorishima/npb-marcel-weight-study/tree/master/results).
+Code and all result CSVs are available at [npb-marcel-weight-study](https://github.com/yasumorishima/npb-marcel-weight-study).
 
 ## Summary
 
