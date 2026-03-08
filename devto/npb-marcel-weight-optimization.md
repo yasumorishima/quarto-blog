@@ -14,7 +14,7 @@ The [Marcel projection system](https://www.tangotiger.net/marcel/) is a simple b
 
 I've been using these default parameters in [npb-prediction](https://github.com/yasumorishima/npb-prediction) ([blog post](https://dev.to/yasumorishima/npb-prediction-marcel-vs-ml)), but they were originally calibrated for **MLB data**:
 
-| Parameter | Meaning | Previous (MLB Default) |
+| Parameter | Meaning | Original (Tango's values) |
 |---|---|---|
 | w0 / w1 / w2 | Weights for N-1 / N-2 / N-3 seasons | 5 / 4 / 3 |
 | REG_PA | Regression strength (hitters) | 1200 |
