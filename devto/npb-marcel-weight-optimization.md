@@ -16,7 +16,7 @@ I've been using these default parameters in [npb-prediction](https://github.com/
 
 | Parameter | Meaning | Previous (MLB Default) |
 |---|---|---|
-| w0 / w1 / w2 | Weights for last 3 years | 5 / 4 / 3 |
+| w0 / w1 / w2 | Weights for N-1 / N-2 / N-3 seasons | 5 / 4 / 3 |
 | REG_PA | Regression strength (hitters) | 1200 |
 | REG_IP | Regression strength (pitchers) | 600 |
 
@@ -64,7 +64,7 @@ Improvement: .06227 → .06142 = **1.37% MAE reduction**
 | SLG | 4/3/1 | 1000 | .04200 |
 | OPS | 8/4/3 | 2000 | .06142 |
 
-AVG favors the oldest season (stability), while SLG minimizes it (recency). The optimal parameters align with each metric's characteristics.
+AVG favors the N-3 season (stability), while SLG minimizes it (recency). The optimal parameters align with each metric's characteristics.
 
 ## Results: Pitchers
 
@@ -99,32 +99,32 @@ The lower bound of the 95% CI is above zero — **statistically significant** (p
 
 ## Key Findings: NPB vs MLB
 
-### Hitters: More Recency Bias + Stronger Regression
+### Hitters: Strong N-1 Bias + Stronger Regression
 
 | Feature | Previous | NPB Optimal |
 |---|---|---|
-| Recent year weight | 5 | **8** |
-| 2-years-ago weight | 3 | **1–3** |
+| N-1 (most recent) weight | 5 | **8** |
+| N-3 weight | 3 | **1–3** |
 | Regression (REG_PA) | 1200 | **2000** |
 
 The simultaneous increase in both w0 and REG_PA seems contradictory but is actually coherent:
-- **w0=8**: Emphasize recent trends in the weighted average
+- **w0=8**: Emphasize the N-1 season in the weighted average
 - **REG_PA=2000**: Pull extreme performances back to the mean more aggressively
 
 In NPB data, this "trust trends but don't trust extremes" combination proved optimal.
 
-### Pitchers: Last Year's Performance is Most Predictive
+### Pitchers: N-2 Season is Most Predictive
 
 | Feature | Previous | NPB Optimal |
 |---|---|---|
-| Recent year weight | 5 | **3–4** |
-| 1-year-ago weight | 4 | **4–5** |
-| 2-years-ago weight | 3 | **1–2** |
+| N-1 (most recent) weight | 5 | **3–4** |
+| N-2 weight | 4 | **4–5** |
+| N-3 weight | 3 | **1–2** |
 | Regression (REG_IP) | 600 | **800** |
 
-The most striking finding: **w1 (1-year-ago) is larger than w0 (most recent)**. This contradicts the conventional assumption that the most recent season is always most important.
+The most striking finding: **w1 (N-2 season) is larger than w0 (N-1 season)**. This contradicts the conventional assumption that the most recent season is always most important.
 
-Incorporating the prior year helps smooth out temporary fluctuations.
+Incorporating the N-2 season helps smooth out temporary fluctuations.
 
 ## Recommended Parameters
 
@@ -142,8 +142,8 @@ Code and all result CSVs are available at [npb-marcel-weight-study](https://gith
 ## Summary
 
 - The conventional Marcel weights (5/4/3) are **not optimal for NPB**
-- Hitters: stronger recency (w0=8) + stronger regression (REG_PA=2000)
-- Pitchers: the prior year is more predictive than the most recent year
+- Hitters: strong N-1 weight (w0=8) + stronger regression (REG_PA=2000)
+- Pitchers: N-2 season is more predictive than N-1 (most recent)
 - Bootstrap test confirms significance at **p=0.003**
 
 Marcel is simple, but there's room for improvement when you calibrate parameters to your league.
