@@ -31,12 +31,16 @@ aisstream.io (WebSocket)
  +-----------------------+    +--------------------+
  | ais-collector          |    | snapshot-cron       |
  |  collector.py (WS)    |    |  snapshot.py        |
- |  api.py (FastAPI)      |    |  auto_push.sh       |
- |  main.py (entrypoint) |    |  (cron every 6h)    |
+ |  land_filter.py        |    |  auto_push.sh       |
+ |  api.py (FastAPI)      |    |  (cron every 6h)    |
+ |  main.py (entrypoint) |    |                     |
  +-----------------------+    +--------------------+
-       |                              |
-   SQLite (ais.db)               GitHub README
-   Leaflet.js map (port 8002)   (snapshot image)
+       |         |                     |
+   SQLite    Leaflet.js map       GitHub README
+   (ais.db)  (port 8002)         (snapshot image)
+       |
+   Natural Earth 10m
+   (land_mask.geojson)
 ```
 
 The entire system runs as Docker containers on a Raspberry Pi 5, collecting data 24/7.
@@ -148,7 +152,33 @@ loadVessels();
 setInterval(loadVessels, 30000);
 ```
 
-![Map screenshot](https://raw.githubusercontent.com/yasumorishima/hormuz-ship-tracker/master/docs/screenshot.png)
+![Map screenshot — dashed rectangle shows the data collection boundary](https://raw.githubusercontent.com/yasumorishima/hormuz-ship-tracker/master/docs/screenshot.png)
+
+### Land Filter (land_filter.py)
+
+AIS data occasionally includes positions on land — caused by GPS drift or building-mounted AIS repeaters. To filter these out, the system uses [Natural Earth](https://www.naturalearthdata.com/) 10m land polygons cropped to the Persian Gulf region.
+
+```python
+from shapely.geometry import Point, shape
+from shapely.ops import unary_union
+from shapely.prepared import prep
+
+# Load and prepare land geometry for fast lookups
+with open("data/land_mask.geojson") as f:
+    data = json.load(f)
+geoms = [shape(feature["geometry"]) for feature in data["features"]]
+land = unary_union(geoms)
+prepared_land = prep(land)
+
+def is_on_land(lat: float, lon: float) -> bool:
+    return prepared_land.contains(Point(lon, lat))
+```
+
+Shapely's `prepared geometry` pre-builds an internal R-tree index, making repeated point-in-polygon checks fast — important since AIS messages arrive multiple times per second.
+
+The filter is applied at three layers: the collector (before DB insert), the API (query results), and the snapshot generator. If the land mask file is missing, the filter fails open (no data is dropped), so data collection continues uninterrupted.
+
+The cropped GeoJSON is just 34 KB (26 polygons) and can be regenerated with `scripts/generate_land_mask.py`.
 
 ### Matplotlib Snapshot (snapshot.py)
 
@@ -238,6 +268,9 @@ docker compose up -d
 | SHA256 hash comparison | Avoid unnecessary git commits during quiet hours |
 | Single-process collector+API | asyncio.gather is sufficient at this scale |
 | Hand-drawn coastline polygons | Avoids shapefile library dependency for snapshot |
+| Natural Earth 10m for land filter | 50m/110m were too coarse — missed Qeshm Island and Bandar Abbas coastline |
+| Shapely prepared geometry | R-tree index for fast repeated point-in-polygon checks on streaming data |
+| Fail-open land filter | If mask is unavailable, data collection continues (availability over accuracy) |
 
 ## Summary
 
