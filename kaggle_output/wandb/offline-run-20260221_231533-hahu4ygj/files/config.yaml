@@ -1,0 +1,64 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    python_version: 3.12.12
+    cli_version: 0.24.0
+    is_jupyter_run: false
+    is_kaggle_kernel: true
+    start_time: 1771715733
+    t:
+      1:
+      - 105
+      2:
+      - 105
+      3:
+      - 2
+      - 4
+      - 13
+      - 16
+      - 42
+      4: 3.12.12
+      5: 0.24.0
+      8:
+      - 2
+      - 13
+      13: linux-x86_64
+    e:
+      kjj6upu0yv0whv9rnkgfq1u8le02wbcp:
+        os: Linux-6.6.113+-x86_64-with-glibc2.35
+        python: CPython 3.12.12
+        started_at: '2026-02-21T23:15:33.030243Z'
+        args:
+        - -f
+        - /tmp/tmp2sekgvqg.json
+        - '--HistoryManager.hist_file=:memory:'
+        program: <python with no main file>
+        root: /kaggle/working
+        host: 70f2952953ea
+        executable: /usr/bin/python3
+        cpu_count: 2
+        cpu_count_logical: 4
+        disk:
+          /:
+            total: '8656922775552'
+            used: '7164910956544'
+        memory:
+          total: '33662472192'
+        writer_id: kjj6upu0yv0whv9rnkgfq1u8le02wbcp
+approach:
+  desc: null
+  value: template_matching
+n_structures:
+  desc: null
+  value: 5
+n_templates:
+  desc: null
+  value: 5
+interpolation:
+  desc: null
+  value: linear
+n_train_structures:
+  desc: null
+  value: 5710

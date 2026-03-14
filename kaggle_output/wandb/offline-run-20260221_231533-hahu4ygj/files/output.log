@@ -1,0 +1,11 @@
+W&B run: template-v1 (mode: offline)
+Submission shape: (9762, 18)
+Average template length difference: 1.7
+Max average length difference: 25.4
+Template assignments (first 5):
+  8ZNQ (len=30): 1AUD(±0), 6T0N(±0), 1RFR(±0), 8EHQ(±0), 8EOF(±0)
+  9CFN (len=59): 5XWY(±0), 4M4O(±0), 2MIY(±0), 2M58(±0), 7ZPI(±0)
+  9E74 (len=255): 9GO0(±1), 8BD5(±1), 8BD6(±1), 7PLA(±1), 8WMN(±1)
+  9E75 (len=165): 8Z8U(±1), 6JQ5(±1), 8Z9K(±1), 1YSH(±2), 3AM1(±3)
+  9E9Q (len=101): 6CC3(±0), 3SUX(±0), 3SUY(±0), 4RZD(±0), 1S9S(±0)
+Saved: /kaggle/working/submission.csv  (1239.4 KB)

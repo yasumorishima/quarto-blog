@@ -1,0 +1,136 @@
+[{"stream_name":"stderr","time":7.018756654,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.018863274,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.018869234,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.018872934,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.64795382,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.64799124,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.64799661,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.64800055,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":12.161456506,"data":"Libraries loaded.\n"}
+,{"stream_name":"stdout","time":12.161516426,"data":"WANDB_MODE: offline\n"}
+,{"stream_name":"stdout","time":12.175217849,"data":"=== /kaggle/input/ structure ===\n"}
+,{"stream_name":"stdout","time":12.175252359,"data":"  competitions/\n"}
+,{"stream_name":"stdout","time":12.175257049,"data":"    stanford-rna-3d-folding-2\n"}
+,{"stream_name":"stdout","time":12.175260169,"data":"\n"}
+,{"stream_name":"stdout","time":12.175262929,"data":"DATA_DIR: /kaggle/input/competitions/stanford-rna-3d-folding-2\n"}
+,{"stream_name":"stdout","time":12.175265879,"data":"\n"}
+,{"stream_name":"stdout","time":12.175269309,"data":"CSV files:\n"}
+,{"stream_name":"stdout","time":12.175272409,"data":"  sample_submission.csv\n"}
+,{"stream_name":"stdout","time":12.175275399,"data":"  test_sequences.csv\n"}
+,{"stream_name":"stdout","time":12.175278049,"data":"  train_labels.csv\n"}
+,{"stream_name":"stdout","time":12.175279909,"data":"  train_sequences.csv\n"}
+,{"stream_name":"stdout","time":12.175281829,"data":"  validation_labels.csv\n"}
+,{"stream_name":"stdout","time":12.175283729,"data":"  validation_sequences.csv\n"}
+,{"stream_name":"stdout","time":20.198424278,"data":"Test sequences:     28 rows\n"}
+,{"stream_name":"stdout","time":20.198462238,"data":"Sample submission:  9762 rows\n"}
+,{"stream_name":"stdout","time":20.198465458,"data":"Train sequences:    5716 rows\n"}
+,{"stream_name":"stdout","time":20.198467638,"data":"Train labels:       7794971 rows\n"}
+,{"stream_name":"stdout","time":20.198469578,"data":"\n"}
+,{"stream_name":"stdout","time":20.198471828,"data":"Train sequences columns: ['target_id', 'sequence', 'temporal_cutoff', 'description', 'stoichiometry', 'all_sequences', 'ligand_ids', 'ligand_SMILES']\n"}
+,{"stream_name":"stdout","time":20.198474018,"data":"Train labels columns:    ['ID', 'resname', 'resid', 'x_1', 'y_1', 'z_1', 'chain', 'copy']\n"}
+,{"stream_name":"stdout","time":20.658617359,"data":"Train labels columns: ['ID', 'resname', 'resid', 'x_1', 'y_1', 'z_1', 'chain', 'copy']\n"}
+,{"stream_name":"stdout","time":29.729469787,"data":"\n"}
+,{"stream_name":"stdout","time":29.729506957,"data":"Training structures loaded: 5710\n"}
+,{"stream_name":"stdout","time":29.729511667,"data":"Length range: 10 - 125580 (mean: 1361.6)\n"}
+,{"stream_name":"stdout","time":29.729515198,"data":"\n"}
+,{"stream_name":"stdout","time":29.729518707,"data":"Test sequences: 28\n"}
+,{"stream_name":"stdout","time":29.729521917,"data":"Test length range: 19 - 4640 (mean: 348.6)\n"}
+,{"stream_name":"stderr","time":30.841822421,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.24.0\n"}
+,{"stream_name":"stderr","time":30.84185699,"data":"\n"}
+,{"stream_name":"stderr","time":30.841861181,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Tracking run with wandb version 0.24.0\n"}
+,{"stream_name":"stderr","time":30.84245934,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: W\u0026B syncing is set to \u001b[1m`offline`\u001b[0m in this directory. Run \u001b[1m`wandb online`\u001b[0m or set \u001b[1mWANDB_MODE=online\u001b[0m to enable cloud syncing.\n"}
+,{"stream_name":"stderr","time":30.84248175,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/offline-run-20260221_231533-hahu4ygj\u001b[0m\n"}
+,{"stream_name":"stderr","time":30.84248566,"data":"\n"}
+,{"stream_name":"stderr","time":30.84248864,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: W\u0026B syncing is set to \u001b[1m`offline`\u001b[0m in this directory. Run \u001b[1m`wandb online`\u001b[0m or set \u001b[1mWANDB_MODE=online\u001b[0m to enable cloud syncing.\n"}
+,{"stream_name":"stderr","time":30.8424934,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run data is saved locally in \u001b[35m\u001b[1m/kaggle/working/wandb/offline-run-20260221_231533-hahu4ygj\u001b[0m\n"}
+,{"stream_name":"stdout","time":32.222574162,"data":"W\u0026B run: template-v1 (mode: offline)\n"}
+,{"stream_name":"stdout","time":32.514315408,"data":"Submission shape: (9762, 18)\n"}
+,{"stream_name":"stdout","time":32.514353218,"data":"Average template length difference: 1.7\n"}
+,{"stream_name":"stdout","time":32.514358208,"data":"Max average length difference: 25.4\n"}
+,{"stream_name":"stdout","time":32.514361778,"data":"\n"}
+,{"stream_name":"stdout","time":32.514364748,"data":"Template assignments (first 5):\n"}
+,{"stream_name":"stdout","time":32.514368088,"data":"  8ZNQ (len=30): 1AUD(±0), 6T0N(±0), 1RFR(±0), 8EHQ(±0), 8EOF(±0)\n"}
+,{"stream_name":"stdout","time":32.514372898,"data":"  9CFN (len=59): 5XWY(±0), 4M4O(±0), 2MIY(±0), 2M58(±0), 7ZPI(±0)\n"}
+,{"stream_name":"stdout","time":32.514376318000004,"data":"  9E74 (len=255): 9GO0(±1), 8BD5(±1), 8BD6(±1), 7PLA(±1), 8WMN(±1)\n"}
+,{"stream_name":"stdout","time":32.514379718,"data":"  9E75 (len=165): 8Z8U(±1), 6JQ5(±1), 8Z9K(±1), 1YSH(±2), 3AM1(±3)\n"}
+,{"stream_name":"stdout","time":32.514383078,"data":"  9E9Q (len=101): 6CC3(±0), 3SUX(±0), 3SUY(±0), 4RZD(±0), 1S9S(±0)\n"}
+,{"stream_name":"stderr","time":32.664270674,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":32.664299704,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":32.664305053,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: avg_template_len_diff ▁\n"}
+,{"stream_name":"stderr","time":32.664310253,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: max_template_len_diff ▁\n"}
+,{"stream_name":"stderr","time":32.664313813,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     n_submission_rows ▁\n"}
+,{"stream_name":"stderr","time":32.664317393,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      n_test_sequences ▁\n"}
+,{"stream_name":"stderr","time":32.664322094,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    n_train_structures ▁\n"}
+,{"stream_name":"stderr","time":32.664325814,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_max ▁\n"}
+,{"stream_name":"stderr","time":32.664329143,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          seq_len_mean ▁\n"}
+,{"stream_name":"stderr","time":32.664332794,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_min ▁\n"}
+,{"stream_name":"stderr","time":32.664339903,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    submission_columns ▁\n"}
+,{"stream_name":"stderr","time":32.664364173,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_len_max ▁\n"}
+,{"stream_name":"stderr","time":32.664367653,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                    +2 ...\n"}
+,{"stream_name":"stderr","time":32.664370633,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":32.664373703,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":32.664376663,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: avg_template_len_diff 1.72143\n"}
+,{"stream_name":"stderr","time":32.664379603,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: max_template_len_diff 25.4\n"}
+,{"stream_name":"stderr","time":32.664382583,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     n_submission_rows 9762\n"}
+,{"stream_name":"stderr","time":32.664386183,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      n_test_sequences 28\n"}
+,{"stream_name":"stderr","time":32.664389483,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    n_train_structures 5710\n"}
+,{"stream_name":"stderr","time":32.664392854,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_max 4640\n"}
+,{"stream_name":"stderr","time":32.664396583,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          seq_len_mean 348.64286\n"}
+,{"stream_name":"stderr","time":32.664399843,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_min 19\n"}
+,{"stream_name":"stderr","time":32.664403723,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    submission_columns 18\n"}
+,{"stream_name":"stderr","time":32.664407473,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_len_max 125580\n"}
+,{"stream_name":"stderr","time":32.664411273,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                    +2 ...\n"}
+,{"stream_name":"stderr","time":32.664414753,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":32.664418233,"data":"\n"}
+,{"stream_name":"stderr","time":32.664421784,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":32.664425413000004,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run history:\n"}
+,{"stream_name":"stderr","time":32.664428893,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: avg_template_len_diff ▁\n"}
+,{"stream_name":"stderr","time":32.664432473,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: max_template_len_diff ▁\n"}
+,{"stream_name":"stderr","time":32.664435963,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     n_submission_rows ▁\n"}
+,{"stream_name":"stderr","time":32.664439693,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      n_test_sequences ▁\n"}
+,{"stream_name":"stderr","time":32.664443154,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    n_train_structures ▁\n"}
+,{"stream_name":"stderr","time":32.664446554,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_max ▁\n"}
+,{"stream_name":"stderr","time":32.664450023,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          seq_len_mean ▁\n"}
+,{"stream_name":"stderr","time":32.664453294,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_min ▁\n"}
+,{"stream_name":"stderr","time":32.664456763,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    submission_columns ▁\n"}
+,{"stream_name":"stderr","time":32.664460433,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_len_max ▁\n"}
+,{"stream_name":"stderr","time":32.664464253,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                    +2 ...\n"}
+,{"stream_name":"stderr","time":32.664467983,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":32.664471433,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Run summary:\n"}
+,{"stream_name":"stderr","time":32.664475293,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: avg_template_len_diff 1.72143\n"}
+,{"stream_name":"stderr","time":32.664486893,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: max_template_len_diff 25.4\n"}
+,{"stream_name":"stderr","time":32.664490673,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:     n_submission_rows 9762\n"}
+,{"stream_name":"stderr","time":32.664494413,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:      n_test_sequences 28\n"}
+,{"stream_name":"stderr","time":32.664498203,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    n_train_structures 5710\n"}
+,{"stream_name":"stderr","time":32.664504293,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_max 4640\n"}
+,{"stream_name":"stderr","time":32.664508154,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:          seq_len_mean 348.64286\n"}
+,{"stream_name":"stderr","time":32.664511734,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:           seq_len_min 19\n"}
+,{"stream_name":"stderr","time":32.664515283,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:    submission_columns 18\n"}
+,{"stream_name":"stderr","time":32.664518683,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:         train_len_max 125580\n"}
+,{"stream_name":"stderr","time":32.664522233,"data":"\u001b[34m\u001b[1mwandb\u001b[0m:                    +2 ...\n"}
+,{"stream_name":"stderr","time":32.664525743,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \n"}
+,{"stream_name":"stderr","time":32.665113743,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: You can sync this run to the cloud by running:\n"}
+,{"stream_name":"stderr","time":32.665139683,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[1mwandb sync /kaggle/working/wandb/offline-run-20260221_231533-hahu4ygj\u001b[0m\n"}
+,{"stream_name":"stderr","time":32.665144263,"data":"\n"}
+,{"stream_name":"stderr","time":32.665157933,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: You can sync this run to the cloud by running:\n"}
+,{"stream_name":"stderr","time":32.665161883,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: \u001b[1mwandb sync /kaggle/working/wandb/offline-run-20260221_231533-hahu4ygj\u001b[0m\n"}
+,{"stream_name":"stderr","time":32.666177932,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/offline-run-20260221_231533-hahu4ygj/logs\u001b[0m\n"}
+,{"stream_name":"stderr","time":32.666195143,"data":"\n"}
+,{"stream_name":"stderr","time":32.666199443,"data":"\u001b[34m\u001b[1mwandb\u001b[0m: Find logs at: \u001b[35m\u001b[1m./wandb/offline-run-20260221_231533-hahu4ygj/logs\u001b[0m\n"}
+,{"stream_name":"stdout","time":32.666938572,"data":"Saved: /kaggle/working/submission.csv  (1239.4 KB)\n"}
+,{"stream_name":"stdout","time":32.666958242,"data":"\n"}
+,{"stream_name":"stdout","time":32.666962542,"data":"W\u0026B run finished (offline). Sync with:\n"}
+,{"stream_name":"stdout","time":32.666966112,"data":"  kaggle-wandb-sync run stanford-rna-3d-folding-2/ --skip-push\n"}
+,{"stream_name":"stderr","time":35.908029504,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":35.908065304,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":36.074091841,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":36.074118731,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":36.709984233,"data":"/usr/local/lib/python3.12/dist-packages/traitlets/traitlets.py:2915: FutureWarning: --Exporter.preprocessors=[\"remove_papermill_header.RemovePapermillHeader\"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.\n"}
+,{"stream_name":"stderr","time":36.710035484,"data":"  warn(\n"}
+,{"stream_name":"stderr","time":36.746866901,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":37.007372701,"data":"[NbConvertApp] Writing 35295 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":39.413333461,"data":"/usr/local/lib/python3.12/dist-packages/traitlets/traitlets.py:2915: FutureWarning: --Exporter.preprocessors=[\"nbconvert.preprocessors.ExtractOutputPreprocessor\"] for containers is deprecated in traitlets 5.0. You can pass `--Exporter.preprocessors item` ... multiple times to add items to a list.\n"}
+,{"stream_name":"stderr","time":39.413373651,"data":"  warn(\n"}
+,{"stream_name":"stderr","time":39.437212409,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":40.248123948,"data":"[NbConvertApp] Writing 337572 bytes to __results__.html\n"}
+]

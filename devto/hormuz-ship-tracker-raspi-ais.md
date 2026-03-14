@@ -39,7 +39,7 @@ aisstream.io (WebSocket)
    Leaflet.js map (port 8002)   (snapshot image)
 ```
 
-This RPi5 already runs three other Docker containers: an NPB prediction API (port 8000), an MLB win probability API (port 8001), and a Streamlit keepalive service. The ship tracker adds two more containers.
+The entire system runs as Docker containers on a Raspberry Pi 5, collecting data 24/7.
 
 ## Data Source: aisstream.io
 
