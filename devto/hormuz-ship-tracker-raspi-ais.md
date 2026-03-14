@@ -1,6 +1,6 @@
 ---
 title: "Building a Real-Time AIS Ship Tracker for the Strait of Hormuz on Raspberry Pi 5"
-published: true
+published: false
 description: A practical walkthrough of building a vessel tracking system using aisstream.io WebSocket API, SQLite, FastAPI, Leaflet.js, and matplotlib — all running in Docker on a Raspberry Pi 5.
 tags: python, raspberrypi, docker, fastapi
 canonical_url: https://zenn.dev/shogaku/articles/hormuz-ship-tracker-raspi-ais
