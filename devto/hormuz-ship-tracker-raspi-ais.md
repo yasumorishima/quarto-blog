@@ -1,279 +1,130 @@
 ---
-title: "Building a Real-Time AIS Ship Tracker for the Strait of Hormuz on Raspberry Pi 5"
-published: false
-description: A practical walkthrough of building a vessel tracking system using aisstream.io WebSocket API, SQLite, FastAPI, Leaflet.js, and matplotlib — all running in Docker on a Raspberry Pi 5.
-tags: python, raspberrypi, docker, fastapi
+title: "Monitoring the Strait of Hormuz Blockade with Open AIS Data and a Raspberry Pi"
+published: true
+description: Building a real-time maritime monitoring system that quantifies the impact of the 2026 Hormuz crisis using free AIS data, Python, and a Raspberry Pi 5.
+tags: python, raspberrypi, docker, maritime
 canonical_url: https://zenn.dev/shogaku/articles/hormuz-ship-tracker-raspi-ais
 ---
 
 ## What This Is
 
-A real-time AIS (Automatic Identification System) vessel tracking system for the Strait of Hormuz, running on a Raspberry Pi 5. This article is a personal study note documenting the build.
+In March 2026, shipping through the Strait of Hormuz — through which roughly 20% of the world's oil passes — came to a near-complete halt. I built a monitoring system to observe this in real time using free AIS (Automatic Identification System) data and a Raspberry Pi 5.
 
-The Strait of Hormuz is one of the world's most critical maritime chokepoints, with roughly 20% of global oil transport passing through it.
+This post covers the system architecture, the analytics pipeline, and what the data actually shows.
 
-## AIS Basics
+**Repository**: [yasumorishima/hormuz-ship-tracker](https://github.com/yasumorishima/hormuz-ship-tracker)
 
-AIS is an international maritime safety system where vessels broadcast their position, speed, course, and identity via VHF radio. Ships over 300 gross tonnage on international voyages are required to carry it.
+## AIS Data
 
-Two message types matter for this project:
+AIS is a maritime safety system where vessels automatically broadcast their position, speed, course, name, and type over VHF radio. It's mandatory for international vessels over 300 gross tonnage.
 
-- **PositionReport**: latitude, longitude, speed, course, heading (sent every few seconds to minutes)
-- **ShipStaticData**: ship name, type code, destination, dimensions, draught (sent every few minutes)
+[aisstream.io](https://aisstream.io/) aggregates terrestrial AIS receiver data worldwide and streams it via a free WebSocket API. This is the data source for this project.
 
 ## Architecture
 
 ```
 aisstream.io (WebSocket)
-       |
-       v
- Raspberry Pi 5 (Docker)
- +-----------------------+    +--------------------+
- | ais-collector          |    | snapshot-cron       |
- |  collector.py (WS)    |    |  snapshot.py        |
- |  land_filter.py        |    |  auto_push.sh       |
- |  api.py (FastAPI)      |    |  (cron every 6h)    |
- |  main.py (entrypoint) |    |                     |
- +-----------------------+    +--------------------+
-       |         |                     |
-   SQLite    Leaflet.js map       GitHub README
-   (ais.db)  (port 8002)         (snapshot image)
-       |
-   Natural Earth 10m
-   (land_mask.geojson)
+  → Collector (AIS receiver + land filter + SQLite)
+  → Analytics Engine (gate-line transit detection + vessel classification)
+  → FastAPI + Leaflet.js + Chart.js (dashboard)
+  → matplotlib (6-hourly snapshot → GitHub auto-push)
 ```
 
-The entire system runs as Docker containers on a Raspberry Pi 5, collecting data 24/7.
+Two Docker containers run 24/7 on a Raspberry Pi 5: the main collector/API and a snapshot cron job.
 
-## Data Source: aisstream.io
+## What the Data Shows
 
-[aisstream.io](https://aisstream.io/) provides a free WebSocket API for real-time global AIS data. Registration with a GitHub account gives you an API key. You specify bounding boxes and message types in the subscription message, and only matching data streams in.
+### 67% Anchored Ratio
 
-## Implementation Details
+Of ~290 monitored vessels, about 67% were stationary (speed < 0.5 knots). In a typical port area, this ratio is usually around 30–40%. The elevated value is notable.
 
-### WebSocket Collector (collector.py)
+### 35 Vessels Waiting 6+ Hours
 
-Connects to aisstream.io, filters to the Strait of Hormuz bounding box, and stores everything in SQLite.
+Vessels that haven't moved for over 6 hours are counted as the "waiting fleet." About 35 vessels met this criterion, with 11 stuck for over 24 hours.
 
-```python
-BBOX = [[23.5, 54.0], [27.5, 58.5]]
+Waiting fleet flags (estimated from MMSI MID):
 
-subscribe_msg = {
-    "APIKey": API_KEY,
-    "BoundingBoxes": [BBOX],
-    "FilterMessageTypes": ["PositionReport", "ShipStaticData"],
-}
-```
-
-ShipStaticData and PositionReport arrive as separate messages. Static data (name, type, destination, dimensions) is cached in an in-memory dict keyed by MMSI, then joined with position data on insertion.
-
-```python
-static_cache: dict[int, dict] = {}
-
-if msg_type == "ShipStaticData":
-    meta = msg.get("Message", {}).get("ShipStaticData", {})
-    mmsi = msg.get("MetaData", {}).get("MMSI")
-    if mmsi:
-        static_cache[mmsi] = {
-            "ship_name": meta.get("Name", "").strip(),
-            "ship_type": meta.get("Type"),
-            "destination": meta.get("Destination", "").strip(),
-            "draught": meta.get("MaximumStaticDraught"),
-            "length": meta.get("Dimension", {}).get("A", 0)
-                    + meta.get("Dimension", {}).get("B", 0),
-            "width": meta.get("Dimension", {}).get("C", 0)
-                    + meta.get("Dimension", {}).get("D", 0),
-        }
-```
-
-Ship dimensions in AIS are encoded as four distance values (A/B/C/D from a reference point). A+B = overall length, C+D = overall width.
-
-Auto-reconnection on connection drops:
-
-```python
-except (websockets.exceptions.ConnectionClosed, OSError) as e:
-    logger.warning("Connection lost: %s -- reconnecting in 10s", e)
-    await asyncio.sleep(10)
-```
-
-### FastAPI Endpoints (api.py)
-
-Three endpoints serve the frontend:
-
-| Endpoint | Purpose |
+| Flag | Count |
 |---|---|
-| `GET /api/latest` | Latest position per vessel (last 30 min) |
-| `GET /api/tracks/{mmsi}?hours=6` | Track history for a specific vessel |
-| `GET /api/stats` | Vessel counts by type |
+| Panama | 9 |
+| Marshall Islands | 3 |
+| UAE | 3 |
+| Kuwait | 2 |
+| Others | 1 each |
 
-AIS type codes are numeric. The API converts them to readable labels:
+Panama and Marshall Islands are open registries — commonly used by large commercial ships and tankers. Seven tankers were among the waiting fleet.
 
-```python
-SHIP_TYPE_LABELS = {
-    range(70, 80): "Cargo",
-    range(80, 90): "Tanker",
-    range(60, 70): "Passenger",
-    range(30, 36): "Fishing/Towing/Dredging",
-    range(36, 40): "Military/Sailing/Pleasure",
-    range(40, 50): "HSC",
-}
-```
+### Near-Zero Strait Transits
 
-### Concurrent Execution (main.py)
+A virtual gate line across the narrowest point of the Strait of Hormuz detects vessel crossings automatically. Only 1 transit was detected in 24 hours.
 
-The collector and FastAPI server run in a single process via `asyncio.gather`:
+**Important caveat**: aisstream.io's free tier relies on **terrestrial AIS receivers**. Coverage in the open water of the Strait is limited. "No data" doesn't necessarily mean "no ships" — satellite AIS would provide a more complete picture.
 
-```python
-async def main():
-    await asyncio.gather(
-        collect(),
-        run_server(),
-    )
-```
+### Traffic Concentrated Around UAE Coast
 
-### Leaflet.js Live Map (map.html)
+Most data clusters around Dubai, Jebel Ali, and Fujairah. Three gate lines capture port approach traffic:
 
-A dark-themed map using CARTO dark tiles. Vessels are color-coded by type:
+| Gate | Inbound | Outbound |
+|---|---|---|
+| Dubai / Jebel Ali Approach | 20 | 9 |
+| Fujairah Approach | 0 | 7 |
+| Strait of Hormuz | 0 | 1 |
 
-- Tanker: orange
-- Cargo: blue
-- Passenger: green
-- Fishing: purple
-- Military: red
-- HSC: cyan
-- Unknown: gray
+Dubai inbound significantly exceeds outbound. Fujairah shows only outbound traffic — likely vessels departing after bunkering (refueling).
 
-Clicking a vessel shows a popup with name, speed, course, flag, destination, and dimensions. A "Show Track (6h)" button draws the vessel's recent path as a dashed polyline.
+## Technical Implementation
 
-The map auto-refreshes every 30 seconds:
+### Gate-Line Transit Detection
 
-```javascript
-loadVessels();
-setInterval(loadVessels, 30000);
-```
-
-![Map screenshot — dashed rectangle shows the data collection boundary](https://raw.githubusercontent.com/yasumorishima/hormuz-ship-tracker/master/docs/screenshot.png)
-
-### Land Filter (land_filter.py)
-
-AIS data occasionally includes positions on land — caused by GPS drift or building-mounted AIS repeaters. To filter these out, the system uses [Natural Earth](https://www.naturalearthdata.com/) 10m land polygons cropped to the Persian Gulf region.
+Virtual gate lines (line segments) are defined at the strait and port approaches. For each vessel, consecutive position reports are checked for intersection with each gate using computational geometry:
 
 ```python
-from shapely.geometry import Point, shape
-from shapely.ops import unary_union
-from shapely.prepared import prep
-
-# Load and prepare land geometry for fast lookups
-with open("data/land_mask.geojson") as f:
-    data = json.load(f)
-geoms = [shape(feature["geometry"]) for feature in data["features"]]
-land = unary_union(geoms)
-prepared_land = prep(land)
-
-def is_on_land(lat: float, lon: float) -> bool:
-    return prepared_land.contains(Point(lon, lat))
+def segments_intersect(p1, p2, p3, p4):
+    d1 = cross_product(p3, p4, p1)
+    d2 = cross_product(p3, p4, p2)
+    d3 = cross_product(p1, p2, p3)
+    d4 = cross_product(p1, p2, p4)
+    if ((d1 > 0 and d2 < 0) or (d1 < 0 and d2 > 0)) and \
+       ((d3 > 0 and d4 < 0) or (d3 < 0 and d4 > 0)):
+        return True
+    return False
 ```
 
-Shapely's `prepared geometry` pre-builds an internal R-tree index, making repeated point-in-polygon checks fast — important since AIS messages arrive multiple times per second.
+Direction (INBOUND/OUTBOUND) is determined by the sign of the cross product relative to the gate vector. Same-vessel crossings within 6 hours are deduplicated.
 
-The filter is applied at three layers: the collector (before DB insert), the API (query results), and the snapshot generator. If the land mask file is missing, the filter fails open (no data is dropped), so data collection continues uninterrupted.
+### Data-Driven Situation Assessment
 
-The cropped GeoJSON is just 34 KB (26 polygons) and can be regenerated with `scripts/generate_land_mask.py`.
-
-### Matplotlib Snapshot (snapshot.py)
-
-Every 6 hours, a cron job generates a dark-themed static map image from SQLite data. Approximate coastline polygons provide geographic context without requiring shapefile dependencies.
+All dashboard text is auto-generated from data patterns. The system classifies the situation level based on strait transits, anchored ratio, and waiting fleet size:
 
 ```python
-fig, ax = plt.subplots(figsize=(14, 9), facecolor="#0a0a1a")
-ax.set_facecolor("#0d1b2a")
-
-for segment in COASTLINE_SEGMENTS:
-    lats, lons = zip(*segment)
-    ax.plot(lons, lats, color="#2a3a4a", linewidth=1.2, zorder=2)
-    ax.fill(lons, lats, color="#111822", alpha=0.6, zorder=1)
+if strait_transits == 0 and anchored_pct > 40:
+    return {"level": "critical", "title": "Strait Transit Suspended"}
+elif 0 < strait_transits <= 5:
+    return {"level": "elevated", "title": "Limited Strait Transit"}
+else:
+    return {"level": "normal", "title": "Monitoring Active"}
 ```
 
-### Auto-Push with SHA256 Diff (auto_push.sh)
+When conditions normalize, the UI automatically shifts to normal mode — no hardcoded crisis messaging.
 
-The snapshot is compared against the previous version using SHA256 hashing. If unchanged (e.g., during quiet periods), no commit is created.
+### MMSI → Flag Mapping
 
-```bash
-NEW_HASH=$(sha256sum "$SNAPSHOT" | cut -d' ' -f1)
-OLD_HASH=$(sha256sum "$DEST_IMG" | cut -d' ' -f1)
+Since aisstream.io's metadata doesn't reliably include country codes, flags are derived from the first 3 digits of the 9-digit MMSI number (Maritime Identification Digits). The system maps 100+ MIDs to countries.
 
-if [ "$NEW_HASH" = "$OLD_HASH" ]; then
-    echo "No change in snapshot -- skipping push"
-    exit 0
-fi
+### Destination Normalization
 
-git commit -m "snapshot: ${VESSEL_COUNT} vessels at ${TIMESTAMP}"
-git push origin HEAD
-```
+AIS destination fields are free-text and wildly inconsistent (DUBAI, AE DXB, AEDXB, DMC DUBAI, etc.). Over 40 variants are mapped to canonical port names.
 
-## Docker Setup
+## Limitations
 
-Two containers managed by docker-compose:
-
-```yaml
-services:
-  ais-collector:
-    build: .
-    container_name: hormuz-tracker
-    restart: unless-stopped
-    ports:
-      - "8002:8002"
-    volumes:
-      - ./data:/app/data
-      - .:/repo
-
-  snapshot-cron:
-    build: .
-    container_name: hormuz-snapshot
-    restart: unless-stopped
-    entrypoint: /bin/bash
-    command:
-      - -c
-      - |
-        apt-get update -qq && apt-get install -y -qq git cron >/dev/null 2>&1
-        echo "0 0,6,12,18 * * * /bin/bash /app/src/auto_push.sh" | crontab -
-        /bin/bash /app/src/auto_push.sh || true
-        cron -f
-    depends_on:
-      - ais-collector
-```
-
-Both containers share the SQLite database via a volume mount (`./data:/app/data`).
-
-## How to Run
-
-```bash
-# Create .env
-echo "AISSTREAM_API_KEY=your-api-key" > .env
-echo "GITHUB_TOKEN=your-github-token" >> .env
-echo "GITHUB_REPO=your-username/hormuz-ship-tracker" >> .env
-
-# Start
-docker compose up -d
-
-# Open http://<your-raspberry-pi-ip>:8002
-```
-
-## Design Decisions
-
-| Decision | Rationale |
-|---|---|
-| SQLite over PostgreSQL | Single-file DB, minimal resources on RPi |
-| In-memory static cache | StaticData and PositionReport arrive as separate messages |
-| SHA256 hash comparison | Avoid unnecessary git commits during quiet hours |
-| Single-process collector+API | asyncio.gather is sufficient at this scale |
-| Hand-drawn coastline polygons | Avoids shapefile library dependency for snapshot |
-| Natural Earth 10m for land filter | 50m/110m were too coarse — missed Qeshm Island and Bandar Abbas coastline |
-| Shapely prepared geometry | R-tree index for fast repeated point-in-polygon checks on streaming data |
-| Fail-open land filter | If mask is unavailable, data collection continues (availability over accuracy) |
+- **Terrestrial AIS coverage**: Free aisstream.io data comes from shore-based receivers. Open-water coverage (mid-strait) is limited
+- **AIS speed 102.3 knots**: This is the "not available" sentinel value (0x3FF in the AIS spec) — not an actual speed. Must be filtered
+- **Collection period**: Only a few days of data so far. Long-term trend analysis requires further accumulation
 
 ## Summary
 
-Using aisstream.io's WebSocket API, a real-time vessel tracking system for the Strait of Hormuz can be built with relatively little code and deployed on a Raspberry Pi 5 alongside other services. The system collects AIS data continuously, serves a live map via FastAPI + Leaflet.js, and pushes periodic snapshots to GitHub.
+Using aisstream.io's free API and a Raspberry Pi 5, this system continuously collects and analyzes vessel traffic across the entire Persian Gulf. The high anchored ratio, the presence of a waiting fleet, and the near-absence of strait transits are all observable in the data.
 
-Data source: [aisstream.io](https://aisstream.io/)
+Data collection continues, and longer-term trends will emerge as the dataset grows.
+
+Data source: [aisstream.io](https://aisstream.io/) / Land polygons: [Natural Earth](https://www.naturalearthdata.com/)
