@@ -6,11 +6,13 @@ tags: python, raspberrypi, docker, maritime
 canonical_url: https://zenn.dev/shogaku/articles/hormuz-ship-tracker-raspi-ais
 ---
 
+> **Data scope disclaimer**: All data in this article comes from [aisstream.io](https://aisstream.io/)'s **terrestrial AIS receivers**. Coverage in open water (mid-strait) is limited; satellite AIS would provide a more complete picture. All figures are from **mid-March 2026** and the situation is evolving daily.
+
 ## What This Is
 
-In March 2026, shipping through the Strait of Hormuz — through which roughly 20% of the world's oil passes — came to a near-complete halt. I built a monitoring system to observe this in real time using free AIS (Automatic Identification System) data and a Raspberry Pi 5.
+In March 2026, shipping through the Strait of Hormuz — through which roughly 20% of the world's oil passes — was reported to be severely restricted. I built a monitoring system to observe this using free AIS (Automatic Identification System) data and a Raspberry Pi 5.
 
-This post covers the system architecture, the analytics pipeline, and what the data actually shows.
+This post covers the system architecture, the analytics pipeline, and what the data shows within the limitations of terrestrial AIS coverage.
 
 **Repository**: [yasumorishima/hormuz-ship-tracker](https://github.com/yasumorishima/hormuz-ship-tracker)
 
@@ -34,11 +36,11 @@ Two Docker containers run 24/7 on a Raspberry Pi 5: the main collector/API and a
 
 ## What the Data Shows
 
-### 67% Anchored Ratio
+### 67% Anchored Ratio (mid-March 2026)
 
 Of ~290 monitored vessels, about 67% were stationary (speed < 0.5 knots). In a typical port area, this ratio is usually around 30–40%. The elevated value is notable.
 
-### 35 Vessels Waiting 6+ Hours
+### 35 Vessels Waiting 6+ Hours (mid-March 2026)
 
 Vessels that haven't moved for over 6 hours are counted as the "waiting fleet." About 35 vessels met this criterion, with 11 stuck for over 24 hours.
 
@@ -54,13 +56,13 @@ Waiting fleet flags (estimated from MMSI MID):
 
 Panama and Marshall Islands are open registries — commonly used by large commercial ships and tankers. Seven tankers were among the waiting fleet.
 
-### Near-Zero Strait Transits
+### Near-Zero Strait Transits on Terrestrial AIS (mid-March 2026)
 
 A virtual gate line across the narrowest point of the Strait of Hormuz detects vessel crossings automatically. Only 1 transit was detected in 24 hours.
 
-**Important caveat**: aisstream.io's free tier relies on **terrestrial AIS receivers**. Coverage in the open water of the Strait is limited. "No data" doesn't necessarily mean "no ships" — satellite AIS would provide a more complete picture.
+**Important caveat**: this only reflects what aisstream.io's **terrestrial AIS receivers** can capture. Coverage in mid-strait open water is limited. News reports indicate some vessels (Turkish, Indian, Saudi-flagged) have been allowed limited passage — these may not appear in terrestrial AIS data. **"No data" does not equal "no ships."** This caveat applies to all figures in this article.
 
-### Traffic Concentrated Around UAE Coast
+### Traffic Concentrated Around UAE Coast (mid-March 2026)
 
 Most data clusters around Dubai, Jebel Ali, and Fujairah. Three gate lines capture port approach traffic:
 
