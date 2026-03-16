@@ -16,6 +16,9 @@ This post covers the system architecture, the analytics pipeline, and what the d
 
 **Repository**: [yasumorishima/hormuz-ship-tracker](https://github.com/yasumorishima/hormuz-ship-tracker)
 
+![Persian Gulf vessel distribution (mid-March 2026) — traffic concentrated around UAE coast, strait center nearly empty](https://raw.githubusercontent.com/yasumorishima/hormuz-ship-tracker/master/docs/snapshot_latest.png)
+*Auto-generated snapshot (every 6 hours). Shows gate line positions, transit IN/OUT stats, and vessel type distribution. Note the concentration around UAE ports and the near-empty strait center.*
+
 ## AIS Data
 
 AIS is a maritime safety system where vessels automatically broadcast their position, speed, course, name, and type over VHF radio. It's mandatory for international vessels over 300 gross tonnage.
