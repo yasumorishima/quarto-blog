@@ -120,16 +120,60 @@ Since aisstream.io's metadata doesn't reliably include country codes, flags are 
 
 AIS destination fields are free-text and wildly inconsistent (DUBAI, AE DXB, AEDXB, DMC DUBAI, etc.). Over 40 variants are mapped to canonical port names.
 
+## 4-Day Data Analysis Update (March 18)
+
+After 4 days of continuous collection (43,000+ position records, 384 unique vessels), several new insights emerged.
+
+### Traffic Density Heatmap
+
+![Traffic Density Heatmap](https://raw.githubusercontent.com/yasumorishima/hormuz-ship-tracker/master/docs/heatmap.png)
+
+*Left: Full Gulf hexbin density. Right: Zoomed strait with AIS dead zone. Bottom: Port area, flag state, and vessel type breakdowns.*
+
+| Metric | Value |
+|---|---|
+| Clean positions | 36,000 |
+| Anomalous (filtered) | 7,300 (17%) |
+| Unique vessels | 384 |
+| Strait crossings confirmed | 0 |
+| Dubai / Jebel Ali gate crossings | 61 |
+
+### Timelapse — 24 Hours of Vessel Movement
+
+![Vessel Movement Timelapse](https://raw.githubusercontent.com/yasumorishima/hormuz-ship-tracker/master/docs/timelapse.gif)
+
+*24-hour vessel movement animation. Positions are linearly interpolated between data points, with land-crossing prevention.*
+
+### AIS Data Quality: What the Anomalies Actually Are
+
+About 17% of positions contained anomalous data. Two distinct patterns were identified:
+
+| Anomaly | Count | Cause |
+|---|---|---|
+| Speed = 102.3 kn | ~3,200 | AIS protocol "not available" sentinel (10-bit 0x3FF) |
+| Speed 40–99 kn | ~4,100 | Coastal receiver decode errors |
+
+The ~48 kn cluster was particularly interesting: on 2026-03-16 at 07:00 UTC, 4 vessels simultaneously appeared at the same coordinates in the strait with identical speeds. This was a single receiver malfunction — no ships were actually there. These anomalies had produced 41 false transit detections, which were eliminated by filtering positions with speed >= 40 kn.
+
+The dashboard now shows anomalous vessels with red dashed markers and a "DATA QUALITY WARNING" popup.
+
+### Browser-Based Replay
+
+The `/replay` endpoint provides a Leaflet.js animated replay with play/pause, speed control (0.25x–16x), timeline scrubbing, and keyboard shortcuts.
+
 ## Limitations
 
 - **Terrestrial AIS coverage**: Free aisstream.io data comes from shore-based receivers. Open-water coverage (mid-strait) is limited
-- **AIS speed 102.3 knots**: This is the "not available" sentinel value (0x3FF in the AIS spec) — not an actual speed. Must be filtered
-- **Collection period**: Only a few days of data so far. Long-term trend analysis requires further accumulation
+- **AIS speed 102.3 knots**: The "not available" sentinel value (0x3FF). Must be filtered
+- **Speed 40–99 kn receiver glitches**: Coastal receiver decode errors produce phantom positions. Transit detection filters speed >= 40 kn
+- **Collection period**: Ongoing collection. Longer-term trend analysis requires further accumulation
 
 ## Summary
 
-Using aisstream.io's free API and a Raspberry Pi 5, this system continuously collects and analyzes vessel traffic across the entire Persian Gulf. The high anchored ratio, the presence of a waiting fleet, and the near-absence of strait transits are all observable in the data.
+Using aisstream.io's free API and a Raspberry Pi 5, this system continuously collects and analyzes vessel traffic across the entire Persian Gulf. After 4 days, 43,000+ positions have been collected, with heatmap visualization, timelapse animation, and data quality analysis fully implemented.
 
-Data collection continues, and longer-term trends will emerge as the dataset grows.
+Statistics are auto-updated every 6 hours.
+
+**[Live Statistics (auto-updated)](https://github.com/yasumorishima/hormuz-ship-tracker/blob/master/docs/STATS.md)** / **[Repository](https://github.com/yasumorishima/hormuz-ship-tracker)**
 
 Data source: [aisstream.io](https://aisstream.io/) / Land polygons: [Natural Earth](https://www.naturalearthdata.com/)
