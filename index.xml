@@ -9,7 +9,7 @@
 <link>https://yasumorishima.github.io/quarto-blog/</link>
 <atom:link href="https://yasumorishima.github.io/quarto-blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Baseball analytics and Kaggle datasets</description>
-<generator>quarto-1.8.27</generator>
+<generator>quarto-1.9.36</generator>
 <lastBuildDate>Wed, 11 Feb 2026 00:00:00 GMT</lastBuildDate>
 <item>
   <title>I built savant-extras: Date Range Support for Baseball Savant Data</title>
