@@ -127,27 +127,27 @@ Small improvement, but consistent — **97% probability of beating Marcel across
 
 | Team | Marcel | Bayesian | Diff | P(Pennant) |
 |---|---|---|---|---|
-| Tigers | **80W (1st)** | 72W (1st) | **-9** | 26.0% |
-| Giants | 71W (3rd) | 71W (2nd) | +0 | 20.2% |
-| Dragons | 69W (5th) | 71W (3rd) | +2 | 21.2% |
-| BayStars | 71W (2nd) | 71W (4th) | -1 | 20.2% |
-| Carp | 70W (4th) | 69W (5th) | -1 | 12.3% |
-| Swallows | 64W (6th) | 61W (6th) | -3 | 0.1% |
+| Tigers | **80.1W (1st)** | 71.5W (1st) | **-8.6** | 26.0% |
+| Giants | 70.7W (3rd) | 71.1W (2nd) | +0.4 | 20.2% |
+| Dragons | 68.8W (5th) | 71.0W (3rd) | +2.2 | 21.2% |
+| BayStars | 71.3W (2nd) | 70.7W (4th) | -0.6 | 20.2% |
+| Carp | 70.4W (4th) | 69.1W (5th) | -1.3 | 12.3% |
+| Swallows | 64.3W (6th) | 61.2W (6th) | -3.1 | 0.1% |
 
-**Tigers dropped from 80W to 72W (-9).** Skill corrections pulled them down. Giants stayed at 71W even after losing Okamoto to MLB. **Four teams within 1 win of each other** — Tigers 26%, Dragons 21%, Giants 20%, BayStars 20%. Swallows at 61W (78% chance of last place) after Murakami's MLB departure.
+**Tigers dropped from 80.1W to 71.5W (-8.6).** Skill corrections pulled them down. Giants at 71.1W even after losing Okamoto to MLB. **Four teams within 0.8 wins** — Tigers 26%, Dragons 21%, Giants 20%, BayStars 20%. Swallows at 61.2W (78% last place) after Murakami's MLB departure.
 
 ### Pacific League — Lions Surge
 
 | Team | Marcel | Bayesian | Diff | P(Pennant) |
 |---|---|---|---|---|
-| Hawks | 80W (1st) | 81W (1st) | +1 | 47.9% |
-| Fighters | 77W (2nd) | 79W (2nd) | +2 | 27.2% |
-| Buffaloes | 74W (3rd) | 78W (3rd) | +4 | 17.6% |
-| Lions | 69W (4th) | 75W (4th) | **+6** | 7.1% |
-| Eagles | 66W (5th) | 67W (5th) | +1 | 0.1% |
-| Marines | 67W (6th) | 65W (6th) | -2 | 0.1% |
+| Hawks | 80.5W (1st) | 81.3W (1st) | +0.8 | 47.9% |
+| Fighters | 76.8W (2nd) | 79.1W (2nd) | +2.3 | 27.2% |
+| Buffaloes | 73.8W (3rd) | 77.5W (3rd) | +3.7 | 17.6% |
+| Lions | 68.6W (4th) | 74.9W (4th) | **+6.3** | 7.1% |
+| Eagles | 65.5W (5th) | 66.7W (5th) | +1.2 | 0.1% |
+| Marines | 67.1W (6th) | 64.9W (6th) | -2.2 | 0.1% |
 
-**Lions +6 wins** — foreign player projections offsetting Imai's MLB departure.
+**Lions +6.3 wins** — foreign player projections offsetting Imai's MLB departure.
 
 ---
 
