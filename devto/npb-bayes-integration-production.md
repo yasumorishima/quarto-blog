@@ -123,31 +123,31 @@ Small improvement, but consistent — **97% probability of beating Marcel across
 
 ## How Did the 2026 Standings Change?
 
-### Central League — Leader Changed
+### Central League — Tigers Runaway Disappears, 4-Team Deadlock
 
 | Team | Marcel | Bayesian | Diff | P(Pennant) |
 |---|---|---|---|---|
-| **Giants** | 71W (3rd) | **74W (1st)** | +3 | 42.6% |
-| Dragons | 69W (5th) | 72W (2nd) | +3 | 20.0% |
-| Tigers | **80W (1st)** | 72W (3rd) | **-8** | 23.2% |
-| BayStars | 71W (2nd) | 70W (4th) | -2 | 7.7% |
-| Carp | 70W (4th) | 69W (5th) | -2 | 6.5% |
-| Swallows | 64W (6th) | 62W (6th) | -2 | 0.1% |
+| Tigers | **80W (1st)** | 72W (1st) | **-9** | 26.0% |
+| Giants | 71W (3rd) | 71W (2nd) | +0 | 20.2% |
+| Dragons | 69W (5th) | 71W (3rd) | +2 | 21.2% |
+| BayStars | 71W (2nd) | 71W (4th) | -1 | 20.2% |
+| Carp | 70W (4th) | 69W (5th) | -1 | 12.3% |
+| Swallows | 64W (6th) | 61W (6th) | -3 | 0.1% |
 
-**Biggest change: Tigers dropped from 1st (80W) to 3rd (72W).** Skill-metric corrections adjusted their projection downward. The CL is now a three-way race: Giants 43%, Tigers 23%, Dragons 20%.
+**Tigers dropped from 80W to 72W (-9).** Skill corrections pulled them down. Giants stayed at 71W even after losing Okamoto to MLB. **Four teams within 1 win of each other** — Tigers 26%, Dragons 21%, Giants 20%, BayStars 20%. Swallows at 61W (78% chance of last place) after Murakami's MLB departure.
 
 ### Pacific League — Lions Surge
 
 | Team | Marcel | Bayesian | Diff | P(Pennant) |
 |---|---|---|---|---|
-| Hawks | 80W (1st) | 80W (1st) | -1 | 50.0% |
-| Fighters | 77W (2nd) | 78W (2nd) | +1 | 24.1% |
-| Buffaloes | 74W (3rd) | 77W (3rd) | +3 | 18.5% |
-| Lions | 69W (4th) | 75W (4th) | **+6** | 7.4% |
+| Hawks | 80W (1st) | 81W (1st) | +1 | 47.9% |
+| Fighters | 77W (2nd) | 79W (2nd) | +2 | 27.2% |
+| Buffaloes | 74W (3rd) | 78W (3rd) | +4 | 17.6% |
+| Lions | 69W (4th) | 75W (4th) | **+6** | 7.1% |
 | Eagles | 66W (5th) | 67W (5th) | +1 | 0.1% |
-| Marines | 67W (6th) | 65W (6th) | -2 | 0.0% |
+| Marines | 67W (6th) | 65W (6th) | -2 | 0.1% |
 
-**Lions +6 wins** — the largest gain, driven by foreign player individual projections replacing league-average estimates.
+**Lions +6 wins** — foreign player projections offsetting Imai's MLB departure.
 
 ---
 
@@ -161,7 +161,13 @@ Small improvement, but consistent — **97% probability of beating Marcel across
 | Team standings | Single number | 10,000 Monte Carlo sims with pennant probabilities |
 | Accuracy | Marcel MAE 0.050 | **0.0498** (97% probability of improvement) |
 
-The accuracy gain is modest, but "foreign players are no longer invisible" and "every prediction comes with uncertainty" meaningfully changed the standings picture. The CL went from "Tigers runaway" to "three-team race."
+The accuracy gain is modest, but "foreign players are no longer invisible," "MLB departures are reflected," and "every prediction comes with uncertainty" meaningfully changed the standings picture. The CL went from "Tigers runaway" to a four-team deadlock.
+
+### Caveat: Data Limitations
+
+During this work, I discovered that **players who moved to MLB (Murakami, Okamoto)** were still included in the team simulation — the roster filter only existed in the Streamlit display layer, not in the CSV generation pipeline. Fixed and regenerated, but **there may be other oversights I haven't caught.**
+
+This is a personal project without professional-grade QA. The data is best treated as automated model output, not authoritative predictions.
 
 - **Dashboard**: [npb-prediction.streamlit.app](https://npb-prediction.streamlit.app/)
 - **GitHub**: [github.com/yasumorishima/npb-prediction](https://github.com/yasumorishima/npb-prediction)
