@@ -1,7 +1,7 @@
 ---
 title: "Adding Bayesian Ensemble + Monte Carlo to an NPB Prediction System"
 published: true
-description: "Notes on integrating a Stan Bayesian model into an NPB baseball prediction system — Monte Carlo team simulation, credible intervals in Streamlit, and foreign player projections."
+description: "Notes on adding a Stan Bayesian model to an NPB baseball prediction app — Monte Carlo team simulation, credible intervals in Streamlit, and foreign player projections."
 tags: baseball, python, bayesian, datascience
 cover_image:
 canonical_url:
@@ -13,7 +13,7 @@ In a previous article, I documented my journey adding Bayesian regression (Stan/
 
 - **Previous article**: [Beyond Marcel: Adding Bayesian Regression to NPB Predictions](https://dev.to/shogaku/beyond-marcel-adding-bayesian-regression-to-npb-baseball-predictions-a-15-step-journey-37a0)
 
-That work lived in a separate research repository ([npb-bayes-projection](https://github.com/yasumorishima/npb-bayes-projection)). This article covers the integration into the **production system** — a 7-phase process that touched 19 files and added 4,087 lines.
+That work lived in a separate experiment repository ([npb-bayes-projection](https://github.com/yasumorishima/npb-bayes-projection)). This article covers adding those pieces into the main app — a 7-phase process that touched 19 files and added 4,087 lines.
 
 - **GitHub**: [npb-prediction](https://github.com/yasumorishima/npb-prediction)
 - **Live dashboard**: [npb-prediction.streamlit.app](https://npb-prediction.streamlit.app/)
@@ -184,7 +184,7 @@ The system moved from point estimates to probability distributions. "The Giants 
 
 ## Takeaways
 
-Moving research code to production has its own challenges, distinct from the research itself:
+Moving experiment code into an app has its own challenges, distinct from the experiments themselves:
 
 - **Data quality matters more than model quality.** Incorrect foreign player names/stats would have propagated through the entire pipeline
 - **Design for your runtime constraints.** posteriors.json lets a 4GB RPi5 do Bayesian inference
