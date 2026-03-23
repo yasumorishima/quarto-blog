@@ -1,7 +1,7 @@
 ---
-title: "Adding Bayesian Ensemble + Monte Carlo to an NPB Prediction System"
+title: "Adding Bayesian Ensemble + Monte Carlo to an NPB Prediction App"
 published: true
-description: "Notes on adding a Stan Bayesian model to an NPB baseball prediction app — Monte Carlo team simulation, credible intervals in Streamlit, and foreign player projections."
+description: "How adding Bayesian corrections and foreign player projections changed NPB team standings predictions — with accuracy data from 8 years of backtesting."
 tags: baseball, python, bayesian, datascience
 cover_image:
 canonical_url:
@@ -9,188 +9,159 @@ canonical_url:
 
 ## Introduction
 
-In a previous article, I documented my journey adding Bayesian regression (Stan/Ridge) to my NPB (Japanese pro baseball) prediction system.
+I've been running a personal NPB (Japanese pro baseball) prediction app:
 
-- **Previous article**: [Beyond Marcel: Adding Bayesian Regression to NPB Predictions](https://dev.to/shogaku/beyond-marcel-adding-bayesian-regression-to-npb-baseball-predictions-a-15-step-journey-37a0)
-
-That work lived in a separate experiment repository ([npb-bayes-projection](https://github.com/yasumorishima/npb-bayes-projection)). This article covers adding those pieces into the main app — a 7-phase process that touched 19 files and added 4,087 lines.
-
+- **Dashboard**: [npb-prediction.streamlit.app](https://npb-prediction.streamlit.app/)
 - **GitHub**: [npb-prediction](https://github.com/yasumorishima/npb-prediction)
-- **Live dashboard**: [npb-prediction.streamlit.app](https://npb-prediction.streamlit.app/)
 
----
+It used Marcel projections (3-year weighted average) and ML (XGBoost/LightGBM). Decent, but I wanted better accuracy. After adding Bayesian corrections, the predicted standings changed significantly.
 
-## Before: Point Estimates Only
+## Terms
 
-```
-Marcel (3-year weighted avg) → ML (XGBoost/LightGBM)
-    ↓                              ↓
-  Point estimate               Point estimate
-    ↓
-Pythagorean Win% → Team standings
-```
-
-**Problems:**
-- No uncertainty quantification
-- 24 new foreign players treated as league-average (wRAA=0)
-- Marcel and ML run independently — no ensemble
-- Team standings are a single number with no confidence interval
-
-## After: Bayesian Ensemble + Monte Carlo
-
-```
-Layer 1: Marcel (unchanged)
-    ↓
-Layer 2: Stan Bayesian correction
-  - Japanese: Ridge correction via K%/BB%/BABIP/age
-  - Foreign: Prior-league stats × league-specific conversion (Stan v2)
-    ↓
-Layer 3: ML (XGBoost/LightGBM)
-    ↓
-Layer 4: BMA (Bayesian Model Averaging)
-  - Marcel 35% + Stan 40% + ML 25%
-  - 80%/95% credible intervals on every prediction
-    ↓
-Monte Carlo 10,000 draws → Team win distributions
-  - P(pennant) / P(Climax Series) / P(last place)
-```
-
----
-
-## The 7 Phases
-
-### Phase 1: Japanese Player Bayesian Inference
-
-The key design decision: **Stan does not run at inference time.**
-
-cmdstanpy is heavy to install and won't fit on a Raspberry Pi 5 (4GB RAM). Instead, I pre-compute posterior parameters into `posteriors.json` during training (in GitHub Actions), then sample with NumPy at runtime.
-
-```python
-# posteriors.json structure (hitter example)
-{
-  "japanese_hitter": {
-    "beta": [0.152, -0.089, -0.245, -0.003],
-    "sigma_residual": 0.06215,
-    "feature_names": ["K_pct", "BB_pct", "BABIP", "age_from_peak"]
-  }
-}
-
-# Runtime sampling (milliseconds, not seconds)
-z = (features - scaler_mean) / scaler_std
-correction = beta @ z
-samples = marcel_value + correction + rng.normal(0, sigma, size=5000)
-ci_80 = np.percentile(samples, [10, 90])
-```
-
-### Phase 2: Foreign Player Stan v2 Predictions
-
-The most labor-intensive phase. I had to web-verify all 24 foreign players individually:
-
-- Katakana name → correct English name
-- Origin league (MLB / KBO / independent)
-- Most recent season stats
-
-**Lesson learned: Never guess English names from katakana.**
-
-Over 10 of my initial 28 guesses were wrong:
-
-| NPB Name | Initial Guess | Correct |
-|---|---|---|
-| Dalbec | Spencer Torkelson | Bobby Dalbec |
-| Jerry | Sean Gerry | Sean Hjelle |
-| Lucas | Josh Lucas | Easton Lucas |
-
-I also misidentified 4 Japanese draft picks (with katakana names) as foreign players. The rule: **verify every single entry via web search before committing.**
-
-### Phase 3: Monte Carlo Team Simulation
-
-Player-level uncertainty propagates to team-level through 10,000 independent simulations:
-
-```python
-for sim in range(10000):
-    for team in teams:
-        rs = sum(sample_hitter_runs(h) for h in team.hitters)
-        ra = sum(sample_pitcher_runs(p) for p in team.pitchers)
-        rs, ra = apply_park_factor(rs, ra, team)
-        wins[team][sim] = 143 * rs**1.83 / (rs**1.83 + ra**1.83)
-```
-
-Foreign players get 1.5x sigma (wider uncertainty since they have no NPB data).
-
-### Phase 5: API Integration
-
-Three new FastAPI endpoints:
-
-| Endpoint | Description |
+| Term | Meaning |
 |---|---|
-| `/predict/hitter/{name}` | Bayesian OPS + 80%/95% CI (added to existing) |
-| `/predict/foreign/{name}` | Foreign player Stan v2 projections (new) |
-| `/standings/simulation` | Monte Carlo team standings (new) |
-
-### Phase 6: Streamlit Integration
-
-The largest phase — added ~370 lines to the 1,669-line `streamlit_app.py`:
-
-1. **Bayesian CI bars** on existing prediction pages (Plotly overlay bars for 80%/95% intervals)
-2. **Team Simulation page** (new) — fan chart + probability table
-3. **Foreign Players page** (new) — prior-league stats + NPB projection with CI
-
-### Phase 7: BigQuery Integration
-
-Added 8 tables (25 → 33 total): Bayesian predictions, foreign player data, simulation results, and conversion factors.
+| **Marcel** | Predict next year from weighted average of past 3 years |
+| **Bayesian** | Combine prior knowledge with data. Gives uncertainty estimates |
+| **CI** | Credible interval — range where the true value falls with 80%/95% probability |
+| **OPS** | On-base + Slugging. Overall batting metric |
+| **ERA** | Earned Run Average. Runs allowed per 9 innings |
+| **MAE** | Mean Absolute Error. Average prediction miss. Lower = better |
 
 ---
 
-## Technical Decisions
+## Problems with the Previous Approach
 
-### posteriors.json vs. cmdstanpy at runtime
+### Problem 1: All Foreign Players Treated as "Average"
 
-| | posteriors.json | cmdstanpy runtime |
+Marcel needs 3 years of NPB data. First-year foreign players have none, so all 24 of them were treated as league-average. Dalbec (Giants, .355 wOBA in MLB) and Hummel (BayStars, .240 wOBA) were calculated identically.
+
+### Problem 2: Skill Metrics Ignored
+
+Marcel averages past results directly. Two players with OPS .800 might have very different K% and BB% profiles, which affects how stable their performance will be next year.
+
+### Problem 3: No Uncertainty
+
+"Maki's OPS: .812" gives no sense of how much it might vary. The difference between .750-.870 and .790-.830 matters a lot for team projections.
+
+---
+
+## What Changed with Bayesian Integration
+
+### Foreign Players: Average → Individual Predictions
+
+Built a model to convert MLB/KBO stats to NPB projections. For example, a .350 wOBA MLB hitter maps to approximately `.350 × 1.235 = .432` NPB-equivalent wOBA.
+
+All 24 players' names and prior-league stats were individually web-verified (guessing English names from katakana is surprisingly error-prone).
+
+**Foreign hitter examples:**
+
+| Player | Team | Prior wOBA | NPB Pred OPS | 80% CI |
+|---|---|---|---|---|
+| Sano | Dragons | .370 | .760 | .632–.889 |
+| Seymour | Buffaloes | .365 | .735 | .607–.863 |
+| Dalbec | Giants | .355 | .725 | .577–.884 |
+| Hummel | BayStars | .240 | .694 | .530–.849 |
+
+**Foreign pitcher examples:**
+
+| Player | Team | Prior ERA | NPB Pred ERA | 80% CI |
+|---|---|---|---|---|
+| Quijada | Swallows | 3.26 | 2.76 | 1.28–4.24 |
+| Hjelle | Buffaloes | 3.90 | 3.34 | 1.05–5.59 |
+| Cox | BayStars | 8.86 | 3.36 | 1.82–4.85 |
+
+Players with poor prior-league stats get pulled toward league average (Bayesian regression effect), but with wider CIs = lower confidence.
+
+### Japanese Players: K%/BB%/BABIP Corrections
+
+Three models combined into a final prediction:
+
+| Model | Weight | Notes |
 |---|---|---|
-| Inference speed | NumPy only (ms) | Stan call (seconds) |
-| Memory | Few KB | Hundreds of MB |
-| Updates | Annual retraining via GitHub Actions | Fit every time |
-
-For a system running on RPi5 with 4GB RAM, this was the only viable option. With annual data updates, there's no need to re-fit on every request.
-
-### BMA Weight Rationale
-
-Marcel 35% + Stan 40% + ML 25% was determined by 8-year LOO-CV:
-
-- Stan correction improved Marcel 97.1% of the time (bootstrap)
-- ML matched Marcel on hitter OPS but underperformed on pitcher ERA
-- The 3-model BMA was more robust than any single model
-
-### The Full-Width Space Trap
-
-Marcel CSVs used full-width spaces (U+3000) in player names while sabermetrics CSVs used half-width spaces. This caused 237 of 463 players to fail matching until I normalized with a `player_join` column.
+| Marcel | 35% | Strong baseline, especially for pitcher ERA |
+| Bayesian correction | 40% | K%/BB%/BABIP/age adjustment on top of Marcel |
+| ML | 25% | XGBoost/LightGBM |
 
 ---
 
-## Results
+## Did Accuracy Improve?
+
+8-year backtest (2018–2025, predict each year and compare to actual):
+
+| Metric | Marcel MAE | Bayesian MAE | Improvement prob. |
+|---|---|---|---|
+| Hitter wOBA | 0.05023 | **0.04980** | 97.1% |
+| Pitcher ERA | 1.23008 | **1.22241** | 97.1% |
+
+Small improvement, but consistent — **97% probability of beating Marcel across 8 years**.
+
+### Historical Marcel Accuracy for Context
+
+**Overall (8 years × 12 teams = 96 team-years):**
 
 | Metric | Value |
 |---|---|
-| New files | 12 (2 Python + 10 data) |
-| Modified files | 7 |
-| Lines added | +4,087 |
-| BigQuery tables | 25 → 33 |
-| Streamlit pages | 7 → 9 |
-| Foreign players individually projected | 0 → 24 |
+| Wins MAE | **6.4 wins** |
+| Avg rank error | 1.42 positions |
+| Exact rank rate | 18% |
+| Within 1 rank | 65% |
 
-The system moved from point estimates to probability distributions. "The Giants have a 42.6% chance of winning the pennant" is more useful than "The Giants are projected to win 74 games."
+**Recent examples of Marcel misses:**
+
+| Year | Team | Actual | Predicted | Miss |
+|---|---|---|---|---|
+| 2025 | Swallows (CL) | 57W (6th) | 72W (4th) | +15 |
+| 2024 | SoftBank (PL) | 91W (1st) | 75W (2nd) | -16 |
+| 2024 | Buffaloes (PL) | 63W (5th) | 78W (1st) | +15 |
+
+**Patterns:**
+- Overestimates bottom teams, underestimates top teams (regression to mean)
+- Can't predict collapses (2024 Buffaloes: defending champions → 5th place)
+- Foreign player impact not captured when all treated as average
 
 ---
 
-## Takeaways
+## How Did the 2026 Standings Change?
 
-Moving experiment code into an app has its own challenges, distinct from the experiments themselves:
+### Central League — Leader Changed
 
-- **Data quality matters more than model quality.** Incorrect foreign player names/stats would have propagated through the entire pipeline
-- **Design for your runtime constraints.** posteriors.json lets a 4GB RPi5 do Bayesian inference
-- **Uncertainty visualization needs thought.** CI bars, fan charts, and probability tables each communicate different aspects of the same distributions
+| Team | Marcel | Bayesian | Diff | P(Pennant) |
+|---|---|---|---|---|
+| **Giants** | 71W (3rd) | **74W (1st)** | +3 | 42.6% |
+| Dragons | 69W (5th) | 72W (2nd) | +3 | 20.0% |
+| Tigers | **80W (1st)** | 72W (3rd) | **-8** | 23.2% |
+| BayStars | 71W (2nd) | 70W (4th) | -2 | 7.7% |
+| Carp | 70W (4th) | 69W (5th) | -2 | 6.5% |
+| Swallows | 64W (6th) | 62W (6th) | -2 | 0.1% |
 
-Phase 4 (automated Stan retraining pipeline) remains for next season. But the prediction system now runs Bayesian ensemble predictions end-to-end, from individual players to team championship probabilities.
+**Biggest change: Tigers dropped from 1st (80W) to 3rd (72W).** Skill-metric corrections adjusted their projection downward. The CL is now a three-way race: Giants 43%, Tigers 23%, Dragons 20%.
+
+### Pacific League — Lions Surge
+
+| Team | Marcel | Bayesian | Diff | P(Pennant) |
+|---|---|---|---|---|
+| Hawks | 80W (1st) | 80W (1st) | -1 | 50.0% |
+| Fighters | 77W (2nd) | 78W (2nd) | +1 | 24.1% |
+| Buffaloes | 74W (3rd) | 77W (3rd) | +3 | 18.5% |
+| Lions | 69W (4th) | 75W (4th) | **+6** | 7.4% |
+| Eagles | 66W (5th) | 67W (5th) | +1 | 0.1% |
+| Marines | 67W (6th) | 65W (6th) | -2 | 0.0% |
+
+**Lions +6 wins** — the largest gain, driven by foreign player individual projections replacing league-average estimates.
+
+---
+
+## Summary
+
+| Problem | Before | After |
+|---|---|---|
+| Foreign players | All league-average | 24 individual projections from prior-league stats |
+| Skill metrics | Not used | K%/BB%/BABIP corrections on Marcel |
+| Uncertainty | None (point estimates) | 80%/95% credible intervals on every prediction |
+| Team standings | Single number | 10,000 Monte Carlo sims with pennant probabilities |
+| Accuracy | Marcel MAE 0.050 | **0.0498** (97% probability of improvement) |
+
+The accuracy gain is modest, but "foreign players are no longer invisible" and "every prediction comes with uncertainty" meaningfully changed the standings picture. The CL went from "Tigers runaway" to "three-team race."
 
 - **Dashboard**: [npb-prediction.streamlit.app](https://npb-prediction.streamlit.app/)
 - **GitHub**: [github.com/yasumorishima/npb-prediction](https://github.com/yasumorishima/npb-prediction)
