@@ -18,12 +18,20 @@ jobs:
         env:
           DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
         run: |
+          set +e  # GitHub Actions uses bash -e; disable to process all articles even if one fails
+          failed=0
+          created=0
+          updated=0
+          skipped=0
+
           # Fetch all existing articles (published + unpublished/drafts)
-          published=$(curl -s "https://dev.to/api/articles/me?per_page=100" \
+          published_json=$(curl -s "https://dev.to/api/articles/me?per_page=100" \
             -H "api-key: $DEVTO_API_KEY")
-          unpublished=$(curl -s "https://dev.to/api/articles/me/unpublished?per_page=100" \
+          unpublished_json=$(curl -s "https://dev.to/api/articles/me/unpublished?per_page=100" \
             -H "api-key: $DEVTO_API_KEY")
-          existing=$(echo "$published $unpublished" | jq -s 'add')
+          existing=$(echo "$published_json $unpublished_json" | jq -s 'add // []')
+
+          echo "Existing articles on DEV.to: $(echo "$existing" | jq length)"
 
           for file in devto/*.md; do
             echo "=== Processing $file ==="
@@ -35,19 +43,20 @@ jobs:
             canonical_url=$(sed -n 's/^canonical_url: *//p' "$file")
             cover_image=$(sed -n 's/^cover_image: *//p' "$file")
             published_raw=$(sed -n 's/^published: *//p' "$file")
-            published=$([ "$published_raw" = "false" ] && echo "false" || echo "true")
+            is_published=$([ "$published_raw" = "false" ] && echo "false" || echo "true")
 
             # Extract body: skip lines until second '---', then print the rest
             body=$(awk 'BEGIN{n=0} /^---$/{n++; next} n>=2{print}' "$file")
 
             if [ -z "$body" ]; then
               echo "  Warning: empty body, skipping"
+              skipped=$((skipped + 1))
               continue
             fi
 
             # Check if article with same title already exists
             article_id=$(echo "$existing" | jq -r --arg t "$title" \
-              '.[] | select(.title == $t) | .id // empty')
+              '.[] | select(.title == $t) | .id // empty' 2>/dev/null || true)
 
             # Build JSON payload
             json_payload=$(jq -n \
@@ -57,7 +66,7 @@ jobs:
               --arg tags "$tags" \
               --arg canonical "$canonical_url" \
               --arg cover "$cover_image" \
-              --arg published "$published" \
+              --arg published "$is_published" \
               '{article: {
                 title: $title,
                 body_markdown: $body,
@@ -69,30 +78,53 @@ jobs:
               }}')
 
             if [ -n "$article_id" ]; then
-              # Update existing article
               echo "  Updating existing article (id: $article_id)"
               response=$(curl -s -w "\n__HTTP_STATUS__:%{http_code}" -X PUT "https://dev.to/api/articles/$article_id" \
                 -H "Content-Type: application/json" \
                 -H "api-key: $DEVTO_API_KEY" \
                 -d "$json_payload")
-              sleep 5  # Rate limit: avoid 429 on consecutive updates
+              sleep 5
             else
-              # Create new article
               echo "  Creating new article"
               response=$(curl -s -w "\n__HTTP_STATUS__:%{http_code}" -X POST "https://dev.to/api/articles" \
                 -H "Content-Type: application/json" \
                 -H "api-key: $DEVTO_API_KEY" \
                 -d "$json_payload")
-              sleep 30  # Rate limit: stricter for new article creation
+              sleep 30
             fi
 
-            # Extract HTTP status code and body
+            # Extract HTTP status code and result URL
             http_status=$(echo "$response" | grep "__HTTP_STATUS__:" | sed 's/.*__HTTP_STATUS__://')
             response_body=$(echo "$response" | grep -v "__HTTP_STATUS__:")
-            echo "  HTTP Status: $http_status"
-            echo "  Raw response: $response_body"
+            result_url=$(echo "$response_body" | jq -r '.url // empty' 2>/dev/null || true)
+            error_msg=$(echo "$response_body" | jq -r '.error // empty' 2>/dev/null || true)
 
-            # Show result
-            echo "  Result: $(echo "$response_body" | jq -r '.url // .error // "unknown"' 2>&1)"
+            echo "  HTTP Status: $http_status"
+            if [ -n "$result_url" ]; then
+              echo "  URL: $result_url"
+              if [ -n "$article_id" ]; then
+                updated=$((updated + 1))
+              else
+                created=$((created + 1))
+              fi
+            elif [ -n "$error_msg" ]; then
+              echo "  ERROR: $error_msg"
+              failed=$((failed + 1))
+            else
+              echo "  WARNING: unexpected response (status $http_status)"
+              failed=$((failed + 1))
+            fi
 
           done
+
+          echo ""
+          echo "=== Summary ==="
+          echo "  Created: $created"
+          echo "  Updated: $updated"
+          echo "  Skipped: $skipped"
+          echo "  Failed:  $failed"
+
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed article(s) failed to publish"
+            exit 1
+          fi
