@@ -1,5 +1,5 @@
 ---
-title: "Marcel vs LightGBM: Building an NPB Player Performance Prediction System"
+title: "Why Marcel Beat LightGBM: Building an NPB Player Performance Prediction System"
 published: true
 description: "I built a Japanese professional baseball (NPB) player performance prediction system using Marcel projection, LightGBM/XGBoost, custom wOBA/wRC+ calculation, and FastAPI. Marcel held its own against ML — ERA prediction showed Marcel's advantage."
 tags: python, baseball, machinelearning, datascience

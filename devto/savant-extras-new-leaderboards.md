@@ -1,5 +1,5 @@
 ---
-title: "Park Factors in One Line of Python (savant-extras v0.3.2–v0.4.2)"
+title: "Park Factors, OAA, and Stuff+ in One Line of Python (savant-extras v0.3.2–v0.4.1)"
 published: true
 description: "savant-extras v0.4.2: removed OAA/Outfield Jump/Stuff+ (already in pybaseball). Park factors remain as the unique addition."
 tags: python, baseball, opensource, pypi

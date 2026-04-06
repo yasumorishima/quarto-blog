@@ -3,7 +3,7 @@ title: "transform: translateY(0) Breaks position: fixed — A Hidden Trap in SPA
 published: true
 description: Why translateY(0) and transform none are not the same, and how this CSS spec detail silently breaks every fixed overlay on your page.
 tags: css, nextjs, react, webdev
-canonical_url: https://yasumorishima.github.io/quarto-blog/
+canonical_url:
 ---
 
 ## The Bug
