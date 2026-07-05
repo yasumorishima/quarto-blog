@@ -112,3 +112,119 @@ While `ping` succeeds, nothing is logged and `systemctl restart` never runs. It 
 - Caveat: a cron-driven watchdog can't help if the OS itself stops executing.
 
 I still haven't pinned the root cause, but at least I'm out of the "power-cycle it by hand every time" loop.
+
+---
+
+## Follow-up: a *selective* outage the watchdog couldn't see — and watchdog v2
+
+About two weeks after deploying the watchdog above, the Pi died in a **completely different way** — and since the gateway ping still succeeded, the watchdog never fired.
+
+### The symptom (nothing like last time)
+
+- SSH (over Tailscale) worked fine
+- Ping to the gateway worked fine
+- But DNS resolution was completely dead (`getent hosts github.com` failed)
+- Behavior differed *per destination*:
+  - Google properties returned HTTPS 200
+  - GitHub / Cloudflare (1.1.1.1) / everything else → TCP connect timeout
+  - IPv6 was entirely dead
+
+With "only Google works," it *looks* like an ISP or router outage. Spoiler: it was **the Pi itself again — a wedged wlan0 Wi-Fi client state**.
+
+### Triage 1: hit the same destinations from another device on the same router (the decisive check)
+
+From a PC on the same Wi-Fi, GitHub and everything else worked normally. → **The router and the ISP are innocent; the problem is Pi-specific.** Skipping this check would have sent me down the useless "reboot the router" path.
+
+### Triage 2: probe each DNS server directly over UDP
+
+No `dig` or `nslookup` on the Pi? A few lines of python3 can send a raw DNS query:
+
+```python
+import socket, struct
+
+def q(server, timeout=3):
+    # minimal DNS A query for github.com
+    pkt = struct.pack('>HHHHHH', 0x1234, 0x0100, 1, 0, 0, 0)
+    for part in b'github com'.split():
+        pkt += bytes([len(part)]) + part
+    pkt += b'\x00' + struct.pack('>HH', 1, 1)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(timeout)
+    try:
+        s.sendto(pkt, (server, 53))
+        data, _ = s.recvfrom(512)
+        return f'OK answers={struct.unpack(">H", data[6:8])[0]}'
+    except Exception as e:
+        return f'FAIL {type(e).__name__}'
+    finally:
+        s.close()
+
+for srv in ['192.168.1.1', '100.100.100.100', '8.8.8.8', '1.1.1.1']:
+    print(srv, '->', q(srv))
+```
+
+Result: `router=FAIL / Tailscale MagicDNS=FAIL / 8.8.8.8=OK / 1.1.1.1=FAIL`. So DNS wasn't "down" — **traffic to specific destinations was down**, and DNS failure was just one symptom. `ip route get` and the firewall were both normal.
+
+### The fix: a *full* wlan0 reconnect (`reapply` is not enough)
+
+`nmcli dev reapply wlan0` (re-applying the config) did **not** fix it. What fixed it was a full **disconnect → connect**. Since SSH itself rides on wlan0, detach the command so it survives your own disconnection:
+
+```bash
+sudo nohup bash -c 'nmcli dev disconnect wlan0; sleep 3; nmcli dev connect wlan0' >/dev/null 2>&1 &
+```
+
+About 20 seconds later everything was back: all destinations 200, and the router DNS that had "looked dead" was answering again. The DNS death, the selective timeouts, and the IPv6 blackout were all symptoms of one root cause: the wedged wlan0 client state.
+
+### watchdog v2: also probe external connectivity
+
+Gateway ping alone misses this failure mode, so I added a second tier:
+
+```bash
+#!/bin/bash
+# net-watchdog v2: two-tier self-healing
+# tier1: gateway unreachable -> restart NetworkManager
+# tier2: gateway OK but external connectivity mostly dead (<2 of 4 probes) -> full wlan0 reconnect
+LOG=/home/pi/logs/net-watchdog.log
+STATE=/home/pi/logs/net-watchdog.last-reconnect
+GW=192.168.1.1   # replace with your router IP
+mkdir -p /home/pi/logs
+
+if ! ping -c3 -W3 $GW >/dev/null 2>&1; then
+  echo "$(date -Is) gateway unreachable -> restart NetworkManager" >> $LOG
+  systemctl restart NetworkManager
+  exit 0
+fi
+
+alive=0
+for url in https://www.google.com https://github.com https://1.1.1.1 https://www.yahoo.co.jp; do
+  curl -4 -sS --max-time 5 -o /dev/null "$url" 2>/dev/null && alive=$((alive+1))
+done
+
+if [ "$alive" -lt 2 ]; then
+  now=$(date +%s)
+  last=$(cat "$STATE" 2>/dev/null || echo 0)
+  if [ $((now - last)) -lt 1800 ]; then
+    echo "$(date -Is) external dead (alive=$alive/4) but reconnected <30min ago, skip" >> $LOG
+    exit 0
+  fi
+  echo "$now" > "$STATE"
+  echo "$(date -Is) gateway OK but external dead (alive=$alive/4) -> wlan0 reconnect" >> $LOG
+  nmcli dev disconnect wlan0
+  sleep 3
+  nmcli dev connect wlan0
+fi
+exit 0
+```
+
+Design notes:
+
+- **2 of 4 independent probes alive = healthy** — a single site being down never triggers a reconnect
+- `https://1.1.1.1` is IP-literal, so this probe **still works when DNS is dead**
+- Reconnects have a **30-minute cooldown** (no flapping)
+- As with v1: run it by hand while healthy and confirm it does nothing before wiring it into cron
+
+### Follow-up takeaways
+
+- A gateway-ping watchdog is blind to "selective outage caused by a wedged Wi-Fi client state"
+- "Only some sites work" *looks* like an ISP problem but **can be your own device**. The fastest triage is hitting the same destinations from another device on the same LAN
+- `nmcli dev reapply` and a full disconnect/connect are different things — escalate to the full reconnect when reapply doesn't cut it
