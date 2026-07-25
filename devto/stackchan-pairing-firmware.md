@@ -1,5 +1,5 @@
 ---
-title: "M5 StackChan pairing fails with \"No devices found\"? The factory firmware is the cause"
+title: M5 StackChan pairing fails with No devices found — the factory firmware is the cause
 published: true
 description: The app said no devices were found, but the BLE connection and handshake had actually succeeded. The real cause was 9-versions-old factory firmware, and OTA was unreachable by design. Here is how to flash the official firmware over USB without M5Burner.
 tags: m5stack, esp32, iot, ble
