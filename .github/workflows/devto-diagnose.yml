@@ -1,0 +1,44 @@
+name: Diagnose DEV.to articles
+
+# Read-only: lists the account's articles (published and unpublished) and shows titles that
+# appear more than once, and how each devto/*.md title compares with what DEV.to stores.
+on:
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図（必須）'
+        required: true
+        type: string
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: List articles
+        env:
+          DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
+        run: |
+          set -euo pipefail
+          all='[]'
+          for page in 1 2 3 4 5; do
+            chunk=$(curl -sS --max-time 30 "https://dev.to/api/articles/me/all?per_page=100&page=$page" -H "api-key: $DEVTO_API_KEY")
+            n=$(echo "$chunk" | jq 'length')
+            all=$(jq -s 'add' <(echo "$all") <(echo "$chunk"))
+            [ "$n" -lt 100 ] && break
+          done
+          echo "total articles: $(echo "$all" | jq length)  published: $(echo "$all" | jq '[.[]|select(.published)]|length')  unpublished: $(echo "$all" | jq '[.[]|select(.published|not)]|length')"
+          pub=$(curl -sS --max-time 30 "https://dev.to/api/articles/me?per_page=100" -H "api-key: $DEVTO_API_KEY" | jq length)
+          unpub=$(curl -sS --max-time 30 "https://dev.to/api/articles/me/unpublished?per_page=100" -H "api-key: $DEVTO_API_KEY" | jq length)
+          echo "the publish workflow sees: /articles/me=$pub  /articles/me/unpublished=$unpub"
+          echo "== titles that appear more than once =="
+          echo "$all" | jq -r 'group_by(.title)[] | select(length>1) | "\(length)x  \(.[0].title)\n" + (map("    id=\(.id) published=\(.published) created=\(.created_at // .published_at) url=\(.url)") | join("\n"))'
+          echo "== devto/*.md titles with no exact match on DEV.to =="
+          for f in devto/*.md; do
+            t=$(sed -n 's/^title: *//p' "$f" | sed 's/^"//; s/"$//')
+            if ! echo "$all" | jq -e --arg t "$t" 'any(.[]; .title == $t)' >/dev/null; then
+              echo "  $f"
+              echo "    file:   $t"
+              echo "$all" | jq -r --arg w "$(echo "$t" | cut -c1-25)" '.[] | select(.title | contains($w[6:20])) | "    devto:  \(.title)  (id=\(.id) published=\(.published))"'
+            fi
+          done
