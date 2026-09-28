@@ -1,6 +1,6 @@
 ---
 title: Don't judge a pitch by one season of run value: year-to-year carryover measured on 8,022 MLB pitcher-pitch pairs
-published: false
+published: true
 description: Using public Baseball Savant data, I measured how well each pitch metric in one season predicts the same pitcher's same pitch the next season. Whiff rate carries over well; run value per 100 pitches barely does.
 tags: baseball, datascience, dbt, duckdb
 ---
