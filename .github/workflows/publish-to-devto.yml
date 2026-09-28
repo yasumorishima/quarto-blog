@@ -7,16 +7,30 @@ on:
       - 'devto/**/*.md'
       - '.github/workflows/publish-to-devto.yml'
   workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
+      create_drafts:
+        description: 'Also create published: false articles missing on DEV.to (normally only when the push changed them)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Publish articles to DEV.to
         env:
           DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
+          BEFORE: ${{ github.event.before }}
+          CREATE_DRAFTS: ${{ inputs.create_drafts }}
         run: |
           set +e  # GitHub Actions uses bash -e; disable to process all articles even if one fails
           failed=0
@@ -32,6 +46,15 @@ jobs:
           existing=$(echo "$published_json $unpublished_json" | jq -s 'add // []')
 
           echo "Existing articles on DEV.to: $(echo "$existing" | jq length)"
+
+          # Files added or changed by this push (empty for workflow_dispatch or a new branch).
+          changed=""
+          if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            if ! changed=$(git diff --no-renames --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- devto/); then
+              echo "::warning::could not diff $BEFORE..$GITHUB_SHA; missing drafts will not be created this run"
+              changed=""
+            fi
+          fi
 
           for file in devto/*.md; do
             echo "=== Processing $file ==="
@@ -57,6 +80,14 @@ jobs:
             # Check if article with same title already exists
             article_id=$(echo "$existing" | jq -r --arg t "$title" \
               '.[] | select(.title == $t) | .id // empty' 2>/dev/null || true)
+
+            # A published: false file is created on DEV.to only when this push added or changed it.
+            # Otherwise a draft deleted on DEV.to would be created again on every run.
+            if [ -z "$article_id" ] && [ "$is_published" = "false" ] && [ "$CREATE_DRAFTS" != "true" ] && ! printf '%s\n' "$changed" | grep -qxF "$file"; then
+              echo "  Skipped: published: false, not on DEV.to, and not changed in this push (not re-creating a deleted draft)"
+              skipped=$((skipped + 1))
+              continue
+            fi
 
             # Build JSON payload
             json_payload=$(jq -n \
