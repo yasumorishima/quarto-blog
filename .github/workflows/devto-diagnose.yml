@@ -31,6 +31,8 @@ jobs:
           pub=$(curl -sS --max-time 30 "https://dev.to/api/articles/me?per_page=100" -H "api-key: $DEVTO_API_KEY" | jq length)
           unpub=$(curl -sS --max-time 30 "https://dev.to/api/articles/me/unpublished?per_page=100" -H "api-key: $DEVTO_API_KEY" | jq length)
           echo "the publish workflow sees: /articles/me=$pub  /articles/me/unpublished=$unpub"
+          echo "== unpublished articles =="
+          echo "$all" | jq -r ".[] | select(.published|not) | \"  id=\(.id) created=\(.created_at // \"?\") title=\(.title)\""
           echo "== titles that appear more than once =="
           echo "$all" | jq -r 'group_by(.title)[] | select(length>1) | "\(length)x  \(.[0].title)\n" + (map("    id=\(.id) published=\(.published) created=\(.created_at // .published_at) url=\(.url)") | join("\n"))'
           echo "== devto/*.md titles with no exact match on DEV.to =="
