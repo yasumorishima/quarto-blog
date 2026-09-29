@@ -1,7 +1,7 @@
 ---
 title: Does a pitch's performance carry over to next season? Whiff rate vs run value on 8,022 MLB pairs
 published: true
-description: I used public Baseball Savant data to see how strongly each pitch metric carries over from one season to the next for the same pitcher and pitch.
+description: I used public Baseball Savant data to see how strongly each pitch metric carries over from one season to the next, then rebuilt run value from pitch-level data to see which parts carry over.
 tags: baseball, datascience, dbt, duckdb
 ---
 
@@ -24,11 +24,11 @@ Baseball Savant publishes these numbers for each pitcher and pitch type. I mainl
 |---|---|
 | Usage | Share of the pitcher's pitches that were this pitch type |
 | Whiff rate | Share of swings that missed |
-| xwOBA allowed | The value of plate appearances ending on this pitch, in on-base/extra-base terms. For batted balls it uses the expected value from exit velocity and launch angle instead of whether the ball actually fell for a hit (strikeouts, walks, etc. are counted as they happened) |
+| xwOBA allowed | The value of plate appearances ending on this pitch, in on-base/extra-base terms. For batted balls it uses the expected value mainly from exit velocity and launch angle instead of whether the ball actually fell for a hit (sprint speed is also used for some batted balls; strikeouts, walks, etc. are counted as they happened) |
 | Hard-hit rate | Share of batted balls with an exit velocity of 95 mph or more |
 | Run value / 100 pitches | How many runs the pitch saved (or cost), adding up the run value of every pitch outcome (ball, strike, hit, out, ...) and scaling to 100 pitches. In this data, higher is better for the pitcher |
 
-Run value condenses a pitch's results into one number, so it is a number you see often.
+Run value condenses a pitch's results into one number, so it is a number you see often. The second half of this post looks into it using pitch-level data.
 
 ## How I measured it
 
@@ -47,7 +47,7 @@ What I wanted to see is whether "this pitcher's slider is good among sliders" pe
 
 ### Split by pitch count
 
-With few pitches, numbers are noisy, so pairs are split into four bands by the smaller of the two seasons' pitch counts. Roughly, 100–199 pitches is a reliever's third pitch and 800+ is a starter's main pitch.
+With few pitches, numbers are noisy, so pairs are split into four bands by the smaller of the two seasons' pitch counts. Roughly, I think 100–199 pitches is about a reliever's third pitch and 800+ about a starter's main pitch.
 
 ### Data
 
@@ -86,11 +86,86 @@ The correlations were hard to picture, so I also counted it another way. After s
 | xwOBA allowed | 37% | 41% |
 | Run value / 100 pitches | 29% | 32% |
 
-Among pitches with 400+ pitches, about one in three of the top-20% run value pitches was still in the top 20% the next season, and 36% had dropped to the bottom half. For whiff rate, 58% stayed in the top 20% and 12% dropped to the bottom half.
+Among pitches with 400+ pitches, about one in three of the top-20% run value pitches was still in the top 20% the next season, and 36% had dropped to the bottom half (about 50% if the seasons were unrelated). For whiff rate, 58% stayed in the top 20% and 12% dropped to the bottom half.
+
+## Looking further into run value
+
+I went down to pitch-level data to see why run value's year-to-year correlation is low.
+
+### Checking how run value is calculated
+
+According to the [MLB glossary](https://www.mlb.com/glossary/statcast/run-value), run value gives each pitch a value based on how much its result (ball, strike, hit, out, ...) moved the run expectancy, and adds those up.
+
+To check this, I downloaded every regular-season pitch from 2017 to 2025 from Baseball Savant (about 5.98 million pitches). Each pitch carries `delta_run_exp`, the change in run expectancy on that pitch (positive = good for the batter). Summing it by pitcher, pitch type and season, flipping the sign to the pitcher's side and rounding to an integer reproduces Savant's published pitch-type run value exactly for 99.2–99.7% of rows in every season. The remaining rows are off by 1, and all of them have a fractional part of about 0.5, where rounding can go either way. Savant's pitch-type table folds knuckle curves and slow curves into curveballs, so I did the same.
+
+One thing this showed: pitch-type run value includes the base/out situation. The same swinging strike is worth different amounts in different situations. For example, in 2025 a 0-0 swinging strike with no outs was worth 0.039 runs to the pitcher on average with the bases empty, and 0.045 with the bases loaded.
+
+### Splitting run value into five parts
+
+I split each pitch's value into five parts that add back up exactly to run value.
+
+| Part | What it is |
+|---|---|
+| Mid-PA pitches | Pitches that did not end the plate appearance (balls, called/swinging strikes, fouls): the value of the count changing (a foul with two strikes is 0) |
+| K / BB / HBP | Plate appearances ending in a strikeout, walk or hit-by-pitch |
+| Batted balls (quality) | For batted balls, the value expected from exit velocity and launch angle (xwOBA) and the count at contact |
+| Batted balls (luck) | For batted balls, actual minus expected: the same batted ball can be an out if it goes right at a fielder or a hit if it finds a hole |
+| Situation | The part that changes with runners and outs, for the same count and result |
+
+The first four parts use situation-averaged values: the average over all pitches with the same season, count and result, and for batted-ball quality, the average over batted balls in the same season and count with similar exit velocity and launch angle.
+
+### Results of the split
+
+For pairs with 400+ pitches in both seasons (1,962 pairs), per 100 pitches and relative to the pitch-type average as before:
+
+| Part | Share of one season's run value variation | Year-to-year correlation | Contribution to what carries over |
+|---|---|---|---|
+| Batted balls (quality) | 36% | 0.27 | 37% |
+| Batted balls (luck) | 27% | 0.06 | −7% |
+| K / BB / HBP | 22% | 0.57 | 47% |
+| Mid-PA pitches | 11% | 0.60 | 25% |
+| Situation | 4% | −0.03 | −2% |
+| Run value total | 100% | 0.27 | 100% |
+
+How to read the table:
+
+- "Share of one season's run value variation": run value differs a lot between pitchers and pitch types; this is each part's share when that difference is split into the five parts
+- "Year-to-year correlation": the correlation of that part alone between this season and next
+- "Contribution to what carries over": the link "a pitch with high run value this year also has high run value next year" (statistically, the covariance of this year's and next year's run value), split by this year's five parts. A negative value means the part weakens that link. It is computed against next year's total run value, so its sign can differ from the part's own year-to-year correlation (batted-ball luck is an example)
+
+Both the shares and the contributions add up to 100%. The total's 0.27 pools all 400+ pairs, so it differs a little from the per-band values in the earlier table (0.25 for 400–799, 0.35 for 800+).
+
+What I noticed:
+
+- About 30% of one season's run value variation (luck 27% and situation 4%) barely carries over to the next season
+- About 70% of what does carry over (47% and 25%) comes from K/BB/HBP and mid-PA pitches, which together are only about a third of one season's variation
+- Even the batted-ball quality part has a modest year-to-year correlation of 0.27
+
+So one season of run value seems to be a mix of parts that carry over and parts that do not.
+
+### Predicting next season with only the parts that carry over
+
+If so, adding up only the three parts other than luck and situation might predict next season's run value better. The prediction formula (and weights, where used) was set on pairs whose second season is 2021 or earlier, and checked on pairs whose second season is 2022 or later, so the check uses years not used to set it. That is why run value's 0.29 below differs a little from the 0.27 above (all years).
+
+| This season's numbers | Correlation with next season's run value (400+) |
+|---|---|
+| Run value | 0.29 |
+| Sum of the three parts (without luck and situation) | 0.35 |
+| The three parts, each weighted | 0.38 |
+
+Just dropping luck and situation gave a higher correlation with next season's run value than this season's run value itself. Repeating the calculation 2,000 times with pitchers resampled at random, the 95% interval of the difference (0.35 vs 0.29) is 0.03–0.10, which does not include zero. For 100–399 pairs the direction was the same (0.12 → 0.18), but both values are low.
 
 ## Summary
 
-In this data, whiff rate had a fairly high year-to-year correlation, while one season of run value had a low one. Why run value carries over so little is something I plan to look into, after checking exactly how run value is calculated, and add here later.
+In this data:
+
+- Whiff rate had a fairly high year-to-year correlation
+- One season of run value had a low year-to-year correlation
+- Split into five parts, about 30% of a season's run value variation came from batted-ball luck and the base/out situation, which barely carry over
+- About 70% of what carries over came from K/BB/HBP and mid-PA pitches
+- Adding up the three parts other than luck and situation gave a higher correlation with next season's run value than run value itself (400+ pairs, second season 2022 or later: 0.29 → 0.35)
+
+My personal takeaway is that when looking at one season of run value, also looking at numbers that carry over well, like whiff rate and K/BB, seems to make next season easier to think about.
 
 ## Caveats
 
@@ -99,9 +174,11 @@ In this data, whiff rate had a fairly high year-to-year correlation, while one s
 - Bands use the smaller of the two seasons' pitch counts, so a band can contain pairs where one season is much bigger. The mix of starters and relievers also differs between bands, so differences between bands include more than pitch count
 - Pairs that include 2020 (the 60-game season) are included
 - Pitchers who stopped pitching (or fell below 100 pitches) after a bad year do not form a pair; this is not corrected
+- Batted-ball luck is just the difference from the value expected from exit velocity, launch angle and count; defense and park effects are not separated out
+- The five-part split is my own choice. For example, whether the batted-ball expectation uses the count moves the line between quality and luck a little
 
 ## About the numbers
 
-The table is built with dbt, with a test that recomputes it a different way. Separately from dbt, I recomputed the correlations and pair counts from the raw Savant table with pandas and confirmed they match the published table.
+The table is built with dbt, with a test that recomputes it a different way. Separately from dbt, I recomputed the correlations and pair counts from the raw Savant table with pandas and confirmed they match the published table. The run value split is computed with pandas from the pitch-level data downloaded from Savant.
 
 https://github.com/yasumorishima/mlb-data-pipeline
