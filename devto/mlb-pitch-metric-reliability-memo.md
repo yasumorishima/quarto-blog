@@ -1,7 +1,7 @@
 ---
 title: Does a pitch's performance carry over to next season? Whiff rate vs run value on 8,022 MLB pairs
 published: true
-description: I used public Baseball Savant data to see how strongly each pitch metric carries over from one season to the next for the same pitcher and pitch, and dug into why run value carries over so little.
+description: I used public Baseball Savant data to see how strongly each pitch metric carries over from one season to the next for the same pitcher and pitch.
 tags: baseball, datascience, dbt, duckdb
 ---
 
@@ -28,7 +28,7 @@ Baseball Savant publishes these numbers for each pitcher and pitch type. I mainl
 | Hard-hit rate | Share of batted balls with an exit velocity of 95 mph or more |
 | Run value / 100 pitches | How many runs the pitch saved (or cost), adding up the run value of every pitch outcome (ball, strike, hit, out, ...) and scaling to 100 pitches. In this data, higher is better for the pitcher |
 
-Run value condenses a pitch's results into one number, so it is a number you see often. The second half of this post digs into it a little.
+Run value condenses a pitch's results into one number, so it is a number you see often.
 
 ## How I measured it
 
@@ -88,62 +88,9 @@ The correlations were hard to picture, so I also counted it another way. After s
 
 Among pitches with 400+ pitches, about one in three of the top-20% run value pitches was still in the top 20% the next season, and 36% had dropped to the bottom half. For whiff rate, 58% stayed in the top 20% and 12% dropped to the bottom half.
 
-## Digging into run value
-
-I used other numbers in the same Savant table to look at why run value has a low year-to-year correlation. This section mainly looks at pitches thrown 400+ times (4,609 single-season rows; 1,962 two-season pairs). All numbers are relative to the pitch-type average.
-
-### What one season of run value is made of
-
-I checked how much of run value two numbers can explain:
-
-- xwOBA allowed: contact quality from exit velocity and launch angle (strikeouts and walks included)
-- The "luck" part: actual wOBA allowed (counting whether balls actually fell for hits) minus xwOBA allowed. The same batted ball can be an out if it goes right at a fielder or a hit if it finds a hole
-
-Within a season, xwOBA allowed explains about 49% of the variation in run value, and adding the luck part brings it to about 78%. So close to 30% (78% − 49%) of one season's run value variation is explained by the luck part. The remaining ~20% probably includes the value of balls and strikes in the middle of plate appearances, which do not show up in plate-appearance results (this table cannot separate it, so that is a guess).
-
-### The luck part barely carries over
-
-Year-to-year correlation of each component (400+ pairs):
-
-| Component | Year-to-year correlation |
-|---|---|
-| Whiff rate | 0.70 |
-| Strikeout share (of PAs ending on this pitch) | 0.67 |
-| xwOBA allowed | 0.47 |
-| Actual wOBA allowed | 0.33 |
-| Run value / 100 pitches | 0.27 |
-| Luck part (wOBA − xwOBA) | 0.05 |
-
-The luck part's year-to-year correlation is 0.05, essentially zero (0.02 for 100–399 pairs). A component that explains close to 30% of a season's run value variation barely carries over to the next season, which is likely the main reason run value's year-to-year correlation is low.
-
-(This pools all 400+ pairs, so run value's 0.27 here differs a little from the per-band 0.25–0.35 in the earlier table.)
-
-### Predicting next season's run value
-
-If you want next season's run value, which of this season's numbers helps most? I fit on pairs whose second season is 2021 or earlier and tested on pairs whose second season is 2022 or later (years not used for fitting). Correlation between predicted and actual next-season run value (400+ pairs):
-
-| This season's numbers | Correlation with next season's run value |
-|---|---|
-| Run value only | 0.28 |
-| Whiff rate only | 0.31 |
-| xwOBA allowed only | 0.30 |
-| Whiff rate + xwOBA allowed | 0.34 |
-| Whiff rate + xwOBA allowed + run value | 0.36 |
-
-Even for predicting next season's run value, this season's whiff rate and xwOBA allowed were as good as, or a little better than, this season's run value. All three together reach 0.36 versus 0.28 for run value alone. Resampling pitchers 2,000 times, the 95% interval of that difference is 0.04–0.11, which does not include zero.
-
-For 100–399 pairs, though, every combination stayed at 0.12–0.20; next season's run value was hard to predict.
-
 ## Summary
 
-In this data:
-
-- Whiff rate has a fairly high year-to-year correlation
-- One season of run value has a low year-to-year correlation
-- The main reason is likely that close to 30% of run value's variation is explained by a luck part (whether a batted ball becomes a hit or an out), and that part barely carries over
-- For 400+ pairs, next season's run value was predicted better by combining whiff rate and xwOBA allowed than by run value alone (for 100–399 pairs, no combination predicted it well)
-
-My personal takeaway is that when looking at one season of run value, also looking at whiff rate and xwOBA allowed seems to make next season easier to think about.
+In this data, whiff rate had a fairly high year-to-year correlation, while one season of run value had a low one. Why run value carries over so little is something I plan to look into, after checking exactly how run value is calculated, and add here later.
 
 ## Caveats
 
@@ -152,10 +99,9 @@ My personal takeaway is that when looking at one season of run value, also looki
 - Bands use the smaller of the two seasons' pitch counts, so a band can contain pairs where one season is much bigger. The mix of starters and relievers also differs between bands, so differences between bands include more than pitch count
 - Pairs that include 2020 (the 60-game season) are included
 - Pitchers who stopped pitching (or fell below 100 pitches) after a bad year do not form a pair; this is not corrected
-- The "luck" part is just wOBA minus xwOBA; defense and park effects are not separated out
 
 ## About the numbers
 
-The table is built with dbt, with a test that recomputes it a different way. Separately from dbt, I recomputed the correlations and pair counts from the raw Savant table with pandas and confirmed they match the published table. The run value deep dive is computed with pandas from the same raw table.
+The table is built with dbt, with a test that recomputes it a different way. Separately from dbt, I recomputed the correlations and pair counts from the raw Savant table with pandas and confirmed they match the published table.
 
 https://github.com/yasumorishima/mlb-data-pipeline
