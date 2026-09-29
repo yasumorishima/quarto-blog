@@ -1,6 +1,6 @@
 ---
 title: Does a pitch's performance carry over to next season? Whiff rate vs run value on 8,022 MLB pairs
-published: false
+published: true
 description: I used public Baseball Savant data to see how similar each pitch metric is from one season to the next for the same pitcher and pitch. In this data, whiff rate was fairly similar year to year; one season of run value was not.
 tags: baseball, datascience, dbt, duckdb
 ---
