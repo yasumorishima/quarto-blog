@@ -56,28 +56,30 @@ Correlations are hard to picture, so I also counted it another way: rank each se
 
 With 400+ pitches in both seasons, about one in three top-20% run value pitches stayed in the top 20%, and 36% dropped to the bottom half (about 50% if unrelated). For whiff rate, only 12% dropped to the bottom half.
 
-## How many pitches until half of a season is signal
+## At 500 pitches, the correlation with next season is 0.68 for whiff rate and 0.20 for run value
 
 If one season's number is "the pitch's true level + noise", then with n pitches the true level is roughly `n / (n + k)` of it, where k is the pitch count at which it is half signal, half noise. "Signal" here just means the part that is not chance.
 
 The true level itself also changes a little from year to year. If c (at most 1) is how stable it is, the year-to-year correlation is c times the geometric mean of the two seasons' signal shares.
 
-A reader suggested this model in a comment on this post, estimating k from the band midpoints. Here I sorted the 8,022 pairs by pitch count into 12 equal-size groups and searched for the c and k that best fit each group's correlation, using the actual pitch counts of the pairs in the group (weighted by group size):
+A reader suggested this model in a comment on this post, and later suggested reporting the correlation at a fixed pitch count rather than k. I sorted the 8,022 pairs by pitch count into 12 equal-size groups and searched for the c and k that best fit each group's correlation, using the actual pitch counts of the pairs in the group (weighted by group size). From those I computed the correlation when both seasons have the same n pitches, `c * n / (n + k)`:
 
 ```python
 # expected correlation for one group of pairs with pitch counts n1, n2
 r_pred = c * np.mean(np.sqrt(n1 / (n1 + k) * n2 / (n2 + k)))
+# correlation when both seasons have n pitches
+r_n = c * n / (n + k)
 ```
 
-![Pitches until half signal](https://raw.githubusercontent.com/yasumorishima/mlb-data-pipeline/master/docs/images/pitch_carryover_8_en.png)
+![Correlation with next season at 500 pitches](https://raw.githubusercontent.com/yasumorishima/mlb-data-pipeline/master/docs/images/pitch_carryover_8_en.png)
 
-- Whiff rate: **about 100 pitches** (95% interval from 100 resamples of pitchers: 70–130)
-- xwOBA allowed: about 300 (180–470)
-- Run value: **about 1,800** (at least 600)
+- Whiff rate: **0.68** (95% interval from 200 resamples of pitchers: 0.65–0.70)
+- xwOBA allowed: 0.41 (0.38–0.44)
+- Run value: **0.20** (0.18–0.23)
 
-A starter's main pitch over a full season is about 1,100 pitches (median of the most-used pitch of the 316 pitcher-seasons with 2,400+ pitches in 2021–2025). So by this fit, even a full season of run value may not reach half signal, while whiff rate gets there with about 100 pitches.
+500 pitches is close to one season of a reliever's main pitch or a starter's second pitch (2021–2025 medians: 463 for the most-used pitch of relievers with 40+ innings, 613 for the second pitch of starters with 100+ innings). A starter's main pitch over a full season is about 1,100 pitches (median 1,086.5 for the most-used pitch of the 316 pitcher-seasons with 2,400+ pitches in 2021–2025). Even there, run value reaches only 0.35 (0.27–0.39), about half of whiff rate at 500, with twice the pitches.
 
-Only run value has a wide interval, because within the pitch counts in this data (at most about 2,300 for one pitch in one season), c and k cannot be told apart well. In 37 of the 100 resamples c sat at its cap of 1, so the upper end (about 2,300) is set largely by that cap; what the data supports is "at least 600".
+In terms of k, the pitch count at which half of a season is signal: about 100 for whiff rate (76–138) and about 300 for xwOBA allowed (176–498). Run value's fit gives about 1,800, but the interval runs from 455 to 2,212, and in 92 of the 200 resamples c sat at its cap of 1. Within the pitch counts in this data (at most about 2,300 for one pitch in one season), c and k cannot be told apart well. The correlation at a fixed pitch count does not have that problem: any (c, k) pair that fits the data traces nearly the same curve within this range, so its interval is much narrower than k's (0.18–0.23 at 500 pitches, 0.27–0.39 at about 1,100). An earlier version of this post led with k and said run value needs "at least 600" pitches; recomputed with 200 resamples, the lower end is 455.
 
 The comment put run value's k at about 700. The bands use the smaller of the two seasons' pitch counts, so the other season had more pitches than that; fitting with both seasons' counts gives a larger k.
 
@@ -148,8 +150,8 @@ Just adding up the three parts correlates better with next season than this seas
 
 In this data:
 
-- Whiff rate carries over well, and about 100 pitches are enough for half of a season's number to be signal
-- Run value carries over little in one season; it takes at least 600 pitches, about 1,800 by the fit, to reach half signal
+- Whiff rate carries over well: the correlation with next season is 0.68 at 500 pitches, and about 100 pitches are enough for half of a season's number to be signal
+- Run value carries over little in one season: 0.20 at 500 pitches, and 0.35 even for a starter's main pitch over a season (about 1,100)
 - About 30% of one season's run value variation is batted-ball luck and base/out situation, which barely carry over
 - Adding up the other three parts predicts next season's run value better (0.29 → 0.35)
 
