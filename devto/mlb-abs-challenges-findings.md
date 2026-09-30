@@ -85,14 +85,14 @@ I compared the same players in Triple-A 2025 and MLB 2026 (at least 5 challenges
 | (Reference) chase rate | 0.68 | - |
 
 - **How often a player challenges** clearly carries from Triple-A to MLB
-- **Share won** also carries for batters, but once the difficulty of the pitches is accounted for (**overturns vs expected**) it is close to zero for batters
+- **Share won** also carries for batters, but Savant's **overturns vs expected** (a net count against an average challenger given the same opportunities, which mixes how often and how well a player challenges) is close to zero for batters
 - Chase rate itself carries strongly (0.68)
 
 The challenging habit comes with the player from Triple-A. Whether the skill of overturning hard calls is consistent across levels cannot be said with this many players.
 
 ## Finding 5: no clear age difference
 
-Among MLB 2026 batters, those 34 and older won 54.4%, higher than the others. But that is only 34 batters and 331 challenges, the interval (49.0-59.7%) overlaps the other age groups, and relative to expected they are actually below. There is no clear age effect.
+Among MLB 2026 batters, those 34 and older won 54.4%, higher than the others. But that is only 34 batters and 331 challenges, the interval (49.0-59.7%) overlaps the other age groups, and overturns vs expected per batter shows no ordering by age. There is no clear age effect.
 
 ## Summary
 
@@ -106,3 +106,5 @@ The dataset has many columns this post does not use (exit velocity, xwOBA, catch
 - Dataset: https://www.kaggle.com/datasets/yasunorim/mlb-abs-challenges-aaa-2025-to-mlb-2026
 - Build code: https://github.com/yasumorishima/kaggle-datasets (`abs-challenges-dataset/`)
 - Sources: Baseball Savant and MLB StatsAPI (MLB Advanced Media), collected with my [savant-extras](https://pypi.org/project/savant-extras/) package
+
+*Correction (2026-09-30): an earlier version described overturns vs expected as accounting for the difficulty of the challenged pitches and said older batters were below expected. Savant's expected values are for an average challenger given the player's opportunities, not for the pitches the player chose, and the "below expected" figure mixed two denominators.*
