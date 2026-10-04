@@ -1,6 +1,6 @@
 ---
 title: How well do player projections predict team wins? I froze MLB 2026 first, then checked
-published: false
+published: true
 description: I summed simple Marcel-style player projections into team wins, froze the 2026 projections before the standings were read, and compared them with three naive floors.
 tags: baseball, datascience, python, statistics
 ---
