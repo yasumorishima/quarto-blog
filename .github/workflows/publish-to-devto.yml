@@ -48,15 +48,28 @@ jobs:
           echo "Existing articles on DEV.to: $(echo "$existing" | jq length)"
 
           # Files added or changed by this push (empty for workflow_dispatch or a new branch).
+          # When the diff is known, only those files are sent: re-sending every unchanged
+          # article made each push take ~5 minutes and fail whenever DEV.to returned a 500
+          # for one of them. Without a diff (workflow_dispatch, new branch, diff error) every
+          # file is sent, as before.
           changed=""
+          only_changed=false
           if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-            if ! changed=$(git diff --no-renames --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- devto/); then
-              echo "::warning::could not diff $BEFORE..$GITHUB_SHA; missing drafts will not be created this run"
+            if changed=$(git diff --no-renames --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- devto/); then
+              only_changed=true
+            else
+              echo "::warning::could not diff $BEFORE..$GITHUB_SHA; sending every article, missing drafts will not be created this run"
               changed=""
             fi
           fi
+          echo "Only articles changed in this push: $only_changed"
+          unchanged=0
 
           for file in devto/*.md; do
+            if [ "$only_changed" = "true" ] && ! printf '%s\n' "$changed" | grep -qxF "$file"; then
+              unchanged=$((unchanged + 1))
+              continue
+            fi
             echo "=== Processing $file ==="
 
             # Extract frontmatter fields (strip optional surrounding quotes)
@@ -153,6 +166,7 @@ jobs:
           echo "  Created: $created"
           echo "  Updated: $updated"
           echo "  Skipped: $skipped"
+          echo "  Unchanged (not sent): $unchanged"
           echo "  Failed:  $failed"
 
           if [ "$failed" -gt 0 ]; then
