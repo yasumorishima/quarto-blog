@@ -145,6 +145,11 @@ jobs:
             done
           }
 
+          # Titles of all current files, to tell a renamed title from one another file took over.
+          current_titles=$(for f in devto/*.md; do
+            awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "$f" | sed -n 's/^title: *//p' | sed 's/^"//; s/"$//'
+          done)
+
           for file in devto/*.md; do
             echo "=== Processing $file ==="
 
@@ -172,7 +177,29 @@ jobs:
             article_id=$(echo "$existing" | jq -r --arg t "$title" \
               '.[] | select(.title == $t) | .id // empty' 2>/dev/null | head -n 1)
 
-            if [ -n "$article_id" ] && [ "$only_changed" = true ] && ! printf '%s\n' "$changed" | grep -qxF "$file"; then
+            # Articles are matched by title, so a push that changes the title would otherwise create a second article.
+            # Look the article up under the titles this file had earlier in git history (newest first),
+            # so a rename is applied even when the run that should have applied it failed or the run is a manual dispatch.
+            # No --follow: rename detection by similarity can tie a new file to another article and overwrite it.
+            # (A push that changes both the path and the title still creates a new article.)
+            renamed_title=false
+            if [ -z "$article_id" ]; then
+              while IFS= read -r old_title; do
+                [ -z "$old_title" ] && continue
+                [ "$old_title" = "$title" ] && continue
+                # If a current file carries that title, that article belongs to it.
+                printf '%s\n' "$current_titles" | grep -qxF -- "$old_title" && continue
+                article_id=$(jq -r --arg t "$old_title" '.[] | select(.title == $t) | .id // empty' <<<"$existing" | head -n 1)
+                if [ -n "$article_id" ]; then
+                  echo "  Title changed; updating the article found under an earlier title: $old_title"
+                  renamed_title=true
+                  break
+                fi
+              done < <(git log -p --format= -- "$file" 2>/dev/null \
+                | sed -n 's/^[-+]title: *//p' | sed 's/^"//; s/"$//' | awk '!seen[$0]++')
+            fi
+
+            if [ -n "$article_id" ] && [ "$only_changed" = true ] && [ "$renamed_title" = false ] && ! printf '%s\n' "$changed" | grep -qxF "$file"; then
               echo "  Unchanged in this push (id: $article_id), not sent"
               unchanged=$((unchanged + 1))
               continue
