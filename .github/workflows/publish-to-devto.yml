@@ -18,6 +18,11 @@ on:
         default: false
         type: boolean
 
+# Two quick pushes must not both POST the same new article.
+concurrency:
+  group: publish-to-devto
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -55,7 +60,8 @@ jobs:
                 return 1
               fi
               all=$(jq -s 'add' <<<"$all $body")
-              [ "$(jq length <<<"$body")" -lt 1000 ] && break
+              # Stop on an empty page, not a short one: DEV.to may cap per_page below 1000.
+              [ "$(jq length <<<"$body")" -eq 0 ] && break
               page=$((page + 1))
             done
             printf '%s' "$all"
@@ -116,6 +122,9 @@ jobs:
               if [ "$attempt" -ge 4 ]; then
                 return 0
               fi
+              if [ "$method" = "POST" ] && [ "$http_status" != "429" ] && [ "$wait" -lt 60 ]; then
+                wait=60  # a POST that timed out may still be processing; give it time to appear before re-listing
+              fi
               echo "  HTTP Status: ${http_status:-none} (attempt $attempt), retrying in ${wait}s"
               sleep "$wait"
               if [ "$method" = "POST" ] && [ "$http_status" != "429" ]; then
@@ -139,13 +148,15 @@ jobs:
           for file in devto/*.md; do
             echo "=== Processing $file ==="
 
-            # Extract frontmatter fields (strip optional surrounding quotes)
-            title=$(sed -n 's/^title: *//p' "$file" | sed 's/^"//; s/"$//')
-            description=$(sed -n 's/^description: *//p' "$file" | sed 's/^"//; s/"$//')
-            tags=$(sed -n 's/^tags: *//p' "$file")
-            canonical_url=$(sed -n 's/^canonical_url: *//p' "$file")
-            cover_image=$(sed -n 's/^cover_image: *//p' "$file")
-            published_raw=$(sed -n 's/^published: *//p' "$file")
+            # Extract fields from the frontmatter only, so body lines like "title: ..." are ignored
+            # (strip optional surrounding quotes)
+            fm=$(awk '/^---$/{n++; next} n==1{print} n>=2{exit}' "$file")
+            title=$(sed -n 's/^title: *//p' <<<"$fm" | sed 's/^"//; s/"$//')
+            description=$(sed -n 's/^description: *//p' <<<"$fm" | sed 's/^"//; s/"$//')
+            tags=$(sed -n 's/^tags: *//p' <<<"$fm")
+            canonical_url=$(sed -n 's/^canonical_url: *//p' <<<"$fm")
+            cover_image=$(sed -n 's/^cover_image: *//p' <<<"$fm")
+            published_raw=$(sed -n 's/^published: *//p' <<<"$fm")
             is_published=$([ "$published_raw" = "false" ] && echo "false" || echo "true")
 
             # Extract body: skip lines until second '---', then print the rest
