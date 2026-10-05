@@ -31,30 +31,110 @@ jobs:
           DEVTO_API_KEY: ${{ secrets.DEV_TO_API_KEY }}
           BEFORE: ${{ github.event.before }}
           CREATE_DRAFTS: ${{ inputs.create_drafts }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set +e  # GitHub Actions uses bash -e; disable to process all articles even if one fails
           failed=0
           created=0
           updated=0
           skipped=0
+          unchanged=0
+
+          # List every article of one kind, page by page. Prints a JSON array, or returns 1.
+          # A failed or partial listing must stop the run: every file missing from it would be POSTed as a duplicate.
+          list_articles() {
+            local kind=$1 page=1 all='[]' resp status body
+            while :; do
+              resp=$(curl -s --max-time 60 -w "\n__HTTP_STATUS__:%{http_code}" \
+                "https://dev.to/api/articles/me/$kind?per_page=1000&page=$page" \
+                -H "api-key: $DEVTO_API_KEY")
+              status=$(printf '%s\n' "$resp" | sed -n 's/^__HTTP_STATUS__://p')
+              body=$(printf '%s\n' "$resp" | grep -v "^__HTTP_STATUS__:")
+              if [ "$status" != "200" ] || ! printf '%s' "$body" | jq -e 'type == "array"' >/dev/null 2>&1; then
+                echo "::error::listing articles/me/$kind page $page failed (status $status)" >&2
+                return 1
+              fi
+              all=$(jq -s 'add' <<<"$all $body")
+              [ "$(jq length <<<"$body")" -lt 1000 ] && break
+              page=$((page + 1))
+            done
+            printf '%s' "$all"
+          }
+
+          list_existing() {
+            local pub unpub
+            pub=$(list_articles published) || return 1
+            unpub=$(list_articles unpublished) || return 1
+            jq -s 'add' <<<"$pub $unpub"
+          }
 
           # Fetch all existing articles (published + unpublished/drafts)
-          published_json=$(curl -s "https://dev.to/api/articles/me?per_page=100" \
-            -H "api-key: $DEVTO_API_KEY")
-          unpublished_json=$(curl -s "https://dev.to/api/articles/me/unpublished?per_page=100" \
-            -H "api-key: $DEVTO_API_KEY")
-          existing=$(echo "$published_json $unpublished_json" | jq -s 'add // []')
-
-          echo "Existing articles on DEV.to: $(echo "$existing" | jq length)"
+          if ! existing=$(list_existing); then
+            echo "::error::could not list existing DEV.to articles; stopping so nothing is created twice"
+            exit 1
+          fi
+          echo "Existing articles on DEV.to: $(jq length <<<"$existing")"
 
           # Files added or changed by this push (empty for workflow_dispatch or a new branch).
           changed=""
+          diff_ok=false
           if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-            if ! changed=$(git diff --no-renames --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- devto/); then
+            if changed=$(git diff --no-renames --name-only --diff-filter=AM "$BEFORE" "$GITHUB_SHA" -- devto/) \
+              && workflow_changed=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" -- .github/workflows/publish-to-devto.yml); then
+              # A change to this workflow may change what is sent, so it re-sends everything.
+              [ -z "$workflow_changed" ] && diff_ok=true
+            else
               echo "::warning::could not diff $BEFORE..$GITHUB_SHA; missing drafts will not be created this run"
               changed=""
             fi
           fi
+          # On a push whose diff is known, articles already on DEV.to are sent only when the push changed them.
+          # Re-sending all ~50 unchanged articles took 5 minutes and one transient DEV.to 500 on any of them failed the run.
+          # workflow_dispatch (or an unknown diff) still re-sends everything.
+          only_changed=false
+          if [ "$EVENT_NAME" = "push" ] && [ "$diff_ok" = true ]; then
+            only_changed=true
+          fi
+          echo "Only changed files: $only_changed"
+
+          # Send one request, retrying 429 / 5xx / network errors with backoff.
+          # Sets http_status and response_body.
+          # A POST is retried only after re-listing shows the article was not created by the failed attempt.
+          send() {
+            local method=$1 url=$2 attempt=1 wait=15 response found
+            while :; do
+              response=$(curl -s --max-time 120 -w "\n__HTTP_STATUS__:%{http_code}" -X "$method" "$url" \
+                -H "Content-Type: application/json" \
+                -H "api-key: $DEVTO_API_KEY" \
+                -d "$json_payload")
+              http_status=$(printf '%s\n' "$response" | sed -n 's/^__HTTP_STATUS__://p')
+              response_body=$(printf '%s\n' "$response" | grep -v "^__HTTP_STATUS__:")
+              case "$http_status" in
+                429|5??|000|"") ;;
+                *) return 0 ;;
+              esac
+              if [ "$attempt" -ge 4 ]; then
+                return 0
+              fi
+              echo "  HTTP Status: ${http_status:-none} (attempt $attempt), retrying in ${wait}s"
+              sleep "$wait"
+              if [ "$method" = "POST" ] && [ "$http_status" != "429" ]; then
+                if ! existing=$(list_existing); then
+                  echo "  could not re-list articles; not retrying the POST"
+                  return 0
+                fi
+                found=$(jq -r --arg t "$title" '.[] | select(.title == $t) | .url // empty' <<<"$existing" | head -n 1)
+                if [ -n "$found" ]; then
+                  echo "  the failed POST created the article anyway"
+                  http_status=201
+                  response_body=$(jq -n --arg u "$found" '{url: $u}')
+                  return 0
+                fi
+              fi
+              attempt=$((attempt + 1))
+              wait=$((wait * 2))
+            done
+          }
 
           for file in devto/*.md; do
             echo "=== Processing $file ==="
@@ -79,7 +159,13 @@ jobs:
 
             # Check if article with same title already exists
             article_id=$(echo "$existing" | jq -r --arg t "$title" \
-              '.[] | select(.title == $t) | .id // empty' 2>/dev/null || true)
+              '.[] | select(.title == $t) | .id // empty' 2>/dev/null | head -n 1)
+
+            if [ -n "$article_id" ] && [ "$only_changed" = true ] && ! printf '%s\n' "$changed" | grep -qxF "$file"; then
+              echo "  Unchanged in this push (id: $article_id), not sent"
+              unchanged=$((unchanged + 1))
+              continue
+            fi
 
             # A published: false file is created on DEV.to only when this push added or changed it.
             # Otherwise a draft deleted on DEV.to would be created again on every run.
@@ -110,23 +196,15 @@ jobs:
 
             if [ -n "$article_id" ]; then
               echo "  Updating existing article (id: $article_id)"
-              response=$(curl -s -w "\n__HTTP_STATUS__:%{http_code}" -X PUT "https://dev.to/api/articles/$article_id" \
-                -H "Content-Type: application/json" \
-                -H "api-key: $DEVTO_API_KEY" \
-                -d "$json_payload")
+              send PUT "https://dev.to/api/articles/$article_id"
               sleep 5
             else
               echo "  Creating new article"
-              response=$(curl -s -w "\n__HTTP_STATUS__:%{http_code}" -X POST "https://dev.to/api/articles" \
-                -H "Content-Type: application/json" \
-                -H "api-key: $DEVTO_API_KEY" \
-                -d "$json_payload")
+              send POST "https://dev.to/api/articles"
               sleep 30
             fi
 
-            # Extract HTTP status code and result URL
-            http_status=$(echo "$response" | grep "__HTTP_STATUS__:" | sed 's/.*__HTTP_STATUS__://')
-            response_body=$(echo "$response" | grep -v "__HTTP_STATUS__:")
+            # Extract result URL
             result_url=$(echo "$response_body" | jq -r '.url // empty' 2>/dev/null || true)
             error_msg=$(echo "$response_body" | jq -r '.error // empty' 2>/dev/null || true)
 
@@ -150,10 +228,11 @@ jobs:
 
           echo ""
           echo "=== Summary ==="
-          echo "  Created: $created"
-          echo "  Updated: $updated"
-          echo "  Skipped: $skipped"
-          echo "  Failed:  $failed"
+          echo "  Created:   $created"
+          echo "  Updated:   $updated"
+          echo "  Unchanged: $unchanged"
+          echo "  Skipped:   $skipped"
+          echo "  Failed:    $failed"
 
           if [ "$failed" -gt 0 ]; then
             echo "::error::$failed article(s) failed to publish"
