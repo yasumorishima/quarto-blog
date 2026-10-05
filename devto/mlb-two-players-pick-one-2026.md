@@ -1,6 +1,6 @@
 ---
 title: Two players, pick one on last season's numbers: how often is it right? MLB 2026, checked against rules fixed in advance
-published: false
+published: true
 description: Hundreds of thousands of two-player picks: last season's xwOBA picked the better 2026 hitter 65% of the time against 61% for wOBA, while pitchers' ERA, FIP, xERA and K-BB% could not be told apart in one season.
 tags: baseball, datascience, python, statistics
 ---
