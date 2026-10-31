@@ -60,7 +60,7 @@ Note that wRC+ adjusts for park and league, while the outcome here (next season'
 
 ## Pitchers: 56-58% whichever number, none separable from ERA
 
-Picking pitchers on last season's ERA was right 55.8% of the time. FIP was 57.1%, xERA 58.1%, K−BB% 58.4% and the blend 58.5%. All are a little above ERA, by 1.2 to 2.6 points, but every 95% interval of the difference crosses 0 (from −1.7 to +4.2 points for FIP to −1.0 to +6.5 for the blend), so by the rule all four are indistinguishable from ERA.
+Picking pitchers on last season's ERA was right 55.8% of the time. FIP was 57.1%, xERA 58.1%, K−BB% 58.4% and the blend 58.5%. All are a little above ERA, by 1.2 to 2.6 points, but every 95% interval of the difference crosses 0 (FIP −1.7 to +4.2, xERA −0.8 to +5.5, K−BB% −1.1 to +6.4, blend −1.0 to +6.5 points), so by the rule all four are indistinguishable from ERA.
 
 "Indistinguishable" does not mean "no difference". It means one season of pairs was not enough to tell a difference of this size apart.
 
