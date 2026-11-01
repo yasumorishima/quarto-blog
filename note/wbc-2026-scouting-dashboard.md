@@ -1,6 +1,6 @@
 # WBC 2026、全20チームの選手データをブラウザで見れるアプリを作った
 
-2026-11 追記：ダッシュボードは GitHub Pages 版に移しました（サーバーが無く眠りません）→ https://yasumorishima.github.io/wbc-scouting/ 。上のランディングページとこの記事の Streamlit のリンクも残してあり、眠っていれば起動ボタンで動きます。
+2026-11 追記：ダッシュボードは GitHub Pages 版に移しました（サーバーが無く眠りません）→ https://yasumorishima.github.io/wbc-scouting/ 。この記事の Streamlit のリンクも残してあり、眠っていれば起動ボタンで動きます。
 
 WBC 2026（ワールドベースボールクラシック）が今年3月に開幕します。
 
