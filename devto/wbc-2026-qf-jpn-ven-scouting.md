@@ -5,6 +5,8 @@ description: A 5-tab Streamlit dashboard analyzing Japan vs Venezuela using pitc
 tags: baseball, python, streamlit, datascience
 ---
 
+> **Update (Nov 2026):** this app now runs on GitHub Pages, with no server to fall asleep (first load takes 1-2 minutes): https://yasumorishima.github.io/wbc-scouting/qf-jpn-ven.html . The Streamlit link below still works; if it is asleep, press the wake-up button.
+
 ## What I Built
 
 A Streamlit scouting dashboard for the WBC 2026 Quarterfinal: Japan vs Venezuela.

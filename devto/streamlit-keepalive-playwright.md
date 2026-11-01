@@ -6,6 +6,8 @@ tags: streamlit, playwright, python, devops
 canonical_url: https://zenn.dev/shogaku/articles/streamlit-keepalive-playwright
 ---
 
+> **Update (Nov 2026):** the 37 WBC apps from this article later moved to GitHub Pages (stlite runs Streamlit inside the browser) and left the keepalive: https://yasumorishima.github.io/wbc-scouting/ . The keepalive still runs for 4 other Streamlit apps.
+
 ## TL;DR
 
 - Streamlit Community Cloud apps go to sleep (Zzz) after inactivity

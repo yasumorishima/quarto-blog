@@ -5,6 +5,8 @@ description: 30 Streamlit apps and a Kaggle dataset covering 20 national teams w
 tags: baseball, kaggle, streamlit, python
 ---
 
+> **Update (Nov 2026):** the dashboards now run on GitHub Pages, with no server to fall asleep: https://yasumorishima.github.io/wbc-scouting/ . The Streamlit links below still work; if one is asleep, press the wake-up button.
+
 ## What I Built
 
 For WBC 2026 (World Baseball Classic), I created three scouting tools using MLB Statcast data:
