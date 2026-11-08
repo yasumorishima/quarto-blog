@@ -7,7 +7,7 @@ tags: baseball, claude, opencv, python
 
 The amateur baseball team I play for posts per-game stats on its website. The source is the paper scorebook kept during the game. Typing it in by hand after every game takes time, and it is easy to misread a mark. I wondered whether the photos could be read instead, and after trying a few things, Claude Code (model: Claude Opus 5.5) now reads the photos, checks them with arithmetic, and saves the stats.
 
-I opened up the procedure, a guide to the marks, and the code, in case they help anyone else who keeps or tallies scorebooks. Nothing is for sale. I am not a scoring expert; this is what I learned reading my own team's books. The scorebooks here use the Japanese scoring system, but the checks work for any system.
+I opened up the procedure, a guide to the marks, and the code, in case they help anyone else who keeps or tallies scorebooks. Nothing is for sale. I am not a scoring expert; this is what I learned reading my own team's books. The scorebooks here use the Japanese scoring system.
 
 ## The overall flow
 
@@ -23,15 +23,15 @@ The scorekeeper only pastes the photos with a one-line request such as "add the 
 
 Each cell, where a lineup row meets an inning column, is one plate appearance. A small diamond is printed in the middle, and the four zones around it stand for the bases. The batter's result goes bottom right (first base); the top right, top left and bottom left (second, third, home) say how the runner got to that base.
 
-For example, `/8` bottom right is a hit to center, `6-3` is a groundout from short to first, and `B` is a walk. `(5)` in the second-base zone means "reached second during the 5th batter's plate appearance", and `S` means a stolen base. The roman numeral in the middle is the out number in the inning, written in the cell of the player who was out, even when a batter reached base and was put out later as a runner.
+For example, `/8` bottom right is a hit to center, `6-3` is a groundout from short to first, and `B` is a walk. `(5)` in the second-base zone means "reached second during the No. 5 hitter's plate appearance", and `S` means a stolen base. The roman numeral in the middle is the out number in the inning, written in the cell of the player who was out, even when a batter reached base and was put out later as a runner.
 
-Different scorekeepers write very differently. One writes the third out as IV or II; one skips the third out when a runner made it; one writes hits in red; one, when the order wraps around and a column runs out, carries on in the next column and renumbers the printed inning headers by hand. I collected what I met while transcribing 33 sheets cell by cell in a [notation guide](https://github.com/yasumorishima/baseball-scorebook-ocr-docs/blob/main/notation.md) (Japanese).
+Different scorekeepers write very differently. One writes the third out as IV or II; one skips the third out when a runner made it; one writes hits in red; one, when the team bats around and the inning's column runs out, carries on in the next column and renumbers the printed inning headers by hand. I collected what I met while transcribing 33 sheets cell by cell in a [notation guide](https://github.com/yasumorishima/baseball-scorebook-ocr-docs/blob/main/notation.md) (Japanese).
 
 ## Plate appearances = outs + runs + left on base, exactly
 
 ![Plate appearances equal outs plus runs plus left on base](https://raw.githubusercontent.com/yasumorishima/baseball-scorebook-ocr-docs/main/images/blog/en/fig-check.png)
 
-Every plate appearance ends in exactly one of three ways: an out, a run, or stranded on base when the inning ends. (When an inning ends on a runner's out or on time, the batter who was still at the plate does not get a plate appearance.) A batter who reached base and was later caught stealing or forced out counts as an out. So, per inning and per game, plate appearances equal outs + runs + left on base.
+Every plate appearance ends in exactly one of three ways: an out, a run, or stranded on base when the inning ends. (When an inning ends on a runner's out or when time runs out, the batter who was still at the plate does not get a plate appearance.) A batter who reached base and was later caught stealing or forced out counts as an out. So, per inning and per game, plate appearances equal outs + runs + left on base.
 
 The figure is a recent 6-inning game, called for time with two out in the bottom of the 6th. We had 28 plate appearances: 18 outs, 5 runs, 5 left on base. They had 25: 17 outs, 1 run, 7 left on base. In a game cut short, the outs are not 3 × innings, so you match against the outs you actually counted.
 
@@ -48,7 +48,7 @@ for inning in sorted({p[0] for p in pas}):
     print(inning, "PA", sum(c.values()), "= outs", c["out"], "+ runs", c["run"], "+ LOB", c["lob"])
 ```
 
-I keep reading until this and the other checks agree: the line score adds up to the final score, the pitchers' runs allowed add up to the opponent's runs, and so on. In this game, the out number in the 5th-inning cell of the leadoff batter looked like III on the whole photo. Zoomed in, it was a II with serifs. Had it been III, the inning would have ended with him, and the 5th batter's groundout later in the inning would have been a fourth out. When the shape of a mark is in doubt, arithmetic like this decides.
+I keep reading until this and the other checks agree: the line score adds up to the final score, the pitchers' runs allowed add up to the opponent's runs, and so on. In this game, the out number in the 5th-inning cell of the leadoff batter looked like III on the whole photo. Zoomed in, it was a II with serifs. Had it been III, the inning would have ended with him, and the No. 5 hitter's groundout later in the inning would have been a fourth out. When the shape of a mark is in doubt, arithmetic like this decides.
 
 The rest of the checks, and how to settle what the paper cannot (two players with the same surname, the inning a pitcher was replaced, innings pitched in a game called for time), are in the [stats guide](https://github.com/yasumorishima/baseball-scorebook-ocr-docs/blob/main/stats-from-scorebook.md) (Japanese).
 
@@ -56,7 +56,7 @@ The rest of the checks, and how to settle what the paper cannot (two players wit
 
 ![Per-cell accuracy is high, but the whole line score is right on 25 of 33 sheets](https://raw.githubusercontent.com/yasumorishima/baseball-scorebook-ocr-docs/main/images/blog/en/fig-accuracy.png)
 
-This figure is why the checks and the scorekeeper's confirmation stay in the loop. I built a tool that reads the photos automatically ([baseball-scorebook-reader](https://github.com/yasumorishima/baseball-scorebook-reader)) and measured it on 33 sheets that had been transcribed by hand. It finds the grid with OpenCV, cuts out each inning column, asks Claude about each column (is there a plate appearance in each cell, what was the result, did the batter score), and assembles a batting line for each lineup slot.
+This figure is why the checks and the scorekeeper's confirmation stay in the loop. I built a tool that reads the photos automatically ([baseball-scorebook-reader](https://github.com/yasumorishima/baseball-scorebook-reader)) and measured it on 33 sheets that have reference transcriptions. It finds the grid with OpenCV, cuts out each inning column, asks Claude about each column (is there a plate appearance in each cell, what was the result, did the batter score), and assembles a batting line for each lineup slot.
 
 Per cell, "did the batter score" matched the transcription 99% of the time (913/923) and the plate-appearance result 91% (859/941). But one sheet has about 30 plate appearances, so a few misread cells are enough to throw off the line score. The whole line score matched on 25 of the 33 sheets.
 
@@ -68,9 +68,9 @@ When the same photo is read twice, the cells where the two reads disagree are wr
 
 Before Claude, I built a reader that uses no generative AI, on a Raspberry Pi 5. It subtracts a blank form to isolate the pencil, reads the marks in each base zone by their distance to templates, and solves them together with baseball rules: a runner's advance number can only be a batter who came up after him, one runner per base, no passing.
 
-On the 396 base-zone marks of the 33 sheets (mostly the lineup numbers of the batter during whose plate appearance the runner advanced), the classic pipeline got 71% (283/396) with nothing given, and 92% (366/396) when given all the true facts (plate appearances, reaches and out numbers). Claude, given no examples and no answers for this comparison, got 93% (370/396). That run took 429 calls and cost about 3.8 US dollars.
+On the 396 base-zone marks of the 33 sheets (such as the lineup number of the batter during whose plate appearance the runner advanced), the classic pipeline got 71% (283/396) with nothing given, and 92% (366/396) when given all the true facts (plate appearances, reaches and out numbers). Claude, given no examples and no answers for this comparison, got 93% (370/396). That run took 429 calls and cost about 3.8 US dollars.
 
-The hand transcriptions were originally made with Claude's help, so if both made the same misreading, agreement would be inflated. I therefore cut out 47 marks from the original photos, zoomed in and checked them, including the 21 where only Claude and the transcription agreed. All 21 matched what is written on the paper. The check also found 4 misreadings in the transcriptions.
+The reference transcriptions were originally made with Claude's help, so if both made the same misreading, agreement would be inflated. I therefore cut out 47 marks from the original photos, zoomed in and checked them, including the 21 where only Claude and the transcription agreed. All 21 matched what is written on the paper. The check also found 4 misreadings in the transcriptions.
 
 In case it helps anyone reading the notation or the solver, that code is open too ([cv/](https://github.com/yasumorishima/baseball-scorebook-reader/tree/main/cv)).
 
@@ -80,7 +80,7 @@ After each game I don't run the tool; I have Claude read the photos in a Claude 
 
 ### The steps live in a skill
 
-Claude Code lets you write a fixed procedure down as a "skill". Recording a game result is a skill, so every game goes in the same order without skipping anything: look up the opponent and field from the schedule, then the result and line score, the scorebook images, batting and pitching stats, the checks and read-back, and finally the site. Once the session saved only the result and forgot the individual stats. Since then a hook (a check that runs automatically at a set point) stops the session from finishing if images were uploaded but no stats were saved. I put a [skill template](https://github.com/yasumorishima/baseball-scorebook-ocr-docs/blob/main/claude-code/scorebook-stats/SKILL.md) (Japanese) that any team can adapt.
+Claude Code lets you write a fixed procedure down as a "skill". Recording a game result is a skill, so every game goes in the same order without skipping anything: look up the opponent and venue from the schedule, then the result and line score, the scorebook images, batting and pitching stats, the checks and read-back, and finally the site. Once the session saved only the result and forgot the individual stats. Since then a hook (a check that runs automatically at a set point) stops the session from finishing if images were uploaded but no stats were saved. I also published a [skill template](https://github.com/yasumorishima/baseball-scorebook-ocr-docs/blob/main/claude-code/scorebook-stats/SKILL.md) (Japanese) that any team can adapt.
 
 ### Zoom in before reading
 
