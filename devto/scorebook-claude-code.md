@@ -1,6 +1,6 @@
 ---
 title: Reading Paper Baseball Scorebooks with Claude Code, and Checking Them with Arithmetic
-published: false
+published: true
 description: How an amateur baseball team turns photos of handwritten scorebooks into per-game stats with Claude Code, why plate appearances = outs + runs + left on base catches misreads, and the notation guide and code I opened up.
 tags: baseball, claude, opencv, python
 ---
