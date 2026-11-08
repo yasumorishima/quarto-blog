@@ -7,7 +7,7 @@ tags: baseball, claude, opencv, python
 
 The amateur baseball team I play for posts per-game stats on its website. The source is the paper scorebook kept during the game. Typing it in by hand after every game takes time, and it is easy to misread a mark. I wondered whether the photos could be read instead, and after trying a few things, Claude Code (model: Claude Opus 5.5) now reads the photos, checks them with arithmetic, and saves the stats.
 
-I opened up the procedure, a guide to the marks, and the code, in case they help anyone else who keeps or tallies scorebooks. Nothing is for sale. I am not a scoring expert; this is what I learned reading my own team's books. The scorebooks here use the Japanese scoring system.
+I opened up the procedure, a guide to the marks, and the code, in case they help anyone else who keeps or tallies scorebooks. I am not a scoring expert; this is what I learned reading my own team's books. The scorebooks here use the Japanese scoring system.
 
 ## The overall flow
 
